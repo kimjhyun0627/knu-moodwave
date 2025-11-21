@@ -447,7 +447,7 @@ export const ParameterPanel = ({
 														style={{ color: 'inherit' }}
 													/>
 												</motion.button>
-												<div className="relative w-full overflow-hidden">
+												<div className="relative w-full overflow-visible">
 													<AnimatePresence mode="wait">
 														<motion.div
 															key={`params-${currentStartIndex}`}
