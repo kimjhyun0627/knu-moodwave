@@ -129,7 +129,8 @@ export const BaseCarouselSection = <T extends CarouselItem>({
 									isPlaying={!!isPlaying}
 									onPlayClick={(e) => {
 										e.stopPropagation();
-										onPlay(item.id as string | ThemeCategory);
+										// itemPlayingId는 이미 getPlayingId를 통해 올바른 타입으로 변환됨
+										onPlay(itemPlayingId);
 									}}
 									onPauseClick={(e) => {
 										e?.stopPropagation();

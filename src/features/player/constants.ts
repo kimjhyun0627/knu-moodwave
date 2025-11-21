@@ -255,6 +255,17 @@ export const PLAYER_CONSTANTS = {
 				},
 			},
 		},
+		// UI 상수
+		UI: {
+			INDICATOR_DELAY_MS: 600, // 인디케이터 표시 지연 시간 (layout 애니메이션 duration과 동일)
+			OPACITY_DELAY: 0.1, // opacity 애니메이션 delay
+			MODE_TOGGLE_DELAY: 0.2, // 모드 토글 버튼 애니메이션 delay
+			PARAM_SLIDER_MIN_WIDTH: '70px', // 파라미터 슬라이더 최소 너비
+			PANEL_PADDING_TOP: '1.125rem', // 패널 상단 패딩
+			PANEL_PADDING_BOTTOM: '1.125rem', // 패널 하단 패딩
+			CONTENT_PADDING_X: '0.75rem', // 컨텐츠 좌우 패딩
+			GRID_GAP: '0.75rem', // 그리드 간격
+		},
 		CAROUSEL_ANIMATION: {
 			spring: {
 				type: 'spring' as const,

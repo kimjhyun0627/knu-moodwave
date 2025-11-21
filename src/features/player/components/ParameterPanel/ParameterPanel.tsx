@@ -1,14 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutGrid, LayoutList } from 'lucide-react';
-import { ParameterSlider } from '../ParameterSlider';
 import { ParameterCarousel } from '../ParameterCarousel';
-import { ParameterIndicator } from '../ParameterIndicator';
 import { CommonParamButtons } from '../CommonParamButtons';
+import { ParameterGrid } from './ParameterGrid';
+import { ParameterModeToggle } from './ParameterModeToggle';
+import { ParameterIndicatorWrapper } from './ParameterIndicatorWrapper';
 import type { CategoryParameter } from '@/shared/types';
 import { PLAYER_CONSTANTS } from '../../constants';
 import { useThemeColors } from '@/shared/hooks';
-import { useWindowHeight } from '../../hooks';
 import { useIndicatorPosition } from '../../hooks';
 import { useParameterCarousel } from '../../hooks';
 import { getParameterPanelStyle } from '../../utils';
@@ -45,9 +44,6 @@ export const ParameterPanel = ({
 	const panelRef = useRef<HTMLDivElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
 	const carouselRef = useRef<HTMLDivElement>(null);
-
-	// 윈도우 높이 및 가로 모드 최대 너비 계산
-	const { horizontalMaxWidth } = useWindowHeight();
 
 	// 세로 모드에서 모든 파라미터 합치기
 	const allParams = [...themeBaseParams, ...themeAdditionalParams, ...activeCommonParams];
@@ -89,7 +85,7 @@ export const ParameterPanel = ({
 			// 패널 애니메이션 완료 후 인디케이터 표시
 			const timer = setTimeout(() => {
 				setShouldShowIndicator(true);
-			}, 600); // layout 애니메이션 duration (0.6초)
+			}, PLAYER_CONSTANTS.PARAMETER.UI.INDICATOR_DELAY_MS);
 
 			return () => {
 				clearTimeout(timer);
@@ -111,8 +107,8 @@ export const ParameterPanel = ({
 						style={{
 							// 패널 자체는 가로/세로 모드 모두 동일한 위치/폭을 유지
 							...getParameterPanelStyle(colors),
-							paddingTop: '1.125rem',
-							paddingBottom: '1.125rem',
+							paddingTop: PLAYER_CONSTANTS.PARAMETER.UI.PANEL_PADDING_TOP,
+							paddingBottom: PLAYER_CONSTANTS.PARAMETER.UI.PANEL_PADDING_BOTTOM,
 						}}
 						initial={{
 							...PLAYER_CONSTANTS.ANIMATIONS.parameterPanel.initial,
@@ -138,13 +134,11 @@ export const ParameterPanel = ({
 						<motion.div
 							ref={contentRef}
 							layout
-							// 내부 컨텐츠 래퍼는 항상 패널 너비를 꽉 채우고,
-							// 가로 모드일 때만 maxWidth로 내용 폭을 제한
+							// 내부 컨텐츠 래퍼는 항상 패널 너비를 꽉 채운다 (가로 모드 포함)
 							className="w-full mx-auto"
 							style={{
 								...(orientation === 'horizontal'
 									? {
-											maxWidth: `${horizontalMaxWidth}px`,
 											display: 'flex',
 											flexDirection: 'column',
 										}
@@ -163,7 +157,6 @@ export const ParameterPanel = ({
 									currentStartIndex={currentStartIndex}
 									allParams={allParams}
 									navigationDirectionRef={navigationDirectionRef}
-									horizontalMaxWidth={horizontalMaxWidth}
 									themeAdditionalParams={themeAdditionalParams}
 									activeCommonParams={activeCommonParams}
 									getParamValue={getParamValue}
@@ -184,8 +177,8 @@ export const ParameterPanel = ({
 									// 모드에 상관없이 동일한 폭/위치를 유지하도록 고정
 									width: '100%',
 									minWidth: '100%',
-									paddingLeft: '0.75rem',
-									paddingRight: '0.75rem',
+									paddingLeft: PLAYER_CONSTANTS.PARAMETER.UI.CONTENT_PADDING_X,
+									paddingRight: PLAYER_CONSTANTS.PARAMETER.UI.CONTENT_PADDING_X,
 								}}
 								transition={{
 									layout: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
@@ -193,65 +186,21 @@ export const ParameterPanel = ({
 								}}
 							>
 								{/* 파라미터 그리드 (세로 모드만) */}
-								{orientation === 'vertical' ? (
-									<motion.div
-										layout="size"
-										style={{
-											display: 'grid',
-											gridTemplateColumns: shouldUseTwoRowsLayout ? `repeat(${topRowCount}, minmax(0, 1fr))` : `repeat(${totalParamsCount}, minmax(0, 1fr))`,
-											gridTemplateRows: shouldUseTwoRowsLayout ? 'repeat(2, auto)' : 'repeat(1, auto)',
-											gridAutoFlow: 'column',
-											gap: '0.75rem',
-											width: '100%',
-										}}
-										initial={PLAYER_CONSTANTS.ANIMATIONS.parameterGrid.initial}
-										animate={PLAYER_CONSTANTS.ANIMATIONS.parameterGrid.animate}
-										exit={PLAYER_CONSTANTS.ANIMATIONS.parameterGrid.exit}
-										transition={{
-											layout: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
-											gridTemplateColumns: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
-											gridTemplateRows: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
-											opacity: {
-												...PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.OPACITY,
-												delay: 0.1,
-											},
-										}}
-									>
-										<AnimatePresence mode="popLayout">
-											{allParams.map((param) => {
-												const isRemovable = themeAdditionalParams.some((p) => p.id === param.id) || activeCommonParams.some((p) => p.id === param.id);
-												return (
-													<motion.div
-														key={param.id}
-														layout
-														initial={{ opacity: 0 }}
-														animate={{ opacity: 1 }}
-														exit={{ opacity: 0 }}
-														style={{
-															minWidth: '70px',
-														}}
-														transition={PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT_OPACITY}
-													>
-														<ParameterSlider
-															param={param}
-															value={getParamValue(param.id)}
-															onChange={(value: number) => setParamValue(param.id, value)}
-															onRemove={
-																isRemovable
-																	? themeAdditionalParams.some((p) => p.id === param.id)
-																		? () => onRemoveThemeParam(param.id)
-																		: () => onRemoveCommonParam(param.id)
-																	: undefined
-															}
-															isRemovable={isRemovable}
-															orientation={orientation}
-														/>
-													</motion.div>
-												);
-											})}
-										</AnimatePresence>
-									</motion.div>
-								) : null}
+								{orientation === 'vertical' && (
+									<ParameterGrid
+										allParams={allParams}
+										themeAdditionalParams={themeAdditionalParams}
+										activeCommonParams={activeCommonParams}
+										shouldUseTwoRowsLayout={shouldUseTwoRowsLayout}
+										topRowCount={topRowCount}
+										totalParamsCount={totalParamsCount}
+										orientation={orientation}
+										getParamValue={getParamValue}
+										setParamValue={setParamValue}
+										onRemoveThemeParam={onRemoveThemeParam}
+										onRemoveCommonParam={onRemoveCommonParam}
+									/>
+								)}
 
 								{/* 공통 파라미터 추가 버튼 - 항상 하단에 배치 */}
 								<CommonParamButtons
@@ -260,110 +209,25 @@ export const ParameterPanel = ({
 								/>
 
 								{/* 모드 토글 버튼 */}
-								<motion.div
-									layout
-									className="w-full pt-3 border-t"
-									style={{
-										borderColor: colors.glassBorder,
-										...(orientation === 'vertical'
-											? {
-													width: '100%',
-													minWidth: '100%',
-												}
-											: {}),
-									}}
-									initial={{ opacity: 0, y: 10 }}
-									animate={{ opacity: 1, y: 0 }}
-									exit={{ opacity: 0, y: 10 }}
-									transition={{
-										duration: 0.3,
-										delay: 0.2,
-									}}
-								>
-									<div className="flex items-center justify-center">
-										<button
-											onClick={() => setOrientation(orientation === 'horizontal' ? 'vertical' : 'horizontal')}
-											className="p-2.5 md:p-3 rounded-full transition-all duration-200 glow-primary shadow-2xl relative overflow-hidden group hover:scale-110 active:scale-95"
-											style={{
-												background: colors.playButtonGradient,
-											}}
-											aria-label={orientation === 'horizontal' ? '세로 모드로 전환' : '가로 모드로 전환'}
-										>
-											<motion.div
-												style={{
-													position: 'absolute',
-													inset: 0,
-													background: 'linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent)',
-												}}
-												animate={{ x: ['-100%', '200%'] }}
-												transition={PLAYER_CONSTANTS.ANIMATIONS.playButtonShine.transition}
-											/>
-											<AnimatePresence mode="wait">
-												{orientation === 'horizontal' ? (
-													<motion.div
-														key="grid"
-														{...PLAYER_CONSTANTS.ANIMATIONS.playButtonIcon}
-													>
-														<LayoutGrid className="w-4 h-4 md:w-5 md:h-5 text-white fill-white relative z-10" />
-													</motion.div>
-												) : (
-													<motion.div
-														key="list"
-														{...PLAYER_CONSTANTS.ANIMATIONS.playButtonIcon}
-													>
-														<LayoutList className="w-4 h-4 md:w-5 md:h-5 text-white fill-white relative z-10" />
-													</motion.div>
-												)}
-											</AnimatePresence>
-										</button>
-									</div>
-								</motion.div>
+								<ParameterModeToggle
+									orientation={orientation}
+									onToggle={() => setOrientation(orientation === 'horizontal' ? 'vertical' : 'horizontal')}
+								/>
 							</motion.div>
 						</motion.div>
 					</motion.div>
 				)}
 			</AnimatePresence>
 			{/* 인디케이터 (가장 바깥쪽 패널 밖의 공중에 떠 있게) */}
-			<AnimatePresence>
-				{shouldShowIndicator && (
-					<motion.div
-						key="indicator"
-						initial={{ opacity: 0, scale: 0.8 }}
-						animate={{
-							opacity: 1,
-							scale: 1,
-							left: typeof indicatorLeft === 'number' ? indicatorLeft : indicatorLeft,
-							top: typeof indicatorTop === 'number' ? indicatorTop : indicatorTop,
-							y: '-50%', // 인디케이터 블록의 중앙이 top 위치에 오도록
-						}}
-						exit={{ opacity: 0, scale: 0.8 }}
-						transition={{
-							type: 'spring',
-							stiffness: 300,
-							damping: 25,
-							left: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
-							top: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
-							y: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
-						}}
-						style={{
-							position: 'fixed',
-							left: typeof indicatorLeft === 'number' ? `${indicatorLeft}px` : indicatorLeft,
-							top: typeof indicatorTop === 'number' ? `${indicatorTop}px` : indicatorTop,
-							zIndex: 100,
-							pointerEvents: 'auto',
-						}}
-					>
-						<ParameterIndicator
-							allParams={allParams}
-							currentStartIndex={currentStartIndex}
-							visibleCount={visibleCount}
-							indicatorLeft={typeof indicatorLeft === 'number' ? `${indicatorLeft}px` : indicatorLeft}
-							indicatorTop={typeof indicatorTop === 'number' ? `${indicatorTop}px` : indicatorTop}
-							onIndicatorClick={goToIndex}
-						/>
-					</motion.div>
-				)}
-			</AnimatePresence>
+			<ParameterIndicatorWrapper
+				shouldShowIndicator={shouldShowIndicator}
+				indicatorLeft={indicatorLeft}
+				indicatorTop={indicatorTop}
+				allParams={allParams}
+				currentStartIndex={currentStartIndex}
+				visibleCount={visibleCount}
+				onIndicatorClick={goToIndex}
+			/>
 		</>
 	);
 };

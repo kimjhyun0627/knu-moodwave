@@ -12,7 +12,6 @@ interface ParameterCarouselProps {
 	currentStartIndex: number;
 	allParams: CategoryParameter[];
 	navigationDirectionRef: React.MutableRefObject<NavigationDirection>;
-	horizontalMaxWidth: number;
 	themeAdditionalParams: CategoryParameter[];
 	activeCommonParams: CategoryParameter[];
 	getParamValue: (paramId: string) => number;
@@ -29,7 +28,6 @@ export const ParameterCarousel = ({
 	currentStartIndex,
 	allParams,
 	navigationDirectionRef,
-	horizontalMaxWidth,
 	themeAdditionalParams,
 	activeCommonParams,
 	getParamValue,
@@ -44,15 +42,11 @@ export const ParameterCarousel = ({
 	return (
 		<div
 			className="relative flex flex-col items-center gap-3 mb-3"
-			style={{ width: '100%', maxWidth: `${horizontalMaxWidth}px`, margin: '1.125rem auto 0 auto' }}
+			style={{ width: '100%', margin: '1.125rem 0 0 0' }}
 		>
 			<motion.div
 				layout
 				className="flex flex-col items-center gap-3 w-full"
-				style={{
-					maxWidth: `${horizontalMaxWidth}px`,
-					margin: '0 auto',
-				}}
 				transition={{
 					layout: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
 				}}
