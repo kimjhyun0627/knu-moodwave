@@ -93,7 +93,7 @@ export const PLAYER_CONSTANTS = {
 				x: ['-100%', '200%'],
 			},
 			transition: {
-				duration: 2,
+				duration: 4,
 				repeat: Infinity,
 				ease: 'linear',
 			},

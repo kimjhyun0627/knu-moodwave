@@ -178,7 +178,16 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 									inset: 0,
 									background: 'linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent)',
 								}}
-								animate={isPlaying ? { x: ['-100%', '200%'] } : { x: '-100%' }}
+								initial={{ x: '200%' }}
+								animate={
+									isPlaying
+										? {
+												x: ['200%', '-200%'],
+											}
+										: {
+												x: '-200%',
+											}
+								}
 								transition={PLAYER_CONSTANTS.ANIMATIONS.playButtonShine.transition}
 							/>
 							<AnimatePresence mode="wait">
