@@ -54,10 +54,7 @@ export const ParameterCarousel = ({
 					margin: '0 auto',
 				}}
 				transition={{
-					layout: {
-						duration: 0.6,
-						ease: [0.4, 0, 0.2, 1],
-					},
+					layout: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
 				}}
 			>
 				{/* 캐러셀 컨테이너와 인디케이터를 나란히 배치 */}

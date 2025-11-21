@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { CategoryParameter } from '@/shared/types';
 import { PLAYER_CONSTANTS, type NavigationDirection } from '../constants';
+import { useWindowSize } from '@/shared/hooks';
 
 interface UseParameterCarouselProps {
 	allParams: CategoryParameter[];
@@ -15,20 +16,10 @@ interface UseParameterCarouselProps {
  */
 export const useParameterCarousel = ({ allParams, themeBaseParams, themeAdditionalParams, activeCommonParams, orientation }: UseParameterCarouselProps) => {
 	const [currentStartIndex, setCurrentStartIndex] = useState(0);
-	const [windowHeight, setWindowHeight] = useState(0);
+	const { height: windowHeight } = useWindowSize();
 	const navigationDirectionRef = useRef<NavigationDirection>(null);
 	const prevActiveCommonParamsRef = useRef<CategoryParameter[]>(activeCommonParams);
 	const currentStartIndexRef = useRef(0);
-
-	// 현재 화면 높이 추적 (반응형)
-	useEffect(() => {
-		const handleResize = () => {
-			setWindowHeight(window.innerHeight);
-		};
-		handleResize();
-		window.addEventListener('resize', handleResize);
-		return () => window.removeEventListener('resize', handleResize);
-	}, []);
 
 	// 화면 높이에 따른 표시 개수 결정 (반응형: 3개, 2개, 1개)
 	const getVisibleCount = (height: number): number => {

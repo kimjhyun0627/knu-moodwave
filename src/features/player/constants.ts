@@ -234,6 +234,27 @@ export const PLAYER_CONSTANTS = {
 			OPACITY: 300,
 			INDICATOR_DELAY: 30,
 		},
+		// 공통 transition 설정
+		TRANSITIONS: {
+			LAYOUT: {
+				duration: 0.6,
+				ease: [0.4, 0, 0.2, 1] as const,
+			},
+			OPACITY: {
+				duration: 0.3,
+				ease: [0.4, 0, 0.2, 1] as const,
+			},
+			LAYOUT_OPACITY: {
+				layout: {
+					duration: 0.6,
+					ease: [0.4, 0, 0.2, 1] as const,
+				},
+				opacity: {
+					duration: 0.3,
+					ease: [0.4, 0, 0.2, 1] as const,
+				},
+			},
+		},
 		CAROUSEL_ANIMATION: {
 			spring: {
 				type: 'spring' as const,

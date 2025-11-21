@@ -123,18 +123,9 @@ export const ParameterPanel = ({
 						exit={PLAYER_CONSTANTS.ANIMATIONS.parameterPanel.exit}
 						transition={{
 							...PLAYER_CONSTANTS.ANIMATIONS.parameterPanel.transition,
-							layout: {
-								duration: 0.6,
-								ease: [0.4, 0, 0.2, 1],
-							},
-							height: {
-								duration: 0.6,
-								ease: [0.4, 0, 0.2, 1],
-							},
-							width: {
-								duration: 0.6,
-								ease: [0.4, 0, 0.2, 1],
-							},
+							layout: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
+							height: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
+							width: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
 							...(orientation === 'vertical'
 								? {
 										x: {
@@ -160,14 +151,8 @@ export const ParameterPanel = ({
 									: {}),
 							}}
 							transition={{
-								layout: {
-									duration: 0.6,
-									ease: [0.4, 0, 0.2, 1],
-								},
-								width: {
-									duration: 0.6,
-									ease: [0.4, 0, 0.2, 1],
-								},
+								layout: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
+								width: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
 							}}
 						>
 							{/* 캐러셀 파라미터 영역 (가로 모드만) */}
@@ -203,14 +188,8 @@ export const ParameterPanel = ({
 									paddingRight: '0.75rem',
 								}}
 								transition={{
-									layout: {
-										duration: 0.6,
-										ease: [0.4, 0, 0.2, 1],
-									},
-									width: {
-										duration: 0.6,
-										ease: [0.4, 0, 0.2, 1],
-									},
+									layout: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
+									width: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
 								}}
 							>
 								{/* 파라미터 그리드 (세로 모드만) */}
@@ -229,20 +208,11 @@ export const ParameterPanel = ({
 										animate={PLAYER_CONSTANTS.ANIMATIONS.parameterGrid.animate}
 										exit={PLAYER_CONSTANTS.ANIMATIONS.parameterGrid.exit}
 										transition={{
-											layout: {
-												duration: 0.6,
-												ease: [0.4, 0, 0.2, 1],
-											},
-											gridTemplateColumns: {
-												duration: 0.6,
-												ease: [0.4, 0, 0.2, 1],
-											},
-											gridTemplateRows: {
-												duration: 0.6,
-												ease: [0.4, 0, 0.2, 1],
-											},
+											layout: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
+											gridTemplateColumns: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
+											gridTemplateRows: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
 											opacity: {
-												duration: 0.3,
+												...PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.OPACITY,
 												delay: 0.1,
 											},
 										}}
@@ -260,16 +230,7 @@ export const ParameterPanel = ({
 														style={{
 															minWidth: '70px',
 														}}
-														transition={{
-															layout: {
-																duration: 0.6,
-																ease: [0.4, 0, 0.2, 1],
-															},
-															opacity: {
-																duration: 0.3,
-																ease: [0.4, 0, 0.2, 1],
-															},
-														}}
+														transition={PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT_OPACITY}
 													>
 														<ParameterSlider
 															param={param}
@@ -380,18 +341,9 @@ export const ParameterPanel = ({
 							type: 'spring',
 							stiffness: 300,
 							damping: 25,
-							left: {
-								duration: 0.6,
-								ease: [0.4, 0, 0.2, 1],
-							},
-							top: {
-								duration: 0.6,
-								ease: [0.4, 0, 0.2, 1],
-							},
-							y: {
-								duration: 0.6,
-								ease: [0.4, 0, 0.2, 1],
-							},
+							left: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
+							top: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
+							y: PLAYER_CONSTANTS.PARAMETER.TRANSITIONS.LAYOUT,
 						}}
 						style={{
 							position: 'fixed',
