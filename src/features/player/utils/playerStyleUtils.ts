@@ -1,4 +1,4 @@
-import type { ThemeColors } from '../../../shared/hooks/useThemeColors';
+import type { ThemeColors } from '@/shared/hooks/useThemeColors';
 
 /**
  * 파라미터 패널 스타일 생성

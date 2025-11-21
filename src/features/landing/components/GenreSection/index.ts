@@ -1,0 +1,2 @@
+export { GenreSection } from './GenreSection';
+

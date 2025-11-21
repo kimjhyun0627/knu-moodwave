@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useThemeStore } from '../../store/themeStore';
+import { useThemeStore } from '@/store/themeStore';
 
 export type ThemeColors = {
 	isDark: boolean;

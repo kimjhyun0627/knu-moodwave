@@ -1,16 +1,16 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getTimeGreeting, getResponsiveTextSize, getResponsiveNavTextSize } from '../shared/utils';
-import { MUSIC_THEMES } from '../shared/constants';
-import { ThemeToggle } from '../shared/components/ui';
-import { TransitionOverlay } from '../shared/components/common';
-import { CategorySection, GenreSection } from '../features/landing/components';
-import { usePlayerStore } from '../store/playerStore';
-import { useThemeStore } from '../store/themeStore';
-import { useWindowWidth } from '../shared/hooks';
-import { useVisibleRange, useCarousel } from '../features/landing/hooks';
-import type { MusicGenre, ThemeCategory } from '../shared/types';
+import { getTimeGreeting, getResponsiveTextSize, getResponsiveNavTextSize } from '@/shared/utils';
+import { MUSIC_THEMES } from '@/shared/constants';
+import { ThemeToggle } from '@/shared/components/ui';
+import { TransitionOverlay } from '@/shared/components/common';
+import { CategorySection, GenreSection } from '@/features/landing/components';
+import { usePlayerStore } from '@/store/playerStore';
+import { useThemeStore } from '@/store/themeStore';
+import { useWindowWidth } from '@/shared/hooks';
+import { useVisibleRange, useCarousel } from '@/features/landing/hooks';
+import type { MusicGenre, ThemeCategory } from '@/shared/types';
 
 const Landing = () => {
 	const navigate = useNavigate();

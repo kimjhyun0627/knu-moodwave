@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
-import { usePlayerStore } from '../../../store/playerStore';
-import { DEFAULT_AUDIO_PARAMS } from '../../../shared/constants';
-import { COMMON_PARAMETERS } from '../../../shared/constants';
-import { findThemeByGenre } from '../../../shared/utils';
-import type { CategoryParameter } from '../../../shared/types';
+import { usePlayerStore } from '@/store/playerStore';
+import { DEFAULT_AUDIO_PARAMS } from '@/shared/constants';
+import { COMMON_PARAMETERS } from '@/shared/constants';
+import { findThemeByGenre } from '@/shared/utils';
+import type { CategoryParameter } from '@/shared/types';
 
 /**
  * 플레이어 파라미터 관리 커스텀 훅

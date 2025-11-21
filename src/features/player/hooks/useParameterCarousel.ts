@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import type { CategoryParameter } from '../../../shared/types';
+import type { CategoryParameter } from '@/shared/types';
 import { VISIBLE_COUNT_BREAKPOINTS, type NavigationDirection } from '../constants';
 
 interface UseParameterCarouselProps {

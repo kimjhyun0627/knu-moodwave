@@ -1,9 +1,9 @@
-import type { MusicTheme, CategoryParameter } from '../types';
-import mockup1 from '../../assets/mockup1.png';
-import mockup2 from '../../assets/mockup2.png';
-import mockup3 from '../../assets/mockup3.png';
-import mockup4 from '../../assets/mockup4.png';
-import mockup5 from '../../assets/mockup5.png';
+import type { MusicTheme, CategoryParameter } from '@/shared/types';
+import mockup1 from '@/assets/mockup1.png';
+import mockup2 from '@/assets/mockup2.png';
+import mockup3 from '@/assets/mockup3.png';
+import mockup4 from '@/assets/mockup4.png';
+import mockup5 from '@/assets/mockup5.png';
 
 // 공통 파라미터 (모든 카테고리에서 사용 가능)
 export const COMMON_PARAMETERS: CategoryParameter[] = [

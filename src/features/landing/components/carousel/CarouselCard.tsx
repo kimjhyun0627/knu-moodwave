@@ -1,8 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
-import { useThemeStore } from '../../../../store/themeStore';
-import { useWindowWidth } from '../../../../shared/hooks';
+import { useThemeStore } from '@/store/themeStore';
+import { useWindowWidth } from '@/shared/hooks';
 
 interface CarouselCardProps {
 	onClick: () => void;

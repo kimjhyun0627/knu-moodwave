@@ -1,0 +1,2 @@
+export { PlayerGenreInfo } from './PlayerGenreInfo';
+

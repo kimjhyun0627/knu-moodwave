@@ -1,0 +1,2 @@
+export { CategoryCarouselSection } from './CategoryCarouselSection';
+

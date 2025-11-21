@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import type { Track, AudioQueue, AudioParams, VisualizerType, MusicGenre } from '../shared/types';
-import { DEFAULT_AUDIO_PARAMS } from '../shared/constants';
+import type { Track, AudioQueue, AudioParams, VisualizerType, MusicGenre } from '@/shared/types';
+import { DEFAULT_AUDIO_PARAMS } from '@/shared/constants';
 
 interface PlayerState {
 	// Player State

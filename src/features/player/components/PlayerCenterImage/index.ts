@@ -1,0 +1,2 @@
+export { PlayerCenterImage } from './PlayerCenterImage';
+

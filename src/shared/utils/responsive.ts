@@ -1,4 +1,4 @@
-import { CAROUSEL_CONSTANTS } from '../../features/landing/constants';
+import { CAROUSEL_CONSTANTS } from '@/features/landing/constants';
 
 /**
  * 반응형 텍스트 크기 계산

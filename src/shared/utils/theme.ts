@@ -1,5 +1,5 @@
-import { MUSIC_THEMES } from '../constants';
-import type { MusicGenre, MusicTheme } from '../types';
+import { MUSIC_THEMES } from '@/shared/constants';
+import type { MusicGenre, MusicTheme } from '@/shared/types';
 
 /**
  * 장르 정보로부터 테마를 찾는 유틸리티 함수
