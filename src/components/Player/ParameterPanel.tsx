@@ -40,11 +40,13 @@ export const ParameterPanel = ({
 	const [windowHeight, setWindowHeight] = useState(0);
 	const [currentStartIndex, setCurrentStartIndex] = useState(0);
 	const [prevStartIndex, setPrevStartIndex] = useState(0);
-	const [indicatorRight, setIndicatorRight] = useState<string>('1rem');
+	const [indicatorLeft, setIndicatorLeft] = useState<string>('auto');
 	const [indicatorTop, setIndicatorTop] = useState<string>('50%');
 	const panelRef = useRef<HTMLDivElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
 	const carouselRef = useRef<HTMLDivElement>(null);
+	const prevActiveCommonParamsRef = useRef<CategoryParameter[]>(activeCommonParams);
+	const currentStartIndexRef = useRef(0);
 
 	// 초기 화면 높이 추적 (너비 계산용, 한 번만 설정)
 	useEffect(() => {
@@ -64,17 +66,18 @@ export const ParameterPanel = ({
 	}, []);
 
 	// 인디케이터 위치 계산 (패널 오른쪽 바깥 거리 조정)
-	const INDICATOR_OFFSET_FROM_PANEL = 28; // px 단위 - 이 값을 조정하여 패널 오른쪽 바깥에서의 거리 변경
+	const INDICATOR_OFFSET_FROM_PANEL = 0; // px 단위 - 이 값을 조정하여 패널 오른쪽 바깥에서의 거리 변경
 	useEffect(() => {
 		if (panelRef.current && carouselRef.current && orientation === 'horizontal' && isExpanded) {
-			// 수평 위치는 한 번만 계산 (높이 변경에 반응하지 않음)
-			const updateIndicatorRight = () => {
+			// 수평 위치 업데이트: 패널 위치 기준으로 left 값 계산 (스크롤과 무관)
+			const updateIndicatorLeft = () => {
 				const panelRect = panelRef.current?.getBoundingClientRect();
 				if (panelRect) {
 					const panelRight = panelRect.right;
 					// 패널 오른쪽 바깥에서 INDICATOR_OFFSET_FROM_PANEL만큼 떨어진 위치
-					const indicatorRightPosition = window.innerWidth - panelRight - INDICATOR_OFFSET_FROM_PANEL;
-					setIndicatorRight(`${indicatorRightPosition}px`);
+					// getBoundingClientRect()는 viewport 기준이므로 fixed 포지션에서 바로 사용 가능
+					const indicatorLeftPosition = panelRight + INDICATOR_OFFSET_FROM_PANEL;
+					setIndicatorLeft(`${indicatorLeftPosition}px`);
 				}
 			};
 
@@ -89,20 +92,42 @@ export const ParameterPanel = ({
 			};
 
 			// 초기 위치 설정
-			updateIndicatorRight();
+			updateIndicatorLeft();
 			updateIndicatorTop();
 
-			// 수평 위치 업데이트: 창 크기 변경 시에만
-			window.addEventListener('resize', updateIndicatorRight);
+			// 패널 위치 변경 감지를 위한 ResizeObserver (패널의 크기나 위치가 변경될 때만 반응)
+			const panelResizeObserver = new ResizeObserver(() => {
+				updateIndicatorLeft();
+			});
+			if (panelRef.current) {
+				panelResizeObserver.observe(panelRef.current);
+			}
+
+			// 패널 위치 변경 감지를 위한 MutationObserver (레이아웃 변경 감지)
+			const panelMutationObserver = new MutationObserver(() => {
+				updateIndicatorLeft();
+			});
+			if (panelRef.current) {
+				panelMutationObserver.observe(panelRef.current, {
+					attributes: true,
+					attributeFilter: ['style', 'class'],
+					childList: false,
+					subtree: false,
+				});
+			}
+
+			// 수평 위치 업데이트: 스크롤, 리사이즈 시 패널 위치에 맞춰 업데이트
+			window.addEventListener('resize', updateIndicatorLeft);
+			window.addEventListener('scroll', updateIndicatorLeft);
 
 			// 수직 위치 업데이트: 스크롤, 리사이즈, 캐러셀 내용 변경 시
 			window.addEventListener('resize', updateIndicatorTop);
 			window.addEventListener('scroll', updateIndicatorTop);
 
 			// 캐러셀 내용 변경 시에도 수직 위치 업데이트
-			const observer = new MutationObserver(updateIndicatorTop);
+			const carouselObserver = new MutationObserver(updateIndicatorTop);
 			if (carouselRef.current) {
-				observer.observe(carouselRef.current, {
+				carouselObserver.observe(carouselRef.current, {
 					childList: true,
 					subtree: true,
 					attributes: true,
@@ -121,12 +146,15 @@ export const ParameterPanel = ({
 			window.addEventListener('scroll', scheduleTopUpdate);
 
 			return () => {
-				window.removeEventListener('resize', updateIndicatorRight);
+				panelResizeObserver.disconnect();
+				panelMutationObserver.disconnect();
+				window.removeEventListener('resize', updateIndicatorLeft);
+				window.removeEventListener('scroll', updateIndicatorLeft);
 				window.removeEventListener('resize', updateIndicatorTop);
 				window.removeEventListener('scroll', updateIndicatorTop);
 				window.removeEventListener('resize', scheduleTopUpdate);
 				window.removeEventListener('scroll', scheduleTopUpdate);
-				observer.disconnect();
+				carouselObserver.disconnect();
 				if (rafId) cancelAnimationFrame(rafId);
 			};
 		}
@@ -150,6 +178,39 @@ export const ParameterPanel = ({
 	};
 
 	const visibleCount = getVisibleCount(windowHeight);
+
+	// currentStartIndex를 ref에 동기화
+	useEffect(() => {
+		currentStartIndexRef.current = currentStartIndex;
+	}, [currentStartIndex]);
+
+	// 새 파라미터 추가 시 가운데로 이동
+	useEffect(() => {
+		if (orientation === 'horizontal' && allParams.length > 0) {
+			const prevParams = [...themeBaseParams, ...themeAdditionalParams, ...prevActiveCommonParamsRef.current];
+			const currentParams = allParams;
+
+			// 새로 추가된 파라미터 찾기
+			if (currentParams.length > prevParams.length) {
+				const newParam = currentParams.find((param) => !prevParams.some((p) => p.id === param.id));
+				if (newParam) {
+					const newParamIndex = currentParams.findIndex((p) => p.id === newParam.id);
+					// 가운데로 이동: visibleCount에 따라 조정
+					// visibleCount가 3이면 가운데는 1번째 (offset 1)
+					// visibleCount가 2이면 가운데는 1번째 (offset 0, 하지만 1번째가 더 중앙에 가까움)
+					// visibleCount가 1이면 가운데는 0번째 (offset 0)
+					const centerOffset = visibleCount === 3 ? 1 : 0;
+					const targetStartIndex = (newParamIndex - centerOffset + currentParams.length) % currentParams.length;
+					setPrevStartIndex(currentStartIndexRef.current);
+					setCurrentStartIndex(targetStartIndex);
+				}
+			}
+
+			// 현재 상태를 이전 상태로 저장
+			prevActiveCommonParamsRef.current = activeCommonParams;
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [activeCommonParams.length, themeBaseParams.length, themeAdditionalParams.length, orientation, visibleCount, allParams.length]);
 
 	// 캐러셀 네비게이션 함수 (화면 크기에 따라 페이지 단위로 이동, 무한 순환)
 	const nextParam = () => {
@@ -727,7 +788,7 @@ export const ParameterPanel = ({
 						}}
 						className="fixed flex flex-col items-center justify-center gap-1.5"
 						style={{
-							right: indicatorRight,
+							left: indicatorLeft,
 							top: indicatorTop,
 							transform: 'translateY(-50%)',
 							zIndex: 100,
@@ -775,8 +836,14 @@ export const ParameterPanel = ({
 											delay: paramIndex * 0.03, // 순차적으로 나타나도록
 										}}
 										onClick={() => {
+											// 클릭한 인덱스가 가운데가 되도록 currentStartIndex 조정
+											// visibleCount가 3이면 가운데는 1번째 (offset 1)
+											// visibleCount가 2이면 가운데는 1번째 (offset 0, 하지만 1번째가 더 중앙에 가까움)
+											// visibleCount가 1이면 가운데는 0번째 (offset 0)
+											const centerOffset = visibleCount === 3 ? 1 : 0;
+											const targetStartIndex = (paramIndex - centerOffset + allParams.length) % allParams.length;
 											setPrevStartIndex(currentStartIndex);
-											setCurrentStartIndex(paramIndex);
+											setCurrentStartIndex(targetStartIndex);
 										}}
 										className="relative group px-3 py-0.5 border-0 outline-none focus:outline-none bg-transparent cursor-pointer min-w-[32px] flex items-center justify-center"
 										aria-label={`${paramIndex + 1}번째 파라미터`}
