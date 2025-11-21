@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronUp } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
-import ConfirmModal from '../components/ui/ConfirmModal';
-import { PlayerTopBar, PlayerGenreInfo, PlayerCenterImage, PlayerControls, ParameterPanel } from '../components/Player';
-import { usePlayerParams } from '../hooks/usePlayerParams';
-import { useThemeColors } from '../hooks/useThemeColors';
-import { PLAYER_STYLES, PLAYER_ANIMATIONS } from '../constants/playerConstants';
+import { ConfirmModal } from '../shared/components/ui';
+import { PlayerTopBar, PlayerGenreInfo, PlayerCenterImage, PlayerControls, ParameterPanel } from '../features/player/components';
+import { usePlayerParams } from '../features/player/hooks';
+import { useThemeColors } from '../shared/hooks';
+import { PLAYER_STYLES, PLAYER_ANIMATIONS } from '../features/player/constants';
 
 const Player = () => {
 	const navigate = useNavigate();
