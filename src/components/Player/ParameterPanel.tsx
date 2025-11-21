@@ -36,6 +36,7 @@ export const ParameterPanel = ({
 }: ParameterPanelProps) => {
 	const colors = useThemeColors();
 	const [removingButtonIds, setRemovingButtonIds] = useState<Set<string>>(new Set());
+	const [shouldHidePanel, setShouldHidePanel] = useState(false);
 	const [orientation, setOrientation] = useState<'horizontal' | 'vertical'>('horizontal');
 	const { buttonStyle, handleMouseEnter, handleMouseLeave } = useGlassButton();
 	const panelRef = useRef<HTMLDivElement>(null);
@@ -62,15 +63,37 @@ export const ParameterPanel = ({
 	const [topRowCount] = shouldUseTwoRows ? getRowSplit(totalParamsCount) : [totalParamsCount, 0];
 
 	const handleButtonClick = (param: CategoryParameter) => {
+		const isLastButton = availableCommonParams.length === 1;
 		setRemovingButtonIds((prev) => new Set(prev).add(param.id));
-		onAddCommonParam(param.id);
-		setTimeout(() => {
-			setRemovingButtonIds((prev) => {
-				const next = new Set(prev);
-				next.delete(param.id);
-				return next;
-			});
-		}, 300);
+
+		if (isLastButton) {
+			// 마지막 버튼인 경우: 버튼 애니메이션(0.3초) 완료 후 컨테이너 exit 애니메이션 시작
+			setTimeout(() => {
+				setShouldHidePanel(true);
+				// exit 애니메이션(0.3초)이 시작되도록 약간의 딜레이 후 파라미터 추가
+				setTimeout(() => {
+					onAddCommonParam(param.id);
+					// exit 애니메이션이 완료된 후 상태 리셋
+					setTimeout(() => {
+						setRemovingButtonIds((prev) => {
+							const next = new Set(prev);
+							next.delete(param.id);
+							return next;
+						});
+						setShouldHidePanel(false);
+					}, 300); // exit 애니메이션 지속 시간
+				}, 50);
+			}, 300); // 버튼 애니메이션 지속 시간
+		} else {
+			onAddCommonParam(param.id);
+			setTimeout(() => {
+				setRemovingButtonIds((prev) => {
+					const next = new Set(prev);
+					next.delete(param.id);
+					return next;
+				});
+			}, 300);
+		}
 	};
 
 	return (
@@ -299,14 +322,29 @@ export const ParameterPanel = ({
 							)}
 
 							{/* 공통 파라미터 추가 버튼 - 항상 하단에 배치 */}
-							<AnimatePresence>
-								{availableCommonParams.length > 0 && (
+							<AnimatePresence mode="popLayout">
+								{availableCommonParams.length > 0 && !shouldHidePanel && (
 									<motion.div
-										layout
-										{...PLAYER_ANIMATIONS.commonParamPanel}
-										className="glass-card rounded-2xl p-4 md:p-5"
+										layout="size"
+										initial={{
+											opacity: 0,
+											y: -20,
+											scale: 0.95,
+										}}
+										animate={{
+											opacity: 1,
+											y: 0,
+											scale: 1,
+										}}
+										exit={{
+											opacity: 0,
+											y: 20,
+											scale: 0.95,
+										}}
+										className="glass-card rounded-2xl overflow-hidden"
 										style={{
 											...getCommonParamPanelStyle(colors),
+											padding: '1rem 1.25rem',
 											...(orientation === 'vertical'
 												? {
 														width: '100%',
@@ -315,17 +353,20 @@ export const ParameterPanel = ({
 												: {}),
 										}}
 										transition={{
-											...PLAYER_ANIMATIONS.commonParamPanel.transition,
 											layout: {
-												duration: 0.6,
+												duration: 0.4,
 												ease: [0.4, 0, 0.2, 1],
 											},
-											width: {
-												duration: 0.6,
+											opacity: {
+												duration: 0.4,
 												ease: [0.4, 0, 0.2, 1],
 											},
-											height: {
-												duration: 0.6,
+											y: {
+												duration: 0.4,
+												ease: [0.4, 0, 0.2, 1],
+											},
+											scale: {
+												duration: 0.4,
 												ease: [0.4, 0, 0.2, 1],
 											},
 										}}
