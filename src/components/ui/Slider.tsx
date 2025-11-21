@@ -173,12 +173,13 @@ const Slider = forwardRef<HTMLInputElement, SliderProps>(
 							max={max}
 							step={step}
 							value={value}
-							className="slider-vertical bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer relative z-10"
+							className="slider-vertical rounded-lg appearance-none cursor-pointer relative z-10"
 							style={
 								{
 									'--progress': `${percentage}%`,
 									writingMode: 'vertical-lr',
 									direction: 'rtl',
+									background: 'transparent',
 								} as React.CSSProperties
 							}
 							{...props}
