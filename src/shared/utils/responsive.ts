@@ -47,4 +47,3 @@ export const getResponsiveNavTextSize = (windowWidth: number) => {
 	if (windowWidth >= 640) return '12px';
 	return '10px';
 };
-

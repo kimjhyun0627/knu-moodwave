@@ -34,4 +34,3 @@ export interface MusicTheme {
 	parameters: CategoryParameter[];
 	genres: MusicGenre[];
 }
-

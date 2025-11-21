@@ -29,14 +29,14 @@ export const CommonParamButtons = ({ availableCommonParams, onAddCommonParam, or
 				setTimeout(() => {
 					onAddCommonParam(param.id);
 					// exit 애니메이션이 완료된 후 상태 리셋
-			setTimeout(() => {
-				setRemovingButtonIds((prev) => {
-					const next = new Set(prev);
-					next.delete(param.id);
-					return next;
-				});
-				setShouldHidePanel(false);
-			}, PLAYER_CONSTANTS.PARAMETER.ANIMATION_DURATIONS.PANEL_EXIT);
+					setTimeout(() => {
+						setRemovingButtonIds((prev) => {
+							const next = new Set(prev);
+							next.delete(param.id);
+							return next;
+						});
+						setShouldHidePanel(false);
+					}, PLAYER_CONSTANTS.PARAMETER.ANIMATION_DURATIONS.PANEL_EXIT);
 				}, 50);
 			}, PLAYER_CONSTANTS.PARAMETER.ANIMATION_DURATIONS.BUTTON_REMOVE);
 		} else {

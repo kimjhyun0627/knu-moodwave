@@ -39,4 +39,3 @@ export const useThemeColors = (): ThemeColors => {
 		[isDark]
 	);
 };
-

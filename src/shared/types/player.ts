@@ -52,4 +52,3 @@ export interface MusicGenerationResponse {
 	audioUrl: string;
 	duration: number;
 }
-

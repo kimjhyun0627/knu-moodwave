@@ -34,4 +34,3 @@ export const useWindowWidth = () => {
 	const { width } = useWindowSize();
 	return width;
 };
-

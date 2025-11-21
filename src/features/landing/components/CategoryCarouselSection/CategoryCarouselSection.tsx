@@ -1,4 +1,4 @@
-import { BaseCarouselSection } from './BaseCarouselSection';
+import { BaseCarouselSection } from '../BaseCarouselSection';
 import { MUSIC_THEMES } from '@/shared/constants';
 import type { ThemeCategory } from '@/shared/types';
 
@@ -30,13 +30,13 @@ export const CategoryCarouselSection = ({ visibleRange, currentIndex, playingCat
 			visibleRange={visibleRange}
 			currentIndex={currentIndex}
 			playingId={playingCategory}
-			onItemClick={(index) => onCategoryClick(index)}
+			onItemClick={(index: number) => onCategoryClick(index)}
 			onPrev={onPrev}
 			onNext={onNext}
 			onGoTo={onGoTo}
-			onPlay={(id) => onPlayCategory(id as ThemeCategory)}
+			onPlay={(id: string | ThemeCategory) => onPlayCategory(id as ThemeCategory)}
 			onPause={onPauseCategory}
-			getPlayingId={(item) => (item as { category: ThemeCategory }).category}
+			getPlayingId={(item: { category: ThemeCategory }) => item.category}
 			titleTag="h2"
 			titleSize="text-2xl md:text-3xl"
 			nameSize="text-lg md:text-xl"
