@@ -215,17 +215,17 @@ export const PLAYER_CONSTANTS = {
 			playButton: 'p-4 md:p-5 rounded-full transition-all duration-200 glow-primary shadow-2xl relative overflow-hidden group hover:scale-110 active:scale-95',
 		},
 		glassCard: 'glass-card rounded-2xl p-4 md:p-5 backdrop-blur-md bg-white/20 dark:bg-slate-800/30 border border-white/30 dark:border-white/20 shadow-lg',
-		playerBoard: 'rounded-2xl backdrop-blur-xl border shadow-2xl px-6 md:px-8 py-4 md:py-6 w-full max-w-[960px]',
-		parameterPanel: 'rounded-2xl backdrop-blur-xl border shadow-2xl w-full overflow-hidden py-6 md:py-8',
+		playerBoard: 'rounded-2xl backdrop-blur-xl border shadow-2xl px-6 md:px-8 py-4 md:py-6 w-full max-w-[720px]',
+		parameterPanel: 'rounded-2xl backdrop-blur-xl border shadow-2xl w-full overflow-hidden',
 	},
 	PARAMETER: {
 		INDICATOR_OFFSET_FROM_PANEL: 0,
-		HORIZONTAL_MAX_WIDTH_RATIO: 0.8,
-		DEFAULT_HORIZONTAL_MAX_WIDTH: 960,
+		HORIZONTAL_MAX_WIDTH_RATIO: 0.6,
+		DEFAULT_HORIZONTAL_MAX_WIDTH: 720,
 		VERTICAL_TWO_ROWS_THRESHOLD: 6,
 		VISIBLE_COUNT_BREAKPOINTS: {
-			VERY_SMALL: 840,
-			SMALL: 1000,
+			VERY_SMALL: 630,
+			SMALL: 750,
 		},
 		ANIMATION_DURATIONS: {
 			BUTTON_REMOVE: 300,

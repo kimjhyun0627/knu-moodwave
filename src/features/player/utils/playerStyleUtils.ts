@@ -8,7 +8,7 @@ export const getParameterPanelStyle = (colors: ThemeColors) => ({
 	WebkitBackdropFilter: 'blur(20px) saturate(180%)',
 	background: colors.parameterPanelBg,
 	borderColor: colors.glassBorder,
-	padding: '1rem 1rem',
+	padding: '0.75rem 0.75rem',
 	position: 'absolute' as const,
 	bottom: '100%',
 	// 가로/세로 모드 모두 동일하게 컨트롤러 상단 전체를 덮도록 고정

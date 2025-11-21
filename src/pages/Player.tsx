@@ -77,7 +77,7 @@ const Player = () => {
 				{/* Bottom - Player Board */}
 				<div className="fixed bottom-6 left-4 right-4 z-50 flex justify-center">
 					<div
-						className="relative w-full max-w-[960px]"
+						className="relative w-full max-w-[720px]"
 						style={{ overflow: isExpanded ? 'visible' : undefined }}
 					>
 						{/* Main Player Controls */}

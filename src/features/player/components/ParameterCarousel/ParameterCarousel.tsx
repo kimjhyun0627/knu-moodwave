@@ -43,12 +43,12 @@ export const ParameterCarousel = ({
 
 	return (
 		<div
-			className="relative flex flex-col items-center gap-4 mb-4"
-			style={{ width: '100%', maxWidth: `${horizontalMaxWidth}px`, margin: '1.5rem auto 0 auto' }}
+			className="relative flex flex-col items-center gap-3 mb-3"
+			style={{ width: '100%', maxWidth: `${horizontalMaxWidth}px`, margin: '1.125rem auto 0 auto' }}
 		>
 			<motion.div
 				layout
-				className="flex flex-col items-center gap-4 w-full"
+				className="flex flex-col items-center gap-3 w-full"
 				style={{
 					maxWidth: `${horizontalMaxWidth}px`,
 					margin: '0 auto',
@@ -65,13 +65,13 @@ export const ParameterCarousel = ({
 					{/* 캐러셀 컨테이너 */}
 					<div
 						ref={carouselRef}
-						className="relative flex flex-col items-center justify-center overflow-visible rounded-2xl gap-4 w-full"
+						className="relative flex flex-col items-center justify-center overflow-visible rounded-2xl gap-3 w-full"
 						style={{
-							minHeight: '200px',
+							minHeight: '150px',
 							// 파라미터 추가 블록과 너비 맞추기
 							// 파라미터 추가 블록: 세로 모드 컨테이너(0.5rem) + 블록 자체(1.25rem) = 1.75rem
 							// 캐러셀 컨테이너: 파라미터 패널(1rem) + 컨테이너 자체 = 1.75rem이 되려면 0.75rem 필요
-							padding: '1rem 0.7rem', // 상하 1rem, 좌우 0.7rem
+							padding: '0.75rem 0.525rem', // 상하 0.75rem, 좌우 0.525rem
 						}}
 					>
 						{/* 상단 네비게이션 버튼 (절반 겹침) */}
@@ -149,7 +149,7 @@ export const ParameterCarousel = ({
 										})(),
 									}}
 									transition={PLAYER_CONSTANTS.PARAMETER.CAROUSEL_ANIMATION.spring}
-									className="w-full flex flex-col gap-4"
+									className="w-full flex flex-col gap-3"
 								>
 									{currentParams.map((param, index) => {
 										const isRemovable = themeAdditionalParams.some((p) => p.id === param.id) || activeCommonParams.some((p) => p.id === param.id);

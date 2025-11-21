@@ -111,6 +111,8 @@ export const ParameterPanel = ({
 						style={{
 							// 패널 자체는 가로/세로 모드 모두 동일한 위치/폭을 유지
 							...getParameterPanelStyle(colors),
+							paddingTop: '1.125rem',
+							paddingBottom: '1.125rem',
 						}}
 						initial={{
 							...PLAYER_ANIMATIONS.parameterPanel.initial,
@@ -191,14 +193,14 @@ export const ParameterPanel = ({
 							{/* 세로 모드 또는 전체 레이아웃 컨테이너 */}
 							<motion.div
 								layout
-								className="flex flex-col gap-4"
+								className="flex flex-col gap-3"
 								style={{
 									// 하단 공통 파라미터 영역과 모드 토글 버튼 영역이
 									// 모드에 상관없이 동일한 폭/위치를 유지하도록 고정
 									width: '100%',
 									minWidth: '100%',
-									paddingLeft: '0.5rem',
-									paddingRight: '0.5rem',
+									paddingLeft: '0.75rem',
+									paddingRight: '0.75rem',
 								}}
 								transition={{
 									layout: {
@@ -220,7 +222,7 @@ export const ParameterPanel = ({
 											gridTemplateColumns: shouldUseTwoRowsLayout ? `repeat(${topRowCount}, minmax(0, 1fr))` : `repeat(${totalParamsCount}, minmax(0, 1fr))`,
 											gridTemplateRows: shouldUseTwoRowsLayout ? 'repeat(2, auto)' : 'repeat(1, auto)',
 											gridAutoFlow: 'column',
-											gap: '1rem',
+											gap: '0.75rem',
 											width: '100%',
 										}}
 										initial={PLAYER_ANIMATIONS.parameterGrid.initial}
@@ -299,7 +301,7 @@ export const ParameterPanel = ({
 								{/* 모드 토글 버튼 */}
 								<motion.div
 									layout
-									className="w-full pt-4 border-t"
+									className="w-full pt-3 border-t"
 									style={{
 										borderColor: colors.glassBorder,
 										...(orientation === 'vertical'

@@ -37,8 +37,8 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 	const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
 
 	return (
-		<div className="px-6 md:px-8 py-4 md:py-6 w-full">
-			<div className="space-y-4">
+		<div className="px-4 md:px-6 py-3 md:py-4 w-full">
+			<div className="space-y-3">
 				{/* Track Info */}
 				<div className="text-center">
 					<p
@@ -57,9 +57,9 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 				</div>
 
 				{/* Progress Bar */}
-				<div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+				<div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
 					<span
-						className="text-[10px] sm:text-xs md:text-sm lg:text-base w-10 sm:w-12 text-right font-mono"
+						className="text-[10px] sm:text-xs md:text-sm lg:text-base w-8 sm:w-9 text-right font-mono"
 						style={{ color: colors.textSecondaryColor }}
 					>
 						{formatTime(currentTime)}
@@ -83,9 +83,9 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 								position: 'absolute',
 								top: 0,
 								left: 0,
-								height: '0.5rem',
+								height: '0.375rem',
 								background: 'linear-gradient(to right, #a855f7, #9333ea)',
-								borderRadius: '0.5rem',
+								borderRadius: '0.375rem',
 								pointerEvents: 'none',
 								width: `${progressPercentage}%`,
 							}}
@@ -95,7 +95,7 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 						/>
 					</div>
 					<span
-						className="text-[10px] sm:text-xs md:text-sm lg:text-base w-10 sm:w-12 font-mono"
+						className="text-[10px] sm:text-xs md:text-sm lg:text-base w-8 sm:w-9 font-mono"
 						style={{ color: colors.textSecondaryColor }}
 					>
 						{formatTime(duration || 100)}
@@ -103,9 +103,9 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 				</div>
 
 				{/* Playback Controls */}
-				<div className="relative flex items-center gap-2 md:gap-4">
+				<div className="relative flex items-center gap-1.5 md:gap-3">
 					{/* Left Side: Volume Control */}
-					<div className="flex-1 flex items-center gap-2 md:gap-3 justify-start">
+					<div className="flex-1 flex items-center gap-1.5 md:gap-2 justify-start">
 						<button
 							onClick={toggleMute}
 							className={PLAYER_CONSTANTS.STYLES.glassButton.controlButton}
@@ -126,8 +126,8 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 								/>
 							)}
 						</button>
-						<div className="hidden md:flex items-center gap-2">
-							<div className="w-20">
+						<div className="hidden md:flex items-center gap-1.5">
+							<div className="w-16">
 								<Slider
 									min={0}
 									max={100}
@@ -140,7 +140,7 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 								/>
 							</div>
 							<span
-								className="text-xs md:text-sm lg:text-base font-medium w-8 text-right"
+								className="text-xs md:text-sm lg:text-base font-medium w-6 text-right"
 								style={{ color: colors.textSecondaryColor }}
 							>
 								{volume}
@@ -149,7 +149,7 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 					</div>
 
 					{/* Center: Playback Controls - 절대 중앙 배치 */}
-					<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-3 md:gap-4">
+					<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 md:gap-3">
 						<button
 							onClick={onPrev}
 							className={PLAYER_CONSTANTS.STYLES.glassButton.controlButton}
@@ -216,7 +216,7 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 					</div>
 
 					{/* Right Side: Toggle Buttons */}
-					<div className="flex-1 flex items-center gap-2 justify-end">
+					<div className="flex-1 flex items-center gap-1.5 justify-end">
 						<button
 							onClick={onToggleExpand}
 							className={PLAYER_CONSTANTS.STYLES.glassButton.controlButton}
