@@ -109,31 +109,14 @@ export const ParameterPanel = ({
 						layout
 						className={PLAYER_STYLES.parameterPanel}
 						style={{
+							// 패널 자체는 가로/세로 모드 모두 동일한 위치/폭을 유지
 							...getParameterPanelStyle(colors, orientation),
-							...(orientation === 'vertical'
-								? {
-										width: '100%',
-										right: undefined,
-										transform: 'translateX(-50%)',
-										x: 0, // Framer Motion x를 0으로 설정하여 transform과 분리
-									}
-								: {}),
 						}}
 						initial={{
 							...PLAYER_ANIMATIONS.parameterPanel.initial,
-							...(orientation === 'vertical'
-								? {
-										x: 0,
-									}
-								: {}),
 						}}
 						animate={{
 							...PLAYER_ANIMATIONS.parameterPanel.animate,
-							...(orientation === 'vertical'
-								? {
-										x: 0,
-									}
-								: {}),
 						}}
 						exit={PLAYER_ANIMATIONS.parameterPanel.exit}
 						transition={{
@@ -162,17 +145,17 @@ export const ParameterPanel = ({
 						<motion.div
 							ref={contentRef}
 							layout
-							className={orientation === 'vertical' ? '' : 'w-full mx-auto'}
+							// 내부 컨텐츠 래퍼는 항상 패널 너비를 꽉 채우고,
+							// 가로 모드일 때만 maxWidth로 내용 폭을 제한
+							className="w-full mx-auto"
 							style={{
-								...(orientation === 'vertical'
+								...(orientation === 'horizontal'
 									? {
-											width: '100%',
-										}
-									: {
 											maxWidth: `${horizontalMaxWidth}px`,
 											display: 'flex',
 											flexDirection: 'column',
-										}),
+										}
+									: {}),
 							}}
 							transition={{
 								layout: {
@@ -210,8 +193,10 @@ export const ParameterPanel = ({
 								layout
 								className="flex flex-col gap-4"
 								style={{
-									width: orientation === 'vertical' ? '100%' : undefined,
-									...(orientation === 'horizontal' ? { flexShrink: 0 } : {}),
+									// 하단 공통 파라미터 영역과 모드 토글 버튼 영역이
+									// 모드에 상관없이 동일한 폭/위치를 유지하도록 고정
+									width: '100%',
+									minWidth: '100%',
 									paddingLeft: '0.5rem',
 									paddingRight: '0.5rem',
 								}}

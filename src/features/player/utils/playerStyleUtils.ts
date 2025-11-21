@@ -11,7 +11,9 @@ export const getParameterPanelStyle = (colors: ThemeColors, orientation?: 'horiz
 	padding: '1rem 1rem',
 	position: 'absolute' as const,
 	bottom: '100%',
-	...(orientation !== 'vertical' ? { left: 0, right: 0 } : {}),
+	// 가로/세로 모드 모두 동일하게 컨트롤러 상단 전체를 덮도록 고정
+	left: 0,
+	right: 0,
 	zIndex: 0,
 });
 

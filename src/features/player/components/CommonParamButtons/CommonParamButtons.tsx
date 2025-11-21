@@ -64,12 +64,10 @@ export const CommonParamButtons = ({ availableCommonParams, onAddCommonParam, or
 						...getCommonParamPanelStyle(colors),
 						padding: '1rem 1.25rem',
 						marginTop: '2.5rem',
-						...(orientation === 'vertical'
-							? {
-									width: '100%',
-									minWidth: '100%',
-								}
-							: {}),
+						// 가로/세로 모드 모두에서 패널의 너비를 100%로 고정해
+						// 아래 가로선 및 토글 버튼 영역과 일관된 폭을 유지
+						width: '100%',
+						minWidth: '100%',
 					}}
 					transition={PLAYER_CONSTANTS.PARAMETER.COMMON_PARAM_PANEL_ANIMATION.transition}
 				>

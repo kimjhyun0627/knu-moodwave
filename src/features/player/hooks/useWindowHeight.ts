@@ -7,13 +7,15 @@ import { HORIZONTAL_MAX_WIDTH_RATIO, DEFAULT_HORIZONTAL_MAX_WIDTH } from '../con
  * - 내부적으로 shared/hooks/useWindowSize 를 사용해 창 크기를 일관되게 관리
  */
 export const useWindowHeight = () => {
-	const { height: windowHeight } = useWindowSize();
+	const { width: windowWidth, height: windowHeight } = useWindowSize();
 
-	// 초기 화면 높이에 비례한 maxWidth 계산 (초기 높이의 80% 정도, 이후 고정)
+	// 가로 모드에서 파라미터 패널의 최대 너비는
+	// 화면 "높이"가 아닌 "너비"에 기반해서 계산해야
+	// landscape 모드에서 높이가 줄어들어도 폭이 같이 줄어들지 않는다.
 	const horizontalMaxWidth = useMemo(() => {
-		if (!windowHeight) return DEFAULT_HORIZONTAL_MAX_WIDTH;
-		return windowHeight * HORIZONTAL_MAX_WIDTH_RATIO;
-	}, [windowHeight]);
+		if (!windowWidth) return DEFAULT_HORIZONTAL_MAX_WIDTH;
+		return windowWidth * HORIZONTAL_MAX_WIDTH_RATIO;
+	}, [windowWidth]);
 
 	return {
 		initialWindowHeight: windowHeight,
