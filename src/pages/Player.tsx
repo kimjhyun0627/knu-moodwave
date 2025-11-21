@@ -14,11 +14,24 @@ const Player = () => {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [isControlsVisible, setIsControlsVisible] = useState(true);
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
+	const [isLeaving, setIsLeaving] = useState(false);
 
 	const { selectedGenre, isPlaying } = usePlayerStore();
 	const { selectedTheme, themeBaseParams, themeAdditionalParams, activeCommonParamsList, availableCommonParams, getParamValue, setParamValue, addCommonParam, removeCommonParam, removeThemeParam } =
 		usePlayerParams();
 	const colors = useThemeColors();
+
+	useEffect(() => {
+		let timer: ReturnType<typeof setTimeout> | null = null;
+		if (isLeaving) {
+			timer = setTimeout(() => {
+				navigate('/');
+			}, 700);
+		}
+		return () => {
+			if (timer) clearTimeout(timer);
+		};
+	}, [isLeaving, navigate]);
 
 	// 장르가 선택되지 않았으면 랜딩 페이지로 리다이렉트
 	useEffect(() => {
@@ -37,7 +50,7 @@ const Player = () => {
 
 	const handleConfirmHome = () => {
 		setShowConfirmModal(false);
-		navigate('/');
+		setIsLeaving(true);
 	};
 
 	const handleCancelHome = () => {
@@ -177,6 +190,35 @@ const Player = () => {
 					)}
 				</AnimatePresence>
 			</div>
+
+			<AnimatePresence>
+				{isLeaving && (
+					<motion.div
+						key="player-exit-overlay"
+						className="fixed inset-0 z-200 flex items-center justify-center"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						style={{
+							background: colors.isDark
+								? 'linear-gradient(140deg, rgba(15,23,42,0.95), rgba(67,56,202,0.85))'
+								: 'linear-gradient(140deg, rgba(255,255,255,0.95), rgba(191,219,254,0.85))',
+						}}
+						transition={{ duration: 0.65, ease: [0.4, 0, 0.2, 1] }}
+					>
+						<motion.div
+							initial={{ scale: 0.8, opacity: 0.2 }}
+							animate={{ scale: 1.2, opacity: 0.9 }}
+							transition={{ duration: 0.65, ease: [0.4, 0, 0.2, 1] }}
+							className="w-40 h-40 rounded-full"
+							style={{
+								background: colors.isDark ? 'rgba(255,255,255,0.08)' : 'rgba(148,163,184,0.2)',
+								boxShadow: colors.isDark ? '0 0 80px rgba(167, 139, 250, 0.35)' : '0 0 80px rgba(99, 102, 241, 0.3)',
+							}}
+						/>
+					</motion.div>
+				)}
+			</AnimatePresence>
 
 			{/* Confirm Modal */}
 			<ConfirmModal
