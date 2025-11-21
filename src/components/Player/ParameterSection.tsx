@@ -27,7 +27,7 @@ export const ParameterSection = ({ params, getParamValue, setParamValue, onRemov
 				...(isVertical
 					? {
 							minWidth: '150px',
-							flex: '1 0 150px',
+							flex: '1 1 0',
 						}
 					: {}),
 			}}

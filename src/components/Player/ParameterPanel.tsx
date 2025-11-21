@@ -179,6 +179,7 @@ export const ParameterPanel = ({
 									gap: '1rem',
 									gridTemplateColumns: orientation === 'vertical' ? undefined : 'repeat(1, minmax(0, 1fr))',
 									width: orientation === 'vertical' ? 'max-content' : undefined,
+									minWidth: orientation === 'vertical' ? '100%' : undefined,
 								}}
 								initial={PLAYER_ANIMATIONS.parameterGrid.initial}
 								animate={PLAYER_ANIMATIONS.parameterGrid.animate}
