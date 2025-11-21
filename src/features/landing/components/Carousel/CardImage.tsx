@@ -12,6 +12,7 @@ export const CardImage = ({ src, alt, overlay = false }: CardImageProps) => {
 			<img
 				src={src}
 				alt={alt}
+				draggable={false}
 				className="w-full h-full object-cover object-center block rounded-4xl"
 				style={{
 					objectFit: 'cover',

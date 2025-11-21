@@ -22,6 +22,7 @@ export const PlayerCenterImage = ({ genre, isPlaying }: PlayerCenterImageProps) 
 						<motion.img
 							src={genre.image}
 							alt={genre.nameKo}
+							draggable={false}
 							className="w-full h-full object-cover"
 							initial={{ scale: 1.1 }}
 							animate={{ scale: isPlaying ? 1.05 : 1 }}
