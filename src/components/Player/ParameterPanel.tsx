@@ -42,6 +42,7 @@ export const ParameterPanel = ({
 	const [playerPanelHeight, setPlayerPanelHeight] = useState(0);
 	const panelRef = useRef<HTMLDivElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
+	const scrollRef = useRef<HTMLDivElement>(null);
 
 	// 초기 화면 높이 추적 (너비 계산용, 한 번만 설정)
 	useEffect(() => {
@@ -54,11 +55,7 @@ export const ParameterPanel = ({
 	useEffect(() => {
 		const handleResize = () => {
 			setWindowHeight(window.innerHeight);
-			// 하단 플레이어 패널 높이 측정 (bottom-6 = 24px + 패널 높이)
-			// PlayerControls는 대략 100-120px, 패널 패딩 및 여유 공간 포함하여 약 200-250px
-			// 상단 모듈들(PlayerTopBar, PlayerGenreInfo, PlayerCenterImage) 높이 고려
-			// 상단 모듈 약 400-500px, 하단 플레이어 패널 약 280px, 여유 공간 포함
-			const estimatedTopSpace = 450; // 상단 모듈들 + 홈 버튼 + 여유 공간
+			const estimatedTopSpace = 250; // 상단 모듈들 + 홈 버튼 + 여유 공간
 			const estimatedPlayerPanelHeight = 300; // 플레이어 패널 + 여유 공간
 			setPlayerPanelHeight(estimatedTopSpace + estimatedPlayerPanelHeight);
 		};
@@ -77,6 +74,18 @@ export const ParameterPanel = ({
 	const allParams = [...themeBaseParams, ...themeAdditionalParams, ...activeCommonParams];
 	const totalParamsCount = allParams.length;
 	const shouldUseTwoRows = orientation === 'vertical' && totalParamsCount >= 6;
+
+	// 파라미터 추가 시 스크롤을 맨 아래로 이동
+	useEffect(() => {
+		if (orientation === 'horizontal' && scrollRef.current) {
+			// 약간의 딜레이를 두어 DOM 업데이트 후 스크롤 이동
+			setTimeout(() => {
+				if (scrollRef.current) {
+					scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+				}
+			}, 100);
+		}
+	}, [activeCommonParams.length, orientation]);
 
 	// 2행일 때 상단/하단 분할
 	const getRowSplit = (count: number): [number, number] => {
@@ -206,6 +215,7 @@ export const ParameterPanel = ({
 						{/* 스크롤 가능한 파라미터 영역 (가로 모드만) */}
 						{orientation === 'horizontal' && (
 							<motion.div
+								ref={scrollRef}
 								layout
 								className="parameter-panel-scroll shrink"
 								style={{
