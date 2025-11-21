@@ -8,7 +8,7 @@ export const getParameterPanelStyle = (colors: ThemeColors, orientation?: 'horiz
 	WebkitBackdropFilter: 'blur(20px) saturate(180%)',
 	background: colors.parameterPanelBg,
 	borderColor: colors.glassBorder,
-	padding: '1rem 1.5rem',
+	padding: '1rem 1rem',
 	position: 'absolute' as const,
 	bottom: '100%',
 	...(orientation !== 'vertical' ? { left: 0, right: 0 } : {}),

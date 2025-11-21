@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, LayoutGrid, LayoutList } from 'lucide-react';
 import { ParameterSection } from './ParameterSection';
@@ -37,8 +37,41 @@ export const ParameterPanel = ({
 	const [removingButtonIds, setRemovingButtonIds] = useState<Set<string>>(new Set());
 	const [shouldHidePanel, setShouldHidePanel] = useState(false);
 	const [orientation, setOrientation] = useState<'horizontal' | 'vertical'>('horizontal');
+	const [initialWindowHeight, setInitialWindowHeight] = useState(0);
+	const [windowHeight, setWindowHeight] = useState(0);
+	const [playerPanelHeight, setPlayerPanelHeight] = useState(0);
 	const panelRef = useRef<HTMLDivElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
+
+	// 초기 화면 높이 추적 (너비 계산용, 한 번만 설정)
+	useEffect(() => {
+		if (initialWindowHeight === 0) {
+			setInitialWindowHeight(window.innerHeight);
+		}
+	}, [initialWindowHeight]);
+
+	// 현재 화면 높이 추적 (높이 계산용, 반응형)
+	useEffect(() => {
+		const handleResize = () => {
+			setWindowHeight(window.innerHeight);
+			// 하단 플레이어 패널 높이 측정 (bottom-6 = 24px + 패널 높이)
+			// PlayerControls는 대략 100-120px, 패널 패딩 및 여유 공간 포함하여 약 200-250px
+			// 상단 모듈들(PlayerTopBar, PlayerGenreInfo, PlayerCenterImage) 높이 고려
+			// 상단 모듈 약 400-500px, 하단 플레이어 패널 약 280px, 여유 공간 포함
+			const estimatedTopSpace = 450; // 상단 모듈들 + 홈 버튼 + 여유 공간
+			const estimatedPlayerPanelHeight = 300; // 플레이어 패널 + 여유 공간
+			setPlayerPanelHeight(estimatedTopSpace + estimatedPlayerPanelHeight);
+		};
+		handleResize();
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	}, []);
+
+	// 가로 모드에서 초기 화면 높이에 비례한 maxWidth 계산 (초기 높이의 80% 정도, 이후 고정)
+	const horizontalMaxWidth = initialWindowHeight > 0 ? initialWindowHeight * 0.8 : 960;
+
+	// 하단 플레이어 패널과 상단 홈 버튼을 고려한 maxHeight 계산 (높이는 반응형, 현재 화면 높이 기준)
+	const scrollMaxHeight = windowHeight > 0 && playerPanelHeight > 0 ? `${windowHeight - playerPanelHeight}px` : 'calc(100vh - 380px)';
 
 	// 세로 모드에서 모든 파라미터 합치기
 	const allParams = [...themeBaseParams, ...themeAdditionalParams, ...activeCommonParams];
@@ -151,13 +184,17 @@ export const ParameterPanel = ({
 					<motion.div
 						ref={contentRef}
 						layout={orientation === 'vertical' ? 'size' : true}
-						className={orientation === 'vertical' ? '' : 'w-full max-w-[960px] mx-auto'}
+						className={orientation === 'vertical' ? '' : 'w-full mx-auto'}
 						style={{
 							...(orientation === 'vertical'
 								? {
 										width: '100%',
 									}
-								: {}),
+								: {
+										maxWidth: `${horizontalMaxWidth}px`,
+										display: 'flex',
+										flexDirection: 'column',
+									}),
 						}}
 						transition={{
 							layout: {
@@ -166,11 +203,108 @@ export const ParameterPanel = ({
 							},
 						}}
 					>
+						{/* 스크롤 가능한 파라미터 영역 (가로 모드만) */}
+						{orientation === 'horizontal' && (
+							<motion.div
+								layout
+								className="parameter-panel-scroll shrink"
+								style={{
+									maxHeight: scrollMaxHeight,
+									overflowY: 'auto',
+									overflowX: 'hidden',
+									marginBottom: '1rem',
+								}}
+								transition={{
+									layout: {
+										duration: 0.6,
+										ease: [0.4, 0, 0.2, 1],
+									},
+								}}
+							>
+								<motion.div
+									layout
+									className="flex flex-col gap-4"
+									style={{
+										paddingLeft: '0.5rem',
+										paddingRight: '0.5rem',
+									}}
+									transition={{
+										layout: {
+											duration: 0.6,
+											ease: [0.4, 0, 0.2, 1],
+										},
+									}}
+								>
+									{/* 가로 모드 파라미터 그리드 */}
+									<motion.div
+										layout
+										style={{
+											display: 'grid',
+											gap: '1rem',
+											gridTemplateColumns: 'repeat(1, minmax(0, 1fr))',
+										}}
+										initial={PLAYER_ANIMATIONS.parameterGrid.initial}
+										animate={PLAYER_ANIMATIONS.parameterGrid.animate}
+										exit={PLAYER_ANIMATIONS.parameterGrid.exit}
+										transition={{
+											layout: {
+												duration: 0.6,
+												ease: [0.4, 0, 0.2, 1],
+											},
+											height: {
+												duration: 0.6,
+												ease: [0.4, 0, 0.2, 1],
+											},
+											opacity: {
+												duration: 0.3,
+												delay: 0.1,
+											},
+										}}
+									>
+										{/* 기본 파라미터 (테마별 처음 3개) */}
+										<ParameterSection
+											params={themeBaseParams}
+											getParamValue={getParamValue}
+											setParamValue={setParamValue}
+											useLayoutAnimation={true}
+											orientation={orientation}
+										/>
+
+										{/* 테마별 추가 파라미터 */}
+										<ParameterSection
+											params={themeAdditionalParams}
+											getParamValue={getParamValue}
+											setParamValue={setParamValue}
+											onRemove={onRemoveThemeParam}
+											isRemovable={true}
+											useLayoutAnimation={true}
+											orientation={orientation}
+										/>
+
+										{/* 활성화된 공통 파라미터 */}
+										<ParameterSection
+											params={activeCommonParams}
+											getParamValue={getParamValue}
+											setParamValue={setParamValue}
+											onRemove={onRemoveCommonParam}
+											isRemovable={true}
+											useLayoutAnimation={true}
+											orientation={orientation}
+										/>
+									</motion.div>
+								</motion.div>
+							</motion.div>
+						)}
+
+						{/* 세로 모드 또는 전체 레이아웃 컨테이너 */}
 						<motion.div
 							layout={orientation === 'vertical' ? 'size' : true}
 							className="flex flex-col gap-4"
 							style={{
 								width: orientation === 'vertical' ? '100%' : undefined,
+								...(orientation === 'horizontal' ? { flexShrink: 0 } : {}),
+								paddingLeft: '0.5rem',
+								paddingRight: '0.5rem',
 							}}
 							transition={{
 								layout: {
@@ -179,7 +313,7 @@ export const ParameterPanel = ({
 								},
 							}}
 						>
-							{/* 파라미터 그리드 */}
+							{/* 파라미터 그리드 (세로 모드만) */}
 							{orientation === 'vertical' ? (
 								<motion.div
 									layout="size"
@@ -260,64 +394,7 @@ export const ParameterPanel = ({
 										})}
 									</AnimatePresence>
 								</motion.div>
-							) : (
-								<motion.div
-									layout
-									style={{
-										display: 'grid',
-										gap: '1rem',
-										gridTemplateColumns: 'repeat(1, minmax(0, 1fr))',
-									}}
-									initial={PLAYER_ANIMATIONS.parameterGrid.initial}
-									animate={PLAYER_ANIMATIONS.parameterGrid.animate}
-									exit={PLAYER_ANIMATIONS.parameterGrid.exit}
-									transition={{
-										layout: {
-											duration: 0.6,
-											ease: [0.4, 0, 0.2, 1],
-										},
-										height: {
-											duration: 0.6,
-											ease: [0.4, 0, 0.2, 1],
-										},
-										opacity: {
-											duration: 0.3,
-											delay: 0.1,
-										},
-									}}
-								>
-									{/* 기본 파라미터 (테마별 처음 3개) */}
-									<ParameterSection
-										params={themeBaseParams}
-										getParamValue={getParamValue}
-										setParamValue={setParamValue}
-										useLayoutAnimation={true}
-										orientation={orientation}
-									/>
-
-									{/* 테마별 추가 파라미터 */}
-									<ParameterSection
-										params={themeAdditionalParams}
-										getParamValue={getParamValue}
-										setParamValue={setParamValue}
-										onRemove={onRemoveThemeParam}
-										isRemovable={true}
-										useLayoutAnimation={true}
-										orientation={orientation}
-									/>
-
-									{/* 활성화된 공통 파라미터 */}
-									<ParameterSection
-										params={activeCommonParams}
-										getParamValue={getParamValue}
-										setParamValue={setParamValue}
-										onRemove={onRemoveCommonParam}
-										isRemovable={true}
-										useLayoutAnimation={true}
-										orientation={orientation}
-									/>
-								</motion.div>
-							)}
+							) : null}
 
 							{/* 공통 파라미터 추가 버튼 - 항상 하단에 배치 */}
 							<AnimatePresence mode="popLayout">

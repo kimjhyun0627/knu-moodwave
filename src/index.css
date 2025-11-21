@@ -622,4 +622,14 @@
 		opacity: 0.8 !important;
 		animation: play-button-pulse 2s ease-in-out infinite !important;
 	}
+
+	/* 커스텀 스크롤바 - 파라미터 패널용 (숨김 처리) */
+	.parameter-panel-scroll {
+		scrollbar-width: none; /* Firefox */
+		-ms-overflow-style: none; /* IE and Edge */
+	}
+
+	.parameter-panel-scroll::-webkit-scrollbar {
+		display: none; /* Chrome, Safari, Opera */
+	}
 }
