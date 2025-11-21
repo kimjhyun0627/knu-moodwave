@@ -39,7 +39,6 @@ export const ParameterPanel = ({
 	const [initialWindowHeight, setInitialWindowHeight] = useState(0);
 	const [windowHeight, setWindowHeight] = useState(0);
 	const [currentStartIndex, setCurrentStartIndex] = useState(0);
-	const [prevStartIndex, setPrevStartIndex] = useState(0);
 	const [indicatorLeft, setIndicatorLeft] = useState<string>('auto');
 	const [indicatorTop, setIndicatorTop] = useState<string>('50%');
 	const [hoveredParamIndex, setHoveredParamIndex] = useState<number | null>(null);
@@ -203,7 +202,6 @@ export const ParameterPanel = ({
 					// visibleCount가 1이면 가운데는 0번째 (offset 0)
 					const centerOffset = visibleCount === 3 ? 1 : 0;
 					const targetStartIndex = (newParamIndex - centerOffset + currentParams.length) % currentParams.length;
-					setPrevStartIndex(currentStartIndexRef.current);
 					setCurrentStartIndex(targetStartIndex);
 				}
 			}
@@ -218,19 +216,13 @@ export const ParameterPanel = ({
 	const nextParam = () => {
 		if (allParams.length === 0) return;
 		navigationDirectionRef.current = 'down'; // 아래 버튼: 새 블록이 아래에서 올라옴
-		setCurrentStartIndex((prev) => {
-			setPrevStartIndex(prev);
-			return (prev + visibleCount) % allParams.length;
-		});
+		setCurrentStartIndex((prev) => (prev + visibleCount) % allParams.length);
 	};
 
 	const prevParam = () => {
 		if (allParams.length === 0) return;
 		navigationDirectionRef.current = 'up'; // 위 버튼: 새 블록이 위에서 내려옴
-		setCurrentStartIndex((prev) => {
-			setPrevStartIndex(prev);
-			return (prev - visibleCount + allParams.length) % allParams.length;
-		});
+		setCurrentStartIndex((prev) => (prev - visibleCount + allParams.length) % allParams.length);
 	};
 
 	// 현재 표시할 파라미터들 (반응형으로 표시)
@@ -374,7 +366,7 @@ export const ParameterPanel = ({
 							{orientation === 'horizontal' && allParams.length > 0 && (
 								<div
 									className="relative flex flex-col items-center gap-4 mb-4"
-									style={{ width: '100%', maxWidth: `${horizontalMaxWidth}px`, margin: '0 auto' }}
+									style={{ width: '100%', maxWidth: `${horizontalMaxWidth}px`, margin: '1.5rem auto 0 auto' }}
 								>
 									<motion.div
 										layout
@@ -415,7 +407,7 @@ export const ParameterPanel = ({
 													style={{
 														color: colors.isDark ? '#f1f5f9' : '#1e293b',
 														position: 'absolute',
-														top: '-20px',
+														top: '-10px',
 														left: '50%',
 														x: '-50%', // Framer Motion의 x 속성 사용 (transform과 분리)
 														pointerEvents: 'auto',
@@ -438,7 +430,7 @@ export const ParameterPanel = ({
 													style={{
 														color: colors.isDark ? '#f1f5f9' : '#1e293b',
 														position: 'absolute',
-														bottom: '-20px',
+														bottom: '-10px',
 														left: '50%',
 														x: '-50%', // Framer Motion의 x 속성 사용 (transform과 분리)
 														pointerEvents: 'auto',
@@ -847,7 +839,6 @@ export const ParameterPanel = ({
 											// visibleCount가 1이면 가운데는 0번째 (offset 0)
 											const centerOffset = visibleCount === 3 ? 1 : 0;
 											const targetStartIndex = (paramIndex - centerOffset + allParams.length) % allParams.length;
-											setPrevStartIndex(currentStartIndex);
 											setCurrentStartIndex(targetStartIndex);
 										}}
 										onMouseEnter={() => setHoveredParamIndex(paramIndex)}
