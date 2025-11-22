@@ -28,7 +28,7 @@ interface UseSampleAudioReturn {
 	/** 정지 (재생 위치를 처음으로) */
 	stop: () => void;
 	/** 오디오 엘리먼트 참조 */
-	audioRef: React.RefObject<HTMLAudioElement>;
+	audioRef: React.RefObject<HTMLAudioElement | null>;
 }
 
 /**
