@@ -1,25 +1,20 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getTimeGreeting, getResponsiveTextSize, getResponsiveNavTextSize } from '@/shared/utils';
 import { MUSIC_THEMES } from '@/shared/constants';
 import { ThemeToggle } from '@/shared/components/ui';
 import { TransitionOverlay } from '@/shared/components/common';
 import { CategorySection, GenreSection } from '@/features/landing/components';
-import { usePlayerStore } from '@/store/playerStore';
 import { useThemeStore } from '@/store/themeStore';
 import { useWindowWidth, useWindowSize } from '@/shared/hooks';
-import { useVisibleRange, useCarousel } from '@/features/landing/hooks';
-import type { MusicGenre, ThemeCategory, Track } from '@/shared/types';
+import { useVisibleRange, useCarousel, useGenreSelection } from '@/features/landing/hooks';
+import type { MusicGenre, ThemeCategory } from '@/shared/types';
 
 const Landing = () => {
-	const navigate = useNavigate();
 	const [selectedCategory, setSelectedCategory] = useState<ThemeCategory | null>(null);
 	const [isTransitioning, setIsTransitioning] = useState(false);
 	const [playingCategory, setPlayingCategory] = useState<ThemeCategory | null>(null);
 	const [playingGenre, setPlayingGenre] = useState<string | null>(null);
-	const setSelectedGenre = usePlayerStore((state) => state.setSelectedGenre);
-	const setCurrentTrack = usePlayerStore((state) => state.setCurrentTrack);
 
 	const windowWidth = useWindowWidth();
 	const { height } = useWindowSize();
@@ -27,6 +22,9 @@ const Landing = () => {
 	const genreVisibleRange = useVisibleRange(windowWidth, 1);
 	const indicatorRef = useRef<HTMLDivElement | null>(null);
 	const [indicatorBottom, setIndicatorBottom] = useState<number | null>(null);
+
+	// 장르 선택 및 음악 생성 훅
+	const { handleGenreSelect, handleCancelApiCall } = useGenreSelection();
 
 	// 상단 텍스트 블록 paddingTop 계산 (선형 보간)
 	// 화면 높이 400px → 48px (12vh), 화면 높이 1200px → 300px (25vh)
@@ -111,58 +109,12 @@ const Landing = () => {
 	const subtitleColor = isDark ? '#cbd5e1' : '#334155'; // slate-300 : slate-700
 	const captionColor = isDark ? '#94a3b8' : '#475569'; // slate-400 : slate-600
 
-	const handleGenreSelect = useCallback(
-		async (genre: MusicGenre) => {
-			setIsTransitioning(true);
-			setSelectedGenre(genre);
-
-			try {
-				// AI API 호출 시뮬레이션 (5초)
-				const musicResponse = await new Promise<{ trackId: string; audioUrl: string; duration: number }>((resolve) => {
-					// TODO: 실제 API 호출로 교체
-					// const response = await fetch('/api/music/generate', {
-					//   method: 'POST',
-					//   headers: { 'Content-Type': 'application/json' },
-					//   body: JSON.stringify({ genre: genre.id, params: audioParams })
-					// });
-					// const data = await response.json();
-
-					setTimeout(() => {
-						resolve({
-							trackId: `track-${genre.id}-${Date.now()}`,
-							audioUrl: '', // 실제 API 응답에서 받아올 URL
-							duration: 180, // 3분
-						});
-					}, 5000);
-				});
-
-				// API 응답을 Track 형태로 변환하여 playerStore에 저장
-				const track: Track = {
-					id: musicResponse.trackId,
-					title: genre.name,
-					genre: genre.name,
-					genreKo: genre.nameKo,
-					audioUrl: musicResponse.audioUrl,
-					duration: musicResponse.duration,
-					status: 'ready',
-					params: {
-						energy: 50,
-						bass: 50,
-						tempo: 80,
-					},
-					createdAt: new Date(),
-				};
-				setCurrentTrack(track);
-
-				// 부드러운 전환을 위한 짧은 딜레이
-				await new Promise((resolve) => setTimeout(resolve, 300));
-				navigate('/player');
-			} catch (error) {
-				console.error('음악 생성 실패:', error);
-				setIsTransitioning(false);
-			}
+	// handleGenreSelect는 useGenreSelection 훅에서 가져옴
+	const onGenreSelect = useCallback(
+		(genre: MusicGenre) => {
+			handleGenreSelect(genre, setIsTransitioning);
 		},
-		[navigate, setSelectedGenre, setCurrentTrack]
+		[handleGenreSelect]
 	);
 
 	const handleCategorySelect = useCallback(() => {
@@ -188,12 +140,12 @@ const Landing = () => {
 	const handleGenreClick = useCallback(
 		(index: number, genre: MusicGenre) => {
 			if (index === genreCarousel.currentIndex) {
-				handleGenreSelect(genre);
+				onGenreSelect(genre);
 			} else {
 				genreCarousel.goTo(index);
 			}
 		},
-		[genreCarousel, handleGenreSelect]
+		[genreCarousel, onGenreSelect]
 	);
 
 	const handleBack = useCallback(() => {
@@ -241,7 +193,10 @@ const Landing = () => {
 
 			<div className="h-screen p-6 relative overflow-x-hidden">
 				{/* Transition Overlay */}
-				<TransitionOverlay isVisible={isTransitioning} />
+				<TransitionOverlay
+					isVisible={isTransitioning}
+					onCancel={handleCancelApiCall}
+				/>
 
 				{/* Main Content */}
 				<div className={`max-w-6xl w-full mx-auto px-4 md:px-6 lg:px-8 h-full flex flex-col ${selectedCategory ? 'pb-16 md:pb-24 lg:pb-32 xl:pb-40' : ''}`}>
