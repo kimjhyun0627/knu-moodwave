@@ -2,6 +2,7 @@ import { useCallback, useRef, useEffect } from 'react';
 import { usePlayerStore } from '@/store/playerStore';
 import { useToast } from '@/shared/components/ui';
 import { useTrackFetcher } from './useTrackFetcher';
+import { isCancelError } from '@/shared/utils';
 
 /**
  * 플레이어에서 사용하는 트랙 관리 훅
@@ -83,7 +84,7 @@ export const usePlayerTrack = () => {
 		if (loadingToastIdRef.current) {
 			removeToast(loadingToastIdRef.current);
 		}
-		loadingToastIdRef.current = showInfo('다음 노래를 준비 중이에요!', null);
+		loadingToastIdRef.current = showInfo('다음 트랙을 준비 중이에요!', null);
 
 		try {
 			const track = await fetchTrack(selectedGenre);
@@ -95,13 +96,15 @@ export const usePlayerTrack = () => {
 			}
 
 			setNextTrack(track);
-			readyToastIdRef.current = showSuccess('다음 노래가 준비되었어요', 3000);
+			readyToastIdRef.current = showSuccess('다음 트랙이 준비되었어요!', 3000);
 			moveToNextTrack();
 		} catch (error) {
-			// AbortError는 정상적인 취소이므로 무시
-			if (error instanceof DOMException && error.name === 'AbortError') {
+			// 취소된 요청은 정상적인 취소이므로 무시
+			if (isCancelError(error)) {
 				return;
 			}
+
+			console.error('[usePlayerTrack] 다음 트랙 가져오기 실패:', error);
 
 			if (loadingToastIdRef.current) {
 				removeToast(loadingToastIdRef.current);

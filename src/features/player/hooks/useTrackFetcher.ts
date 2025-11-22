@@ -3,7 +3,7 @@ import { fetchTrackForGenre } from '@/shared/api';
 import type { MusicGenre, Track } from '@/shared/types';
 import { usePlayerParams } from './usePlayerParams';
 import { usePlayerStore } from '@/store/playerStore';
-import { findThemeByGenre, mergeParamWithDefaults } from '@/shared/utils';
+import { findThemeByGenre, mergeParamWithDefaults, isCancelError } from '@/shared/utils';
 
 /**
  * 트랙 가져오기 로직을 관리하는 커스텀 훅
@@ -61,8 +61,8 @@ export const useTrackFetcher = () => {
 				const track = await fetchTrackForGenre(genre, effectiveSignal, paramValues);
 				return track;
 			} catch (error) {
-				// AbortError는 정상적인 취소이므로 무시
-				if (error instanceof DOMException && error.name === 'AbortError') {
+				// 취소된 요청은 정상적인 취소이므로 재던지기 (상위에서 처리)
+				if (isCancelError(error)) {
 					throw error;
 				}
 
