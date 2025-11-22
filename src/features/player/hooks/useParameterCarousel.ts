@@ -19,6 +19,7 @@ export const useParameterCarousel = ({ allParams, themeBaseParams, themeAddition
 	const { height: windowHeight } = useWindowSize();
 	const navigationDirectionRef = useRef<NavigationDirection>(null);
 	const prevActiveCommonParamsRef = useRef<CategoryParameter[]>(activeCommonParams);
+	const prevAllParamsRef = useRef<CategoryParameter[]>(allParams);
 	const currentStartIndexRef = useRef(0);
 
 	// 화면 높이에 따른 표시 개수 결정 (반응형: 3개, 2개, 1개)
@@ -40,7 +41,7 @@ export const useParameterCarousel = ({ allParams, themeBaseParams, themeAddition
 	// 새 파라미터 추가 시 가운데로 이동
 	useEffect(() => {
 		if (orientation === 'horizontal' && allParams.length > 0) {
-			const prevParams = [...themeBaseParams, ...themeAdditionalParams, ...prevActiveCommonParamsRef.current];
+			const prevParams = prevAllParamsRef.current;
 			const currentParams = allParams;
 
 			// 새로 추가된 파라미터 찾기
@@ -61,6 +62,8 @@ export const useParameterCarousel = ({ allParams, themeBaseParams, themeAddition
 			// 현재 상태를 이전 상태로 저장
 			prevActiveCommonParamsRef.current = activeCommonParams;
 		}
+
+		prevAllParamsRef.current = allParams;
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [activeCommonParams.length, themeBaseParams.length, themeAdditionalParams.length, orientation, visibleCount, allParams.length]);
 
