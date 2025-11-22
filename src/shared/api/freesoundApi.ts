@@ -138,13 +138,23 @@ export const fetchFreesoundPreviewByGenre = async (genreName: string, signal?: A
 		signal
 	);
 
-	if (!data.results.length) {
+	// API 응답 검증
+	if (!data) {
+		throw new Error('API 응답이 없습니다.');
+	}
+
+	if (!data.results || !Array.isArray(data.results) || data.results.length === 0) {
 		throw new Error('검색 결과가 없습니다.');
 	}
 
 	// 검색 결과 중에서 랜덤하게 선택
 	const randomIndex = Math.floor(Math.random() * data.results.length);
 	const selectedResult = data.results[randomIndex];
+
+	if (!selectedResult) {
+		throw new Error('선택된 검색 결과가 없습니다.');
+	}
+
 	const previewUrl = pickPreviewUrl(selectedResult.previews);
 
 	if (!previewUrl) {
