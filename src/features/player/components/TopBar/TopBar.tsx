@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Maximize, Minimize, Grid3x3, ChevronDown } from 'lucide-react';
+import { Home, Maximize, Minimize, Music, ChevronDown } from 'lucide-react';
 import { Button, ThemeToggle } from '@/shared/components/ui';
 import { useFullscreen, useThemeColors } from '@/shared/hooks';
 import { PLAYER_CONSTANTS } from '../../constants';
@@ -171,7 +171,7 @@ export const TopBar = ({ onHomeClick, isVisible = true, visualizationMode = DEFA
 											e.currentTarget.style.color = colors.isDark ? '#f1f5f9' : '#0f172a';
 										}}
 									>
-										<Grid3x3
+										<Music
 											className="w-5 h-5 mr-2"
 											style={{
 												color: isGenreButtonHovered || isGenreDropdownOpen ? '#fb7185' : undefined,
@@ -182,7 +182,7 @@ export const TopBar = ({ onHomeClick, isVisible = true, visualizationMode = DEFA
 												color: isGenreButtonHovered || isGenreDropdownOpen ? '#fb7185' : colors.isDark ? '#f1f5f9' : '#0f172a',
 											}}
 										>
-											장르 선택
+											{selectedGenre?.nameKo || '장르 선택'}
 										</span>
 										<ChevronDown
 											className={`w-4 h-4 ml-2 transition-transform duration-200 ${isGenreDropdownOpen ? 'rotate-180' : ''}`}
