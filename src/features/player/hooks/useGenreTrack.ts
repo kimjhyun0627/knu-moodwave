@@ -2,7 +2,6 @@ import { useCallback, useRef, useEffect } from 'react';
 import { usePlayerStore } from '@/store/playerStore';
 import { useToast } from '@/shared/components/ui';
 import { useTrackFetcher } from './useTrackFetcher';
-import { DEFAULT_AUDIO_PARAMS } from '@/shared/constants';
 import type { MusicGenre } from '@/shared/types';
 
 /**
@@ -59,18 +58,18 @@ export const useGenreTrack = () => {
 					resetQueue();
 					setSelectedGenre(genre);
 					setCurrentTrack(track);
-					setDuration(track.duration || DEFAULT_AUDIO_PARAMS.tempo);
+					setDuration(track.duration || 0);
 				} else {
 					// 같은 장르 내에서: 다음 트랙으로 추가
 					if (!hasCurrentTrack) {
 						// 첫 트랙인 경우
 						setCurrentTrack(track);
-						setDuration(track.duration || DEFAULT_AUDIO_PARAMS.tempo);
+						setDuration(track.duration || 0);
 					} else {
 						// 이미 트랙이 있는 경우 다음 트랙으로 추가
 						setNextTrack(track);
 						moveToNextTrack();
-						setDuration(track.duration || DEFAULT_AUDIO_PARAMS.tempo);
+						setDuration(track.duration || 0);
 					}
 				}
 			} catch (error) {

@@ -1,7 +1,6 @@
 import { useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlayerStore } from '@/store/playerStore';
-import { DEFAULT_AUDIO_PARAMS } from '@/shared/constants';
 import type { MusicGenre } from '@/shared/types';
 import { useTrackFetcher } from '@/features/player/hooks/useTrackFetcher';
 import { getSharedAudioElement } from '@/shared/audio';
@@ -43,7 +42,7 @@ export const useGenreSelection = () => {
 				}
 
 				setCurrentTrack(track);
-				setDuration(track.duration || DEFAULT_AUDIO_PARAMS.tempo);
+				setDuration(track.duration || 0);
 
 				const audio = getSharedAudioElement();
 				audio.dataset.trackId = track.id;
