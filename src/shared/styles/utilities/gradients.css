@@ -1,7 +1,7 @@
 @layer utilities {
 	/* Text Gradient - Vibrant Primary Color Theme */
 	.text-gradient {
-		background: linear-gradient(135deg, #c084fc 0%, #e879f9 20%, #fb7185 40%, #f472b6 60%, #fb923c 80%, #c084fc 100%);
+		background: linear-gradient(135deg, #8b2635 0%, #fb7185 20%, #f472b6 40%, #fb7185 60%, #fb923c 80%, #8b2635 100%);
 		background-size: 200% 200%;
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
@@ -12,7 +12,7 @@
 	}
 
 	.dark .text-gradient {
-		background: linear-gradient(135deg, #a78bfa 0%, #c084fc 15%, #e879f9 30%, #fb7185 45%, #f472b6 60%, #fb923c 75%, #a78bfa 100%);
+		background: linear-gradient(135deg, #a52a2a 0%, #fb7185 20%, #f472b6 40%, #fb7185 60%, #fb923c 75%, #a52a2a 100%);
 		background-size: 200% 200%;
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;

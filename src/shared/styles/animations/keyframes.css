@@ -55,10 +55,10 @@
 @keyframes play-icon-glow {
 	0%,
 	100% {
-		filter: drop-shadow(0 0 4px rgba(71, 85, 105, 0.4));
+		filter: drop-shadow(0 0 4px rgba(251, 113, 133, 0.4));
 	}
 	50% {
-		filter: drop-shadow(0 0 12px rgba(71, 85, 105, 0.6));
+		filter: drop-shadow(0 0 12px rgba(251, 113, 133, 0.6));
 	}
 }
 

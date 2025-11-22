@@ -41,7 +41,7 @@
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 		isolation: isolate !important;
 		box-shadow:
-			0 2px 8px 0 rgba(31, 38, 135, 0.1),
+			0 2px 8px 0 rgba(220, 180, 180, 0.5),
 			inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
 			inset 0 -1px 0 0 rgba(255, 255, 255, 0.1) !important;
 		overflow: hidden !important;
@@ -73,8 +73,8 @@
 		background: rgba(255, 255, 255, 0.3) !important;
 		border: none !important;
 		box-shadow:
-			0 8px 24px 0 rgba(31, 38, 135, 0.2),
-			0 0 30px rgba(148, 163, 184, 0.3),
+			0 8px 24px 0 rgba(251, 113, 133, 0.2),
+			0 0 30px rgba(251, 113, 133, 0.3),
 			inset 0 1px 0 0 rgba(255, 255, 255, 0.6),
 			inset 0 -1px 0 0 rgba(255, 255, 255, 0.2) !important;
 		transform: translateY(-3px) scale(1.05) !important;
@@ -98,7 +98,7 @@
 	.play-button:active {
 		transform: translateY(0) scale(0.95) !important;
 		box-shadow:
-			0 4px 16px 0 rgba(31, 38, 135, 0.2),
+			0 4px 16px 0 rgba(251, 113, 133, 0.2),
 			inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
 			inset 0 -1px 0 0 rgba(255, 255, 255, 0.1) !important;
 	}
@@ -177,7 +177,7 @@
 		position: absolute !important;
 		inset: -2px !important;
 		border-radius: 50% !important;
-		background: linear-gradient(135deg, rgba(148, 163, 184, 0.3), rgba(203, 213, 225, 0.2), rgba(148, 163, 184, 0.3)) !important;
+		background: linear-gradient(135deg, rgba(251, 113, 133, 0.3), rgba(249, 115, 22, 0.2), rgba(251, 113, 133, 0.3)) !important;
 		opacity: 0 !important;
 		transition: opacity 0.3s ease !important;
 		z-index: -1 !important;

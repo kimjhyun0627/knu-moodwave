@@ -27,7 +27,7 @@ export const getCommonParamPanelStyle = (colors: ThemeColors) => ({
 	border: `1px solid ${colors.isDark ? 'rgba(255, 255, 255, 0.22)' : 'rgba(0, 0, 0, 0.15)'}`,
 	boxShadow: colors.isDark
 		? 'inset 0 2px 8px 0 rgba(0, 0, 0, 0.4), inset 0 1px 2px 0 rgba(0, 0, 0, 0.3), inset 0 -2px 8px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.1)'
-		: 'inset 0 2px 8px 0 rgba(0, 0, 0, 0.15), inset 0 1px 2px 0 rgba(0, 0, 0, 0.1), inset 0 -2px 8px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(31, 38, 135, 0.05)',
+		: 'inset 0 2px 8px 0 rgba(0, 0, 0, 0.15), inset 0 1px 2px 0 rgba(0, 0, 0, 0.1), inset 0 -2px 8px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(251, 113, 133, 0.05)',
 });
 
 /**
@@ -38,5 +38,5 @@ export const getCommonParamButtonStyle = (colors: ThemeColors) => ({
 	backdropFilter: 'blur(20px) saturate(180%)',
 	WebkitBackdropFilter: 'blur(20px) saturate(180%)',
 	border: `1px solid ${colors.isDark ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.15)'}`,
-	boxShadow: colors.isDark ? '0 4px 16px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.1)' : '0 4px 16px 0 rgba(31, 38, 135, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.5)',
+	boxShadow: colors.isDark ? '0 4px 16px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.1)' : '0 4px 16px 0 rgba(220, 180, 180, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.5)',
 });

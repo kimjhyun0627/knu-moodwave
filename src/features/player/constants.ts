@@ -455,21 +455,21 @@ export const PLAYER_CONSTANTS = {
 		circle: {
 			dark: {
 				background: 'rgba(255,255,255,0.1)',
-				boxShadow: '0 0 80px rgba(167, 139, 250, 0.4)',
+				boxShadow: '0 0 80px rgba(251, 113, 133, 0.4)',
 			},
 			light: {
-				background: 'rgba(148,163,184,0.25)',
-				boxShadow: '0 0 80px rgba(99, 102, 241, 0.35)',
+				background: 'rgba(251, 146, 60, 0.25)',
+				boxShadow: '0 0 80px rgba(251, 113, 133, 0.35)',
 			},
 		},
 		exitCircle: {
 			dark: {
 				background: 'rgba(255,255,255,0.08)',
-				boxShadow: '0 0 80px rgba(167, 139, 250, 0.35)',
+				boxShadow: '0 0 80px rgba(251, 113, 133, 0.35)',
 			},
 			light: {
-				background: 'rgba(148,163,184,0.2)',
-				boxShadow: '0 0 80px rgba(99, 102, 241, 0.3)',
+				background: 'rgba(251, 146, 60, 0.2)',
+				boxShadow: '0 0 80px rgba(251, 113, 133, 0.3)',
 			},
 		},
 	},
