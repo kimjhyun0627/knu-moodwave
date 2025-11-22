@@ -1,1 +1,1 @@
-export { PlayerCenterImage } from './PlayerCenterImage';
+export { SyncGlowBeat } from './SyncGlowBeat';

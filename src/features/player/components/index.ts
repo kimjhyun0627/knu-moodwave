@@ -1,13 +1,13 @@
 export { TopBar } from './TopBar';
 export { GenreInfo } from './GenreInfo';
-export { PlayerCenterImage } from './SyncGlowBeat';
-export { IntensitySyncGlow } from './SyncGlowIntensity';
+export { SyncGlowBeat } from './SyncGlowBeat';
+export { SyncGlowIntensity } from './SyncGlowIntensity';
 export { ControlerPanel } from './ControlerPanel';
 export { ParameterPanel } from './ParameterPanel';
 export { ParameterSlider } from './ParameterSlider';
 export { ParameterSection } from './ParameterSection';
 export { ParameterCarousel } from './ParameterCarousel';
 export { ParameterIndicator } from './ParameterIndicator';
-export { ParameterButtons } from './ParamButtons';
+export { ParameterButtons } from './ParameterButtons';
 export { GradientOverlay } from './GradientOverlay';
 export { AudioEngine } from './AudioEngine';

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronUp } from 'lucide-react';
 import { usePlayerStore } from '@/store/playerStore';
 import { ConfirmModal } from '@/shared/components/ui';
-import { TopBar, GenreInfo, PlayerCenterImage, IntensitySyncGlow, ControlerPanel, ParameterPanel, GradientOverlay, AudioEngine } from '@/features/player/components';
+import { TopBar, GenreInfo, SyncGlowBeat, SyncGlowIntensity, ControlerPanel, ParameterPanel, GradientOverlay, AudioEngine } from '@/features/player/components';
 import { usePlayerParams, useGenreChangeAnimation, usePlayerExit, usePlayerTrack } from '@/features/player/hooks';
 import { useThemeColors } from '@/shared/hooks';
 import { PLAYER_CONSTANTS } from '@/features/player/constants';
@@ -88,12 +88,12 @@ const Player = () => {
 
 				{/* Center Image - 모드에 따라 다른 컴포넌트 렌더링 */}
 				{visualizationMode === 'box' ? (
-					<PlayerCenterImage
+					<SyncGlowBeat
 						genre={selectedGenre}
 						isPlaying={isPlaying}
 					/>
 				) : (
-					<IntensitySyncGlow
+					<SyncGlowIntensity
 						genre={selectedGenre}
 						isPlaying={isPlaying}
 					/>

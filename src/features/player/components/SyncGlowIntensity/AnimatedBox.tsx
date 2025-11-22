@@ -1,8 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Transition } from 'framer-motion';
-import { extractBlurFilter } from './filterUtils';
+import { extractBlurFilter } from '../SyncGlowBeat/filterUtils';
 
-interface AnimatedBoxProps {
+interface AnimatedIntensityBoxProps {
 	keyValue: string;
 	trackId: string | null;
 	baseSize: number; // 기본 크기 (vh)
@@ -15,12 +15,27 @@ interface AnimatedBoxProps {
 	filter: string;
 	initialOpacity?: number;
 	transition: Transition;
+	zIndex?: number;
 }
 
 /**
- * 애니메이션 박스 공통 컴포넌트
+ * Intensity 애니메이션 박스 공통 컴포넌트
  */
-export const AnimatedBox = ({ keyValue, trackId, baseSize, extraPixels, opacity, background, border, boxShadow, backdropFilter, filter, initialOpacity = 0.3, transition }: AnimatedBoxProps) => {
+export const AnimatedIntensityBox = ({
+	keyValue,
+	trackId,
+	baseSize,
+	extraPixels,
+	opacity,
+	background,
+	border,
+	boxShadow,
+	backdropFilter,
+	filter,
+	initialOpacity = 0.3,
+	transition,
+	zIndex = 1,
+}: AnimatedIntensityBoxProps) => {
 	const totalSize = baseSize + extraPixels;
 	const offset = totalSize / 2;
 	const initialFilter = extractBlurFilter(filter);
@@ -34,7 +49,7 @@ export const AnimatedBox = ({ keyValue, trackId, baseSize, extraPixels, opacity,
 					background,
 					border,
 					backdropFilter,
-					zIndex: 1,
+					zIndex,
 				}}
 				initial={{
 					width: `calc(100% + ${baseSize}vh)`,

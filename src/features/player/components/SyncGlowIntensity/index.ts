@@ -1,1 +1,1 @@
-export { IntensitySyncGlow } from './IntensitySyncGlow';
+export { SyncGlowIntensity } from './SyncGlowIntensity';

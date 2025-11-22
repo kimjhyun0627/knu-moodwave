@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ParameterCarousel } from '../ParameterCarousel';
-import { ParameterButtons } from '../ParamButtons';
+import { ParameterButtons } from '../ParameterButtons';
 import { ParameterGrid } from './ParameterGrid';
 import { ParameterModeToggle } from './ParameterModeToggle';
 import { ParameterIndicatorWrapper } from './ParameterIndicatorWrapper';
