@@ -1,5 +1,5 @@
 /**
- * SyncGlowWaveform 컴포넌트 관련 상수
+ * SyncGlowWave 컴포넌트 관련 상수
  */
 
 export const WAVEFORM_CONSTANTS = {

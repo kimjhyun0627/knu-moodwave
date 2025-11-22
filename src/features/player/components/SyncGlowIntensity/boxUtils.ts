@@ -95,18 +95,22 @@ const STYLE_CONSTANTS = {
 		OPACITY_BASE: 0.3,
 		OPACITY_MULTIPLIER: 0.3,
 		BOX_SHADOW: {
-			BLUR_BASE: 10,
-			BLUR_MULTIPLIER: 20,
-			BLUR_OPACITY_BASE: 0.2,
-			BLUR_OPACITY_MULTIPLIER: 0.3,
-			SPREAD_BASE: 20,
-			SPREAD_MULTIPLIER: 40,
-			SPREAD_OPACITY_BASE: 0.15,
-			SPREAD_OPACITY_MULTIPLIER: 0.2,
-			INSET_BLUR_BASE: 10,
-			INSET_BLUR_MULTIPLIER: 10,
-			INSET_OPACITY_BASE: 0.1,
-			INSET_OPACITY_MULTIPLIER: 0.2,
+			BLUR_BASE: 30,
+			BLUR_MULTIPLIER: 30,
+			BLUR_OPACITY_BASE: 0.5,
+			BLUR_OPACITY_MULTIPLIER: 0.4,
+			SPREAD_BASE: 60,
+			SPREAD_MULTIPLIER: 60,
+			SPREAD_OPACITY_BASE: 0.3,
+			SPREAD_OPACITY_MULTIPLIER: 0.3,
+			FAR_SPREAD_BASE: 90,
+			FAR_SPREAD_MULTIPLIER: 90,
+			FAR_SPREAD_OPACITY_BASE: 0.1,
+			FAR_SPREAD_OPACITY_MULTIPLIER: 0.2,
+			INSET_BLUR_BASE: 30,
+			INSET_BLUR_MULTIPLIER: 30,
+			INSET_OPACITY_BASE: 0.2,
+			INSET_OPACITY_MULTIPLIER: 0.3,
 		},
 	},
 	TRANSITION: {
@@ -168,8 +172,8 @@ export const getIntensityBoxStyle = (config: IntensityBoxStyleConfig) => {
 		inset 0 0 ${insetBlurValue}px rgba(${colorRgb}, ${insetOpacity})
 	`;
 
-	// Low 박스는 추가 far spread shadow
-	if (type === 'low' && 'FAR_SPREAD_BASE' in styleConfig.BOX_SHADOW) {
+	// Low와 High 박스는 추가 far spread shadow
+	if ((type === 'low' || type === 'high') && 'FAR_SPREAD_BASE' in styleConfig.BOX_SHADOW) {
 		const farSpreadValue = styleConfig.BOX_SHADOW.FAR_SPREAD_BASE + intensity * styleConfig.BOX_SHADOW.FAR_SPREAD_MULTIPLIER;
 		const farSpreadOpacity = styleConfig.BOX_SHADOW.FAR_SPREAD_OPACITY_BASE + intensity * styleConfig.BOX_SHADOW.FAR_SPREAD_OPACITY_MULTIPLIER;
 		boxShadow = `

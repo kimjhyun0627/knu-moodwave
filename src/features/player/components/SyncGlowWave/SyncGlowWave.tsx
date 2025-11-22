@@ -4,19 +4,18 @@ import type { MusicGenre } from '@/shared/types';
 import { useThemeColors } from '@/shared/hooks';
 import { useAudioAnalyzer } from '../../hooks';
 import { usePlayerStore } from '@/store/playerStore';
-import { getSharedAnalyser } from '@/shared/audio';
 import { WaveformCanvas } from './WaveformCanvas';
 import { AudioMetricsHUD } from './AudioMetricsHUD';
 import { GenreImage } from './GenreImage';
-import { BPMEstimator, calculateSpectralCentroid } from './metricsUtils';
+import { BPMEstimator } from './metricsUtils';
 import { WAVEFORM_CONSTANTS } from './constants';
 
-interface SyncGlowWaveformProps {
+interface SyncGlowWaveProps {
 	genre: MusicGenre;
 	isPlaying: boolean;
 }
 
-export const SyncGlowWaveform = ({ genre, isPlaying }: SyncGlowWaveformProps) => {
+export const SyncGlowWave = ({ genre, isPlaying }: SyncGlowWaveProps) => {
 	const colors = useThemeColors();
 	const currentTrack = usePlayerStore((state) => state.getCurrentTrack());
 
@@ -29,7 +28,6 @@ export const SyncGlowWaveform = ({ genre, isPlaying }: SyncGlowWaveformProps) =>
 	// BPM 추정기
 	const bpmEstimatorRef = useRef<BPMEstimator>(new BPMEstimator());
 	const [bpm, setBpm] = useState<number | null>(null);
-	const [spectralCentroid, setSpectralCentroid] = useState<number | null>(null);
 	// 트랙 변경 시 BPM 추정기 리셋
 	useEffect(() => {
 		if (currentTrack?.id) {
@@ -38,26 +36,17 @@ export const SyncGlowWaveform = ({ genre, isPlaying }: SyncGlowWaveformProps) =>
 		}
 	}, [currentTrack?.id]);
 
-	// BPM 및 Spectral Centroid 계산
+	// BPM 계산
 	useEffect(() => {
 		if (!isPlaying) {
 			return;
 		}
-
-		const analyser = getSharedAnalyser();
-		if (!analyser) return;
 
 		// BPM 추정
 		const estimatedBPM = bpmEstimatorRef.current.estimateBPM(audioAnalysis.peak, audioAnalysis.timestamp);
 		if (estimatedBPM !== null) {
 			setBpm(estimatedBPM);
 		}
-
-		// Spectral Centroid 계산
-		const frequencyDataArray = new Uint8Array(analyser.frequencyBinCount);
-		analyser.getByteFrequencyData(frequencyDataArray);
-		const centroid = calculateSpectralCentroid(frequencyDataArray, analyser.context.sampleRate, analyser.fftSize);
-		setSpectralCentroid(centroid);
 	}, [audioAnalysis.peak, audioAnalysis.timestamp, isPlaying]);
 
 	return (
@@ -87,7 +76,6 @@ export const SyncGlowWaveform = ({ genre, isPlaying }: SyncGlowWaveformProps) =>
 				<AudioMetricsHUD
 					rms={audioAnalysis.rms}
 					bpm={bpm}
-					spectralCentroid={spectralCentroid}
 					lowEnergy={audioAnalysis.lowBandEnergy}
 					midEnergy={audioAnalysis.midBandEnergy}
 					highEnergy={audioAnalysis.highBandEnergy}

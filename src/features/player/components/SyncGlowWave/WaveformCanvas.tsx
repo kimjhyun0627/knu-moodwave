@@ -75,17 +75,37 @@ export const WaveformCanvas = ({ isPlaying, isDark }: WaveformCanvasProps) => {
 	const animationFrameRef = useRef<number | null>(null);
 	const smoothedHeightsRef = useRef<number[]>(new Array(21).fill(0)); // 21개 막대의 스무딩된 높이
 
-	// 프라이머리 컬러 (로즈 계열)
-	const primaryColorRgb = '251, 113, 133';
+	// Canvas 크기 정보를 ref로 관리
+	const canvasSizeRef = useRef<{
+		width: number;
+		height: number;
+		centerY: number;
+		barWidth: number;
+		barGap: number;
+		minBarHeight: number;
+		maxBarHeight: number;
+		paddingLeft: number;
+		paddingRight: number;
+	}>({
+		width: 0,
+		height: 0,
+		centerY: 0,
+		barWidth: 0,
+		barGap: 0,
+		minBarHeight: 0,
+		maxBarHeight: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
+	});
 
-	useEffect(() => {
+	// Canvas 크기 업데이트 함수
+	const updateCanvasSize = () => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
 
 		const ctx = canvas.getContext('2d');
 		if (!ctx) return;
 
-		// Canvas 크기 설정 (재생 여부와 관계없이)
 		const rect = canvas.getBoundingClientRect();
 		canvas.width = rect.width * window.devicePixelRatio;
 		canvas.height = rect.height * window.devicePixelRatio;
@@ -94,12 +114,72 @@ export const WaveformCanvas = ({ isPlaying, isDark }: WaveformCanvasProps) => {
 		const width = rect.width;
 		const height = rect.height;
 		const centerY = height / 2;
-		const barsPerBand = 7; // 각 대역당 막대 개수
-		const totalBars = barsPerBand * 2 + 5; // 저음 7개 + 중음 7개 + 고음 5개 = 19개
-		const barWidth = (width / totalBars) * 0.8; // 막대 너비 증가 (80%)
-		const barGap = (width / totalBars) * 0.2; // 막대 간격 감소 (20%)
-		const minBarHeight = barWidth; // 최소 막대 높이 = 너비 (원형으로 보이게)
-		const maxBarHeight = height * 1; // 최대 막대 높이
+		const barsPerBand = 7;
+		const totalBars = barsPerBand * 2 + 5;
+		const paddingLeft = width * 0.1;
+		const paddingRight = width * 0.1;
+		const effectiveWidth = width - paddingLeft - paddingRight;
+		const barWidth = (effectiveWidth / totalBars) * 0.8;
+		const barGap = (effectiveWidth / totalBars) * 0.2;
+		const minBarHeight = barWidth;
+		const maxBarHeight = height * 1;
+
+		canvasSizeRef.current = {
+			width,
+			height,
+			centerY,
+			barWidth,
+			barGap,
+			minBarHeight,
+			maxBarHeight,
+			paddingLeft,
+			paddingRight,
+		};
+	};
+
+	useEffect(() => {
+		// 프라이머리 컬러 팔레트 (저음/중음/고음별로 다른 색상)
+		// 다크 모드: primary-400, primary-300, primary-100
+		// 라이트 모드: primary-400, primary-500, primary-600
+		const getPrimaryColorRgb = (type: 'low' | 'mid' | 'high'): string => {
+			if (isDark) {
+				// 다크 모드
+				switch (type) {
+					case 'low':
+						return '251, 113, 133'; // primary-400 (#fb7185)
+					case 'mid':
+						return '252, 165, 165'; // primary-300 (#fca5a5)
+					case 'high':
+						return '254, 226, 226'; // primary-100 (#fee2e2)
+				}
+			} else {
+				// 라이트 모드
+				switch (type) {
+					case 'low':
+						return '251, 113, 133'; // primary-500 (#fb7185)
+					case 'mid':
+						return '244, 63, 94'; // primary-600 (#f43f5e)
+					case 'high':
+						return '225, 29, 72'; // primary-700 (#e11d48)
+				}
+			}
+		};
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+
+		const ctx = canvas.getContext('2d');
+		if (!ctx) return;
+
+		// 초기 크기 설정
+		updateCanvasSize();
+
+		// ResizeObserver로 canvas 크기 변경 감지
+		const resizeObserver = new ResizeObserver(() => {
+			updateCanvasSize();
+		});
+
+		resizeObserver.observe(canvas);
+
 		const smoothingFactor = 0.95; // 스무딩 강도 (높을수록 부드러움)
 
 		const analyser = getSharedAnalyser();
@@ -127,6 +207,11 @@ export const WaveformCanvas = ({ isPlaying, isDark }: WaveformCanvasProps) => {
 
 		// 막대 그래프 그리기 함수 (재생/일시정지 모두 처리)
 		const drawFrequencyBars = () => {
+			// 최신 크기 정보 가져오기
+			const { width, height, centerY, barWidth, barGap, minBarHeight, maxBarHeight } = canvasSizeRef.current;
+			const barsPerBand = 7;
+			const totalBars = barsPerBand * 2 + 5;
+
 			// Canvas 클리어
 			ctx.clearRect(0, 0, width, height);
 
@@ -170,7 +255,7 @@ export const WaveformCanvas = ({ isPlaying, isDark }: WaveformCanvasProps) => {
 					const radius = Math.min(barWidth / 2, barHeight / 2); // 최대한 둥근 모서리 (너비/높이 중 작은 값의 절반)
 
 					// 막대를 하나로 통합해서 중앙 기준으로 위아래 대칭으로 그리기
-					drawGlassBar(ctx, x, barY, barWidth, barHeight, radius, primaryColorRgb, isDark, 'center');
+					drawGlassBar(ctx, x, barY, barWidth, barHeight, radius, getPrimaryColorRgb('low'), isDark, 'center');
 
 					barIndex++;
 				}
@@ -206,7 +291,7 @@ export const WaveformCanvas = ({ isPlaying, isDark }: WaveformCanvasProps) => {
 					const radius = Math.min(barWidth / 2, barHeight / 2); // 최대한 둥근 모서리 (너비/높이 중 작은 값의 절반)
 
 					// 막대를 하나로 통합해서 중앙 기준으로 위아래 대칭으로 그리기
-					drawGlassBar(ctx, x, barY, barWidth, barHeight, radius, primaryColorRgb, isDark, 'center');
+					drawGlassBar(ctx, x, barY, barWidth, barHeight, radius, getPrimaryColorRgb('mid'), isDark, 'center');
 
 					barIndex++;
 				}
@@ -250,13 +335,22 @@ export const WaveformCanvas = ({ isPlaying, isDark }: WaveformCanvasProps) => {
 					const radius = Math.min(barWidth / 2, barHeight / 2); // 최대한 둥근 모서리 (너비/높이 중 작은 값의 절반)
 
 					// 막대를 하나로 통합해서 중앙 기준으로 위아래 대칭으로 그리기
-					drawGlassBar(ctx, x, barY, barWidth, barHeight, radius, primaryColorRgb, isDark, 'center');
+					drawGlassBar(ctx, x, barY, barWidth, barHeight, radius, getPrimaryColorRgb('high'), isDark, 'center');
 
 					barIndex++;
 				}
 			} else {
 				// 일시정지 시: 모든 막대를 0으로 스무스하게 줄이기
 				for (let i = 0; i < totalBars; i++) {
+					// 막대 타입 결정 (저음/중음/고음)
+					let barType: 'low' | 'mid' | 'high';
+					if (i < barsPerBand) {
+						barType = 'low'; // 저음
+					} else if (i < barsPerBand * 2) {
+						barType = 'mid'; // 중음
+					} else {
+						barType = 'high'; // 고음
+					}
 					const targetHeight = 0; // 일시정지 시 target은 0
 
 					// 스무딩 적용
@@ -272,7 +366,7 @@ export const WaveformCanvas = ({ isPlaying, isDark }: WaveformCanvasProps) => {
 					const radius = Math.min(barWidth / 2, barHeight / 2); // 최대한 둥근 모서리 (너비/높이 중 작은 값의 절반)
 
 					// 막대를 하나로 통합해서 중앙 기준으로 위아래 대칭으로 그리기
-					drawGlassBar(ctx, x, barY, barWidth, barHeight, radius, primaryColorRgb, isDark, 'center');
+					drawGlassBar(ctx, x, barY, barWidth, barHeight, radius, getPrimaryColorRgb(barType), isDark, 'center');
 				}
 			}
 
@@ -283,6 +377,7 @@ export const WaveformCanvas = ({ isPlaying, isDark }: WaveformCanvasProps) => {
 		animationFrameRef.current = requestAnimationFrame(drawFrequencyBars);
 
 		return () => {
+			resizeObserver.disconnect();
 			if (animationFrameRef.current) {
 				cancelAnimationFrame(animationFrameRef.current);
 				animationFrameRef.current = null;

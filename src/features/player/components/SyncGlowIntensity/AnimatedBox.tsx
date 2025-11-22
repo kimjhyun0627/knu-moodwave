@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Transition } from 'framer-motion';
-import { extractBlurFilter } from '../SyncGlowBeat/filterUtils';
+import { extractBlurFilter } from './filterUtils';
 
 interface AnimatedIntensityBoxProps {
 	keyValue: string;

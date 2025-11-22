@@ -5,7 +5,6 @@ import { WAVEFORM_CONSTANTS } from './constants';
 interface AudioMetricsHUDProps {
 	rms: number;
 	bpm: number | null;
-	spectralCentroid: number | null;
 	lowEnergy: number;
 	midEnergy: number;
 	highEnergy: number;
@@ -14,7 +13,7 @@ interface AudioMetricsHUDProps {
 /**
  * 오디오 지표 HUD 패널 컴포넌트
  */
-export const AudioMetricsHUD = ({ rms, bpm, spectralCentroid, lowEnergy, midEnergy, highEnergy }: AudioMetricsHUDProps) => {
+export const AudioMetricsHUD = ({ rms, bpm, lowEnergy, midEnergy, highEnergy }: AudioMetricsHUDProps) => {
 	const colors = useThemeColors();
 
 	return (
@@ -50,22 +49,11 @@ export const AudioMetricsHUD = ({ rms, bpm, spectralCentroid, lowEnergy, midEner
 				/>
 
 				{/* BPM */}
-				{bpm !== null && (
-					<MetricRow
-						label="BPM"
-						value={bpm.toString()}
-						color={colors.isDark ? '#f1f5f9' : '#0f172a'}
-					/>
-				)}
-
-				{/* Spectral Centroid */}
-				{spectralCentroid !== null && (
-					<MetricRow
-						label="Centroid"
-						value={`${Math.round(spectralCentroid)} Hz`}
-						color={colors.isDark ? '#f1f5f9' : '#0f172a'}
-					/>
-				)}
+				<MetricRow
+					label="BPM"
+					value={bpm !== null ? bpm.toString() : '측정 중'}
+					color={colors.isDark ? '#f1f5f9' : '#0f172a'}
+				/>
 
 				{/* 주파수 대역별 에너지 */}
 				<div
@@ -81,18 +69,18 @@ export const AudioMetricsHUD = ({ rms, bpm, spectralCentroid, lowEnergy, midEner
 					<div className="space-y-1.5">
 						<EnergyBar
 							label="저음"
-							value={lowEnergy * 0.6}
-							color="#ff5050"
+							value={lowEnergy * 0.9}
+							color={colors.isDark ? '#fb7185' : '#fb7185'} // primary-400 (다크) / primary-500 (라이트)
 						/>
 						<EnergyBar
 							label="중음"
-							value={midEnergy * 0.8}
-							color="#ffc832"
+							value={midEnergy * 1}
+							color={colors.isDark ? '#fca5a5' : '#f43f5e'} // primary-300 (다크) / primary-600 (라이트)
 						/>
 						<EnergyBar
 							label="고음"
-							value={highEnergy * 1.5}
-							color="#6496ff"
+							value={highEnergy * 1.8}
+							color={colors.isDark ? '#fee2e2' : '#e11d48'} // primary-100 (다크) / primary-700 (라이트)
 						/>
 					</div>
 				</div>
@@ -108,6 +96,7 @@ interface MetricRowProps {
 }
 
 const MetricRow = ({ label, value, color }: MetricRowProps) => {
+	const isMeasuring = value === '측정 중';
 	return (
 		<div className="flex items-center justify-between">
 			<span
@@ -118,7 +107,7 @@ const MetricRow = ({ label, value, color }: MetricRowProps) => {
 			</span>
 			<span
 				className="text-sm font-semibold"
-				style={{ color }}
+				style={{ color, opacity: isMeasuring ? 0.6 : 1 }}
 			>
 				{value}
 			</span>

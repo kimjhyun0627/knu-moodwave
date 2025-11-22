@@ -19,18 +19,20 @@ export const INTENSITY_BOX_CONSTANTS = {
 	IMAGE_OPACITY_DARK: 0.85,
 	IMAGE_OPACITY_LIGHT: 0.95,
 
-	// 주파수 대역별 색상 RGB 값 (명도 차이) - 더 뚜렷한 대비
-	// Low: 빨강/주황 계열 (어두운 명도) - 저음의 따뜻하고 깊은 느낌
-	LOW_COLOR_RGB_DARK: '255, 80, 80', // 진한 빨강
-	LOW_COLOR_RGB_LIGHT: '220, 50, 50', // 진한 빨강 (라이트 모드)
+	// 주파수 대역별 색상 RGB 값 (프라이머리 컬러 팔레트 사용)
+	// 다크 모드: primary-400, primary-300, primary-100
+	// 라이트 모드: primary-500, primary-600, primary-700
+	// Low: primary-400 (다크) / primary-500 (라이트) - 저음
+	LOW_COLOR_RGB_DARK: '251, 113, 133', // primary-400 (#fb7185)
+	LOW_COLOR_RGB_LIGHT: '251, 113, 133', // primary-500 (#fb7185)
 
-	// Mid: 노랑/주황 계열 (중간 명도) - 중음의 밝고 활기찬 느낌
-	MID_COLOR_RGB_DARK: '255, 200, 50', // 밝은 노랑/주황
-	MID_COLOR_RGB_LIGHT: '255, 180, 40', // 밝은 노랑/주황 (라이트 모드)
+	// Mid: primary-300 (다크) / primary-600 (라이트) - 중음
+	MID_COLOR_RGB_DARK: '252, 165, 165', // primary-300 (#fca5a5)
+	MID_COLOR_RGB_LIGHT: '244, 63, 94', // primary-600 (#f43f5e)
 
-	// High: 파랑/보라 계열 (밝은 명도) - 고음의 차갑고 날카로운 느낌
-	HIGH_COLOR_RGB_DARK: '100, 150, 255', // 진한 파랑
-	HIGH_COLOR_RGB_LIGHT: '80, 120, 230', // 진한 파랑 (라이트 모드)
+	// High: primary-100 (다크) / primary-700 (라이트) - 고음
+	HIGH_COLOR_RGB_DARK: '254, 226, 226', // primary-100 (#fee2e2)
+	HIGH_COLOR_RGB_LIGHT: '225, 29, 72', // primary-700 (#e11d48)
 
 	// 레거시 호환성 (기본값)
 	COLOR_RGB_DARK: '251, 113, 133',
