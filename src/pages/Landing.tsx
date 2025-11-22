@@ -99,6 +99,7 @@ const Landing = () => {
 	}, [indicatorBottom]);
 
 	const theme = useThemeStore((state) => state.theme);
+	const isDark = theme === 'dark';
 	const greeting = getTimeGreeting();
 	const headingSize = getResponsiveTextSize(windowWidth, 'heading');
 	const subtitleSize = getResponsiveTextSize(windowWidth, 'subtitle');
@@ -106,8 +107,8 @@ const Landing = () => {
 	const navTextSize = getResponsiveNavTextSize(windowWidth);
 
 	// 다크 모드에 따른 색상 설정
-	const subtitleColor = theme === 'dark' ? '#cbd5e1' : '#334155'; // slate-300 : slate-700
-	const captionColor = theme === 'dark' ? '#94a3b8' : '#475569'; // slate-400 : slate-600
+	const subtitleColor = isDark ? '#cbd5e1' : '#334155'; // slate-300 : slate-700
+	const captionColor = isDark ? '#94a3b8' : '#475569'; // slate-400 : slate-600
 
 	const handleGenreSelect = useCallback(
 		async (genre: MusicGenre) => {
@@ -301,8 +302,11 @@ const Landing = () => {
 							transition={{ delay: 0.8 }}
 						>
 							<p
-								className="text-slate-500 dark:text-slate-400 pointer-events-auto"
-								style={{ fontSize: navTextSize }}
+								className="pointer-events-auto"
+								style={{
+									fontSize: navTextSize,
+									color: isDark ? 'rgba(255, 200, 120, 0.7)' : 'rgba(139, 38, 53, 0.7)', // 웜톤 색상
+								}}
 							>
 								AI가 생성하는 나만의 음악 경험, MOODWAVE
 							</p>
@@ -320,8 +324,11 @@ const Landing = () => {
 						transition={{ delay: 0.8 }}
 					>
 						<p
-							className="text-slate-500 dark:text-slate-400 pointer-events-auto"
-							style={{ fontSize: navTextSize }}
+							className="pointer-events-auto"
+							style={{
+								fontSize: navTextSize,
+								color: isDark ? 'rgba(251, 146, 60, 0.7)' : 'rgba(139, 38, 53, 0.7)', // 웜톤 색상
+							}}
 						>
 							AI가 생성하는 나만의 음악 경험, MOODWAVE
 						</p>
