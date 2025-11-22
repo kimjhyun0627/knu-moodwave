@@ -1,29 +1,25 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronUp } from 'lucide-react';
 import { usePlayerStore } from '@/store/playerStore';
-import { ConfirmModal, useToast } from '@/shared/components/ui';
+import { ConfirmModal } from '@/shared/components/ui';
 import { PlayerTopBar, PlayerGenreInfo, PlayerCenterImage, PlayerControls, ParameterPanel, GradientOverlay, PlayerAudioEngine } from '@/features/player/components';
-import { usePlayerParams, useGenreChangeAnimation, usePlayerExit } from '@/features/player/hooks';
+import { usePlayerParams, useGenreChangeAnimation, usePlayerExit, usePlayerTrack } from '@/features/player/hooks';
 import { useThemeColors } from '@/shared/hooks';
 import { PLAYER_CONSTANTS } from '@/features/player/constants';
-import { fetchTrackForGenre } from '@/shared/api';
 
 const Player = () => {
 	const navigate = useNavigate();
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [isControlsVisible, setIsControlsVisible] = useState(true);
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
-	const { showInfo, showSuccess, showWarning, removeToast } = useToast();
-	const loadingToastIdRef = useRef<string | null>(null);
-	const readyToastIdRef = useRef<string | null>(null);
-	const genreChangeWarningToastIdRef = useRef<string | null>(null);
 
-	const { selectedGenre, isPlaying, queue, isGenreChangeInProgress, moveToNextTrack, moveToPrevTrack, setNextTrack, resetQueue } = usePlayerStore();
+	const { selectedGenre, isPlaying, moveToPrevTrack, resetQueue } = usePlayerStore();
 	const { selectedTheme, themeBaseParams, themeAdditionalParams, activeCommonParamsList, availableCommonParams, getParamValue, setParamValue, addCommonParam, removeCommonParam, removeThemeParam } =
 		usePlayerParams();
 	const colors = useThemeColors();
+	const { handleNextTrack } = usePlayerTrack();
 
 	// 장르 변경 감지 및 애니메이션
 	const isGenreChanging = useGenreChangeAnimation(selectedGenre);
@@ -38,36 +34,12 @@ const Player = () => {
 		}
 	}, [selectedGenre, navigate]);
 
-	// 장르(테마) 변경 시 처리
-	// 주의: PlayerTopBar에서 resetQueue를 먼저 호출하므로, 여기서는 중복 호출을 방지하기 위해 주석 처리
-	// const prevGenreRef = useRef<{ id: string; category: string } | null>(null);
-	// useEffect(() => {
-	// 	if (selectedGenre && prevGenreRef.current !== null) {
-	// 		const prevGenre = prevGenreRef.current;
-	// 		// 장르가 변경된 경우 (같은 카테고리든 다른 카테고리든) queue 초기화
-	// 		if (prevGenre.id !== selectedGenre.id) {
-	// 			resetQueue();
-	// 		}
-	// 	}
-	// 	if (selectedGenre) {
-	// 		prevGenreRef.current = { id: selectedGenre.id, category: selectedGenre.category };
-	// 	}
-	// }, [selectedGenre, resetQueue]);
-
 	// Player 페이지에서 나갈 때 queue 초기화
 	useEffect(() => {
 		if (isLeaving) {
 			resetQueue();
 		}
 	}, [isLeaving, resetQueue]);
-
-	// 장르 변경 완료 시 warning 토스트 제거
-	useEffect(() => {
-		if (!isGenreChangeInProgress && genreChangeWarningToastIdRef.current) {
-			removeToast(genreChangeWarningToastIdRef.current);
-			genreChangeWarningToastIdRef.current = null;
-		}
-	}, [isGenreChangeInProgress, removeToast]);
 
 	if (!selectedGenre) {
 		return null;
@@ -91,58 +63,7 @@ const Player = () => {
 	};
 
 	const handleNext = () => {
-		// 장르 변경 중이면 다음 노래 요청 무시
-		if (isGenreChangeInProgress) {
-			// 이미 표시된 토스트가 있으면 제거하고 새로 표시
-			if (genreChangeWarningToastIdRef.current) {
-				removeToast(genreChangeWarningToastIdRef.current);
-			}
-			genreChangeWarningToastIdRef.current = showWarning('장르를 변경 중이에요!', 3000);
-			return;
-		}
-
-		// nextTrack이 있으면 바로 이동
-		if (queue.next) {
-			moveToNextTrack();
-			return;
-		}
-
-		// tracks에 다음 트랙이 있으면 이동
-		if (queue.currentIndex >= 0 && queue.currentIndex < queue.tracks.length - 1) {
-			moveToNextTrack();
-			return;
-		}
-
-		// nextTrack도 없고 tracks에도 다음 트랙이 없으면 새 트랙 가져오기 시작
-		if (!selectedGenre) {
-			return;
-		}
-
-		// 로딩 토스트 표시
-		if (loadingToastIdRef.current) {
-			removeToast(loadingToastIdRef.current);
-		}
-		loadingToastIdRef.current = showInfo('다음 노래를 준비 중이에요!', null);
-
-		// 비동기로 트랙 가져오기 시작 (await 없이 즉시 실행)
-		fetchTrackForGenre(selectedGenre)
-			.then((track) => {
-				setNextTrack(track);
-				// 로딩 토스트 제거하고 준비 완료 토스트 표시
-				if (loadingToastIdRef.current) {
-					removeToast(loadingToastIdRef.current);
-					loadingToastIdRef.current = null;
-				}
-				readyToastIdRef.current = showSuccess('다음 노래가 준비되었어요', 3000);
-				moveToNextTrack();
-			})
-			.catch((error) => {
-				console.error('다음 트랙 가져오기 실패:', error);
-				if (loadingToastIdRef.current) {
-					removeToast(loadingToastIdRef.current);
-					loadingToastIdRef.current = null;
-				}
-			});
+		handleNextTrack();
 	};
 
 	return (

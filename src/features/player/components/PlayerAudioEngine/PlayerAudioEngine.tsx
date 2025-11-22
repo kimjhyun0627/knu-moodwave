@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { usePlayerStore } from '@/store/playerStore';
 import { getSharedAudioElement } from '@/shared/audio';
-import { fetchTrackForGenre } from '@/shared/api';
 import { useToast } from '@/shared/components/ui';
+import { useTrackFetcher } from '../../hooks/useTrackFetcher';
 
 export const PlayerAudioEngine = () => {
 	const queue = usePlayerStore((state) => state.queue);
@@ -16,6 +16,7 @@ export const PlayerAudioEngine = () => {
 	const setCurrentTime = usePlayerStore((state) => state.setCurrentTime);
 	const selectedGenre = usePlayerStore((state) => state.selectedGenre);
 	const isGenreChangeInProgress = usePlayerStore((state) => state.isGenreChangeInProgress);
+	const setIsAutoPrefetching = usePlayerStore((state) => state.setIsAutoPrefetching);
 	const nextTrack = usePlayerStore((state) => state.queue.next);
 	const setNextTrack = usePlayerStore((state) => state.setNextTrack);
 	const moveToNextTrack = usePlayerStore((state) => state.moveToNextTrack);
@@ -29,6 +30,7 @@ export const PlayerAudioEngine = () => {
 	const readyToastIdRef = useRef<string | null>(null);
 	const previousIsPlayingRef = useRef(isPlaying);
 	const { showInfo, showSuccess, removeToast } = useToast();
+	const { fetchTrack } = useTrackFetcher();
 
 	// Initialize audio element
 	useEffect(() => {
@@ -199,11 +201,10 @@ export const PlayerAudioEngine = () => {
 			removeToast(prefetchToastIdRef.current);
 			prefetchToastIdRef.current = null;
 		}
-		if (readyToastIdRef.current) {
-			removeToast(readyToastIdRef.current);
-			readyToastIdRef.current = null;
-		}
-	}, [currentTrack?.id, removeToast]);
+		// readyToastIdRef는 자동 프리페치 완료 토스트이므로 트랙 변경 시에도 유지
+		// (트랙 변경 후 자동으로 제거되도록 duration에 따라 처리)
+		setIsAutoPrefetching(false);
+	}, [currentTrack?.id, removeToast, setIsAutoPrefetching]);
 
 	// Prefetch next track when remaining time <= 30s
 	useEffect(() => {
@@ -213,6 +214,7 @@ export const PlayerAudioEngine = () => {
 				removeToast(prefetchToastIdRef.current);
 				prefetchToastIdRef.current = null;
 			}
+			setIsAutoPrefetching(false);
 			return;
 		}
 		if (!currentTrack || !selectedGenre) {
@@ -220,6 +222,7 @@ export const PlayerAudioEngine = () => {
 				removeToast(prefetchToastIdRef.current);
 				prefetchToastIdRef.current = null;
 			}
+			setIsAutoPrefetching(false);
 			return;
 		}
 		if (nextTrack || (queue.currentIndex >= 0 && queue.currentIndex < queue.tracks.length - 1)) {
@@ -227,6 +230,7 @@ export const PlayerAudioEngine = () => {
 				removeToast(prefetchToastIdRef.current);
 				prefetchToastIdRef.current = null;
 			}
+			setIsAutoPrefetching(false);
 			return;
 		}
 
@@ -248,12 +252,13 @@ export const PlayerAudioEngine = () => {
 		prefetchAbortRef.current = abortController;
 		prefetchedTrackIdRef.current = currentTrack.id;
 
-		// 토스트 표시
+		// 토스트 표시 및 자동 프리페치 상태 설정
 		if (!prefetchToastIdRef.current) {
 			prefetchToastIdRef.current = showInfo('다음 노래를 준비 중이에요!', null);
 		}
+		setIsAutoPrefetching(true);
 
-		fetchTrackForGenre(selectedGenre, abortController.signal)
+		fetchTrack(selectedGenre, abortController.signal)
 			.then((track) => {
 				if (!abortController.signal.aborted) {
 					setNextTrack(track);
@@ -263,6 +268,7 @@ export const PlayerAudioEngine = () => {
 						prefetchToastIdRef.current = null;
 					}
 					readyToastIdRef.current = showSuccess('다음 노래가 준비되었어요', 3000);
+					setIsAutoPrefetching(false);
 				}
 			})
 			.catch((error) => {
@@ -272,6 +278,7 @@ export const PlayerAudioEngine = () => {
 						removeToast(prefetchToastIdRef.current);
 						prefetchToastIdRef.current = null;
 					}
+					setIsAutoPrefetching(false);
 				}
 			})
 			.finally(() => {
@@ -279,7 +286,21 @@ export const PlayerAudioEngine = () => {
 					prefetchAbortRef.current = null;
 				}
 			});
-	}, [currentTrack, currentTime, nextTrack, selectedGenre, isGenreChangeInProgress, setNextTrack, queue.currentIndex, queue.tracks.length, showInfo, showSuccess, removeToast]);
+	}, [
+		currentTrack,
+		currentTime,
+		nextTrack,
+		selectedGenre,
+		isGenreChangeInProgress,
+		setNextTrack,
+		setIsAutoPrefetching,
+		fetchTrack,
+		queue.currentIndex,
+		queue.tracks.length,
+		showInfo,
+		showSuccess,
+		removeToast,
+	]);
 
 	// Smooth progress updates while playing
 	useEffect(() => {

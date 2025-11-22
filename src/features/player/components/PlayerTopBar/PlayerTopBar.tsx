@@ -1,15 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, Maximize, Minimize, Grid3x3, ChevronDown } from 'lucide-react';
-import { Button, ThemeToggle, useToast } from '@/shared/components/ui';
+import { Button, ThemeToggle } from '@/shared/components/ui';
 import { useFullscreen, useThemeColors } from '@/shared/hooks';
 import { PLAYER_CONSTANTS } from '../../constants';
 import { useThemeStore } from '@/store/themeStore';
 import { usePlayerStore } from '@/store/playerStore';
-import { usePlayerParams } from '../../hooks';
+import { usePlayerParams, useGenreTrack } from '../../hooks';
 import type { MusicGenre } from '@/shared/types';
-import { fetchTrackForGenre } from '@/shared/api';
-import { DEFAULT_AUDIO_PARAMS } from '@/shared/constants';
 
 interface PlayerTopBarProps {
 	onHomeClick: () => void;
@@ -20,24 +18,15 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 	const { isFullscreen, toggleFullscreen } = useFullscreen();
 	const theme = useThemeStore((state) => state.theme);
 	const selectedGenre = usePlayerStore((state) => state.selectedGenre);
-	const setSelectedGenre = usePlayerStore((state) => state.setSelectedGenre);
-	const setCurrentTrack = usePlayerStore((state) => state.setCurrentTrack);
-	const setNextTrack = usePlayerStore((state) => state.setNextTrack);
-	const moveToNextTrack = usePlayerStore((state) => state.moveToNextTrack);
-	const setDuration = usePlayerStore((state) => state.setDuration);
-	const resetQueue = usePlayerStore((state) => state.resetQueue);
-	const setIsGenreChangeInProgress = usePlayerStore((state) => state.setIsGenreChangeInProgress);
 	const { selectedTheme } = usePlayerParams();
 	const colors = useThemeColors();
-	const { showInfo, removeToast } = useToast();
+	const { handleGenreSelect } = useGenreTrack();
 	const [isGenreDropdownOpen, setIsGenreDropdownOpen] = useState(false);
-	const toastIdRef = useRef<string | null>(null);
 	const [hoveredGenreId, setHoveredGenreId] = useState<string | null>(null);
 	const [isFullscreenHovered, setIsFullscreenHovered] = useState(false);
 	const [isGenreButtonHovered, setIsGenreButtonHovered] = useState(false);
 	const [isHomeButtonHovered, setIsHomeButtonHovered] = useState(false);
 	const dropdownRef = useRef<HTMLDivElement>(null);
-	const genreRequestAbortRef = useRef<AbortController | null>(null);
 
 	// 현재 카테고리의 장르 목록 가져오기
 	const currentGenres = selectedTheme?.genres || [];
@@ -59,17 +48,7 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 		};
 	}, [isGenreDropdownOpen]);
 
-	// 컴포넌트 언마운트 시 요청 정리
-	useEffect(() => {
-		return () => {
-			if (genreRequestAbortRef.current) {
-				genreRequestAbortRef.current.abort();
-				genreRequestAbortRef.current = null;
-			}
-		};
-	}, []);
-
-	const handleGenreSelect = async (genre: MusicGenre) => {
+	const onGenreSelect = async (genre: MusicGenre) => {
 		// 같은 장르를 재선택한 경우 아무 액션도 하지 않음
 		if (selectedGenre?.id === genre.id) {
 			setIsGenreDropdownOpen(false);
@@ -79,67 +58,8 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 		// 드롭다운 닫기
 		setIsGenreDropdownOpen(false);
 
-		// 장르 변경 시작 플래그 설정
-		setIsGenreChangeInProgress(true);
-
-		// 토스트 표시 (duration: null로 설정하여 API 응답까지 자동으로 닫히지 않음)
-		if (toastIdRef.current) {
-			removeToast(toastIdRef.current);
-		}
-		toastIdRef.current = showInfo('새로운 장르를 불러오는 중이에요...', null);
-
-		// 기존 요청이 있다면 취소
-		if (genreRequestAbortRef.current) {
-			genreRequestAbortRef.current.abort();
-		}
-
-		const abortController = new AbortController();
-		genreRequestAbortRef.current = abortController;
-
-		try {
-			const track = await fetchTrackForGenre(genre, abortController.signal);
-
-			const queue = usePlayerStore.getState().queue;
-			const hasCurrentTrack = queue.currentIndex >= 0 && queue.currentIndex < queue.tracks.length;
-			const prevGenre = usePlayerStore.getState().selectedGenre;
-
-			// 장르가 실제로 변경된 경우에만 queue 초기화
-			const isGenreChanged = !prevGenre || prevGenre.id !== genre.id;
-
-			if (isGenreChanged) {
-				// 새 장르로 변경: 큐 초기화 후 새 트랙 설정
-				resetQueue();
-				setSelectedGenre(genre);
-				setCurrentTrack(track);
-				setDuration(track.duration || DEFAULT_AUDIO_PARAMS.tempo);
-			} else {
-				// 같은 장르 내에서: 다음 트랙으로 추가
-				if (!hasCurrentTrack) {
-					// 첫 트랙인 경우
-					setCurrentTrack(track);
-					setDuration(track.duration || DEFAULT_AUDIO_PARAMS.tempo);
-				} else {
-					// 이미 트랙이 있는 경우 다음 트랙으로 추가
-					setNextTrack(track);
-					moveToNextTrack();
-					setDuration(track.duration || DEFAULT_AUDIO_PARAMS.tempo);
-				}
-			}
-		} catch (error) {
-			if (!abortController.signal.aborted) {
-				console.error('장르 변경 중 FreeSound API 호출 실패:', error);
-			}
-		} finally {
-			// 장르 변경 완료 플래그 해제
-			setIsGenreChangeInProgress(false);
-			if (genreRequestAbortRef.current === abortController) {
-				genreRequestAbortRef.current = null;
-			}
-			if (toastIdRef.current) {
-				removeToast(toastIdRef.current);
-				toastIdRef.current = null;
-			}
-		}
+		// 장르 선택 처리 (useGenreTrack 훅에서 처리)
+		await handleGenreSelect(genre);
 	};
 
 	return (
@@ -243,7 +163,7 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 												{currentGenres.map((genre) => (
 													<motion.button
 														key={genre.id}
-														onClick={() => handleGenreSelect(genre)}
+														onClick={() => onGenreSelect(genre)}
 														onMouseEnter={() => setHoveredGenreId(genre.id)}
 														onMouseLeave={() => setHoveredGenreId(null)}
 														className={`w-full flex items-center gap-3 p-3 rounded-xl mb-2 last:mb-0 transition-all ${selectedGenre?.id === genre.id ? 'bg-primary-500/20 border-2' : 'hover:bg-white/10 dark:hover:bg-white/5 border-2 border-transparent'}`}

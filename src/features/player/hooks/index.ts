@@ -3,3 +3,6 @@ export { useIndicatorPosition } from './useIndicatorPosition';
 export { usePlayerParams } from './usePlayerParams';
 export { useGenreChangeAnimation } from './useGenreChangeAnimation';
 export { usePlayerExit } from './usePlayerExit';
+export { useTrackFetcher } from './useTrackFetcher';
+export { usePlayerTrack } from './usePlayerTrack';
+export { useGenreTrack } from './useGenreTrack';

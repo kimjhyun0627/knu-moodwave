@@ -25,6 +25,7 @@ interface PlayerState {
 	// Selected Genre
 	selectedGenre: MusicGenre | null;
 	isGenreChangeInProgress: boolean; // 장르 변경 API 요청 진행 중 플래그
+	isAutoPrefetching: boolean; // 자동 다음 노래 준비 중 플래그 (30초 전)
 
 	// Parameter Panel Orientation
 	parameterPanelOrientation: 'horizontal' | 'vertical';
@@ -53,6 +54,7 @@ interface PlayerState {
 	// Genre Selection
 	setSelectedGenre: (genre: MusicGenre | null) => void;
 	setIsGenreChangeInProgress: (inProgress: boolean) => void;
+	setIsAutoPrefetching: (isPrefetching: boolean) => void;
 
 	// Parameter Panel Orientation
 	setParameterPanelOrientation: (orientation: 'horizontal' | 'vertical') => void;
@@ -77,6 +79,7 @@ const initialState = {
 	visualizerType: 'pulse' as VisualizerType,
 	selectedGenre: null,
 	isGenreChangeInProgress: false,
+	isAutoPrefetching: false,
 	parameterPanelOrientation: 'horizontal' as 'horizontal' | 'vertical',
 };
 
@@ -225,6 +228,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 	// Genre Selection
 	setSelectedGenre: (genre: MusicGenre | null) => set({ selectedGenre: genre }),
 	setIsGenreChangeInProgress: (inProgress: boolean) => set({ isGenreChangeInProgress: inProgress }),
+	setIsAutoPrefetching: (isPrefetching: boolean) => set({ isAutoPrefetching: isPrefetching }),
 
 	// Parameter Panel Orientation
 	setParameterPanelOrientation: (orientation: 'horizontal' | 'vertical') => set({ parameterPanelOrientation: orientation }),

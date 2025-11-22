@@ -1,9 +1,9 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlayerStore } from '@/store/playerStore';
 import { DEFAULT_AUDIO_PARAMS } from '@/shared/constants';
 import type { MusicGenre } from '@/shared/types';
-import { fetchTrackForGenre } from '@/shared/api';
+import { useTrackFetcher } from '@/features/player/hooks/useTrackFetcher';
 import { getSharedAudioElement } from '@/shared/audio';
 
 /**
@@ -17,8 +17,8 @@ export const useGenreSelection = () => {
 	const setDuration = usePlayerStore((state) => state.setDuration);
 	const getVolume = usePlayerStore.getState;
 
+	const { fetchTrack, cancel, cleanup } = useTrackFetcher();
 	const cancelApiCallRef = useRef<(() => void) | null>(null);
-	const abortControllerRef = useRef<AbortController | null>(null);
 	const isCancelledRef = useRef<boolean>(false);
 
 	const handleGenreSelect = useCallback(
@@ -27,19 +27,15 @@ export const useGenreSelection = () => {
 			setSelectedGenre(genre);
 			isCancelledRef.current = false;
 
-			abortControllerRef.current?.abort();
-			const abortController = new AbortController();
-			abortControllerRef.current = abortController;
-
 			cancelApiCallRef.current = () => {
 				isCancelledRef.current = true;
-				abortController.abort();
+				cancel();
 				setIsTransitioning(false);
 				cancelApiCallRef.current = null;
 			};
 
 			try {
-				const track = await fetchTrackForGenre(genre, abortController.signal);
+				const track = await fetchTrack(genre);
 				if (isCancelledRef.current) {
 					return;
 				}
@@ -68,7 +64,6 @@ export const useGenreSelection = () => {
 				// 부드러운 전환을 위한 딜레이 후 페이지 이동
 				await new Promise((resolve) => setTimeout(resolve, 200));
 				if (!isCancelledRef.current) {
-					abortControllerRef.current = null;
 					cancelApiCallRef.current = null;
 					navigate('/player');
 				}
@@ -77,21 +72,32 @@ export const useGenreSelection = () => {
 					return;
 				}
 
+				// AbortError는 정상적인 취소이므로 무시
+				if (error instanceof DOMException && error.name === 'AbortError') {
+					return;
+				}
+
 				console.error('FreeSound API 호출 실패:', error);
 				setIsTransitioning(false);
 				cancelApiCallRef.current = null;
-			} finally {
-				abortControllerRef.current = null;
 			}
 		},
-		[navigate, setSelectedGenre, setCurrentTrack, setIsPlaying, setDuration, getVolume]
+		[navigate, setSelectedGenre, setCurrentTrack, setIsPlaying, setDuration, getVolume, fetchTrack, cancel]
 	);
 
 	const handleCancelApiCall = useCallback(() => {
 		if (cancelApiCallRef.current) {
 			cancelApiCallRef.current();
 		}
-	}, []);
+		cancel();
+	}, [cancel]);
+
+	// 컴포넌트 언마운트 시 정리
+	useEffect(() => {
+		return () => {
+			cleanup();
+		};
+	}, [cleanup]);
 
 	return {
 		handleGenreSelect,
