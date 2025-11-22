@@ -262,7 +262,7 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 			{/* Toast 메시지 */}
 			{showToast && (
 				<Toast
-					message="음악이 생성되면 세부 장르로 넘어가요!"
+					message="음악이 생성되면 변경한 장르로 넘어가요!"
 					type="info"
 					duration={null}
 					onClose={() => setShowToast(false)}
