@@ -214,9 +214,12 @@ export const fetchFreesoundPreviewByGenre = async (genreName: string, signal?: A
 
 		let response;
 		try {
+			// 로컬 개발 환경(vite 프록시)에서는 /text 추가, 프로덕션(Edge Function)에서는 /search만 사용
+			const searchPath = import.meta.env.DEV ? '/search/text/' : '/search';
+
 			response = await withRetry(
 				() =>
-					freesoundClient.get('/search/text/', {
+					freesoundClient.get(searchPath, {
 						params: {
 							query,
 							fields: SEARCH_FIELDS,
