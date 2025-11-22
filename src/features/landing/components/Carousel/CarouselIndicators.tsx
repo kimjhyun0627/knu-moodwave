@@ -72,7 +72,6 @@ export const CarouselIndicators = ({ count, currentIndex, onSelect, labels }: Ca
 									className="absolute -top-1 -translate-y-full whitespace-nowrap px-2 py-0.5 text-xs font-semibold"
 									style={{
 										color: isDarkMode ? '#f8fafc' : '#0f172a', // 다크 모드: 밝은 색, 라이트 모드: 어두운 색
-										textShadow: isDarkMode ? '0 1px 6px rgba(15, 23, 42, 0.8)' : '0 1px 4px rgba(251, 113, 133, 0.8)',
 									}}
 								>
 									{label}

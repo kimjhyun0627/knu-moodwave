@@ -97,15 +97,15 @@ export const ParameterIndicator = ({ allParams, currentStartIndex, visibleCount,
 								style={{
 									width: '8px',
 									height: '8px',
-									backgroundColor: isActive ? '#fb7185' : colors.isDark ? 'rgba(241, 245, 249, 1)' : 'rgba(30, 41, 59, 1)',
-									opacity: isActive ? 1 : 0.3, // 활성: 불투명, 비활성: 더 투명
+									backgroundColor: isActive ? '#fb7185' : colors.isDark ? 'rgba(30, 41, 59, 1)' : 'rgba(241, 245, 249, 1)',
+									opacity: isActive ? 0.7 : 0.35, // 활성: 불투명, 비활성: 더 투명
 									backdropFilter: 'blur(4px)',
 									WebkitBackdropFilter: 'blur(4px)',
 									boxShadow: isActive ? '0 2px 8px rgba(251, 113, 133, 0.4)' : '0 1px 4px rgba(0, 0, 0, 0.1)',
 								}}
 								whileHover={{
 									scale: 1.3,
-									opacity: isActive ? 1 : 0.5,
+									opacity: isActive ? 0.7 : 0.5,
 									backgroundColor: isActive ? '#f43f5e' : undefined, // 호버 시 더 진한 로즈
 								}}
 								transition={{
@@ -126,9 +126,11 @@ export const ParameterIndicator = ({ allParams, currentStartIndex, visibleCount,
 											stiffness: 400,
 											damping: 25,
 										}}
-										className="absolute left-full  top-1/2 -translate-y-1/2 whitespace-nowrap text-xs font-medium pointer-events-none"
+										className="absolute left-full ml-2 top-1/2 -translate-y-1/2 whitespace-nowrap px-2 py-1 text-xs font-medium pointer-events-none rounded-md backdrop-blur-md"
 										style={{
 											color: colors.isDark ? '#f1f5f9' : '#1e293b',
+											background: colors.isDark ? 'rgba(28, 25, 23, 0.7)' : 'rgba(254, 248, 242, 0.7)',
+											border: `1px solid ${colors.glassBorder}`,
 											zIndex: 101,
 										}}
 									>
