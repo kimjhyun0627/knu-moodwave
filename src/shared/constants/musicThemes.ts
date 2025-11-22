@@ -1,9 +1,28 @@
 import type { MusicTheme } from '@/shared/types';
-import mockup1 from '@/assets/mockup1.png';
-import mockup2 from '@/assets/mockup2.png';
-import mockup3 from '@/assets/mockup3.png';
-import mockup4 from '@/assets/mockup4.png';
-import mockup5 from '@/assets/mockup5.png';
+import focusImage from '@/assets/focus.jpg';
+import energyImage from '@/assets/energy.jpg';
+import relaxImage from '@/assets/relax.jpg';
+import moodImage from '@/assets/mood.jpg';
+import workoutImage from '@/assets/workout.jpg';
+import lofiBeatsImage from '@/assets/lofi-beats.jpg';
+import jazzInstrumentalImage from '@/assets/jazz-instrumental.jpg';
+import ambientImage from '@/assets/ambient.jpg';
+import classicPianoImage from '@/assets/classic-piano.jpg';
+import edmImage from '@/assets/edm.jpg';
+import houseImage from '@/assets/house.jpg';
+import technoImage from '@/assets/techno.jpg';
+import downtempoImage from '@/assets/downtempo.jpg';
+import natureAmbientImage from '@/assets/nature-ambient.jpg';
+import meditationImage from '@/assets/meditation.jpg';
+import futureBassImage from '@/assets/future-bass.jpg';
+import alternativeImage from '@/assets/alternative.jpg';
+import synthwaveImage from '@/assets/synthwave.jpg';
+import tripHopImage from '@/assets/trip-hop.jpg';
+import trapImage from '@/assets/trap.jpg';
+import hardstyleImage from '@/assets/hardstyle.jpg';
+import hiphopBeatsImage from '@/assets/hiphop-beats.jpg';
+import drumBassImage from '@/assets/drum-bass.jpg';
+import chillwaveImage from '@/assets/chillwave.jpg';
 
 export const MUSIC_THEMES: MusicTheme[] = [
 	{
@@ -12,7 +31,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 		categoryNameKo: '집중',
 		description: '깊은 집중력을 위한 차분한 사운드',
 		emoji: '🎯',
-		image: mockup1, // 카테고리 이미지 경로
+		image: focusImage,
 		parameters: [
 			// 기본 3개 (가장 중요)
 			{
@@ -124,7 +143,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '로파이 비트',
 				category: 'focus',
 				description: '차분한 비트와 감성적인 멜로디',
-				image: mockup1, // 장르 이미지 경로
+				image: lofiBeatsImage,
 			},
 			{
 				id: 'jazz-instrumental',
@@ -132,7 +151,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '재즈 인스트루멘탈',
 				category: 'focus',
 				description: '우아한 재즈 연주',
-				image: mockup1,
+				image: jazzInstrumentalImage,
 			},
 			{
 				id: 'ambient',
@@ -140,7 +159,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '앰비언트',
 				category: 'focus',
 				description: '몽환적이고 집중하기 좋은 사운드',
-				image: mockup1,
+				image: ambientImage,
 			},
 			{
 				id: 'classic-piano',
@@ -148,7 +167,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '클래식 피아노',
 				category: 'focus',
 				description: '편안한 피아노 선율',
-				image: mockup1,
+				image: classicPianoImage,
 			},
 		],
 	},
@@ -158,7 +177,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 		categoryNameKo: '텐션',
 		description: '에너지 넘치는 강렬한 비트',
 		emoji: '⚡',
-		image: mockup2, // 카테고리 이미지 경로
+		image: energyImage,
 		parameters: [
 			// 기본 3개 (가장 중요)
 			{
@@ -270,7 +289,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: 'EDM',
 				category: 'energy',
 				description: '강렬한 일렉트로닉 댄스 뮤직',
-				image: mockup2,
+				image: edmImage,
 			},
 			{
 				id: 'house',
@@ -278,7 +297,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '하우스',
 				category: 'energy',
 				description: '리드미컬한 하우스 비트',
-				image: mockup2,
+				image: houseImage,
 			},
 			{
 				id: 'techno',
@@ -286,7 +305,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '테크노',
 				category: 'energy',
 				description: '강력한 테크노 사운드',
-				image: mockup2,
+				image: technoImage,
 			},
 			{
 				id: 'drum-bass',
@@ -294,7 +313,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '드럼 앤 베이스',
 				category: 'energy',
 				description: '빠른 비트와 베이스라인',
-				image: mockup2,
+				image: drumBassImage,
 			},
 		],
 	},
@@ -304,7 +323,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 		categoryNameKo: '휴식',
 		description: '편안한 휴식을 위한 감성적인 멜로디',
 		emoji: '🌙',
-		image: mockup3, // 카테고리 이미지 경로
+		image: relaxImage,
 		parameters: [
 			// 기본 3개 (가장 중요)
 			{
@@ -416,7 +435,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '다운템포',
 				category: 'relax',
 				description: '느긋한 템포의 편안한 음악',
-				image: mockup3,
+				image: downtempoImage,
 			},
 			{
 				id: 'chillwave',
@@ -424,7 +443,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '칠웨이브',
 				category: 'relax',
 				description: '몽환적이고 편안한 웨이브',
-				image: mockup3,
+				image: chillwaveImage,
 			},
 			{
 				id: 'nature-ambient',
@@ -432,7 +451,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '자연 앰비언트',
 				category: 'relax',
 				description: '자연의 소리와 앰비언트',
-				image: mockup3,
+				image: natureAmbientImage,
 			},
 			{
 				id: 'meditation',
@@ -440,7 +459,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '명상',
 				category: 'relax',
 				description: '명상과 힐링을 위한 음악',
-				image: mockup3,
+				image: meditationImage,
 			},
 		],
 	},
@@ -450,7 +469,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 		categoryNameKo: '무드',
 		description: '다양한 감성을 담은 독특한 사운드',
 		emoji: '🎨',
-		image: mockup4, // 카테고리 이미지 경로
+		image: moodImage,
 		parameters: [
 			// 기본 3개 (가장 중요)
 			{
@@ -562,7 +581,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '퓨쳐 베이스',
 				category: 'mood',
 				description: '감성적인 베이스 사운드',
-				image: mockup4,
+				image: futureBassImage,
 			},
 			{
 				id: 'alternative',
@@ -570,7 +589,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '얼터너티브',
 				category: 'mood',
 				description: '독특한 분위기의 비트',
-				image: mockup4,
+				image: alternativeImage,
 			},
 			{
 				id: 'synthwave',
@@ -578,7 +597,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '신스웨이브',
 				category: 'mood',
 				description: '레트로 신스 사운드',
-				image: mockup4,
+				image: synthwaveImage,
 			},
 			{
 				id: 'trip-hop',
@@ -586,7 +605,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '트립합',
 				category: 'mood',
 				description: '몽환적인 힙합 비트',
-				image: mockup4,
+				image: tripHopImage,
 			},
 		],
 	},
@@ -596,7 +615,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 		categoryNameKo: '운동',
 		description: '역동적인 운동을 위한 파워풀한 리듬',
 		emoji: '💪',
-		image: mockup5, // 카테고리 이미지 경로
+		image: workoutImage,
 		parameters: [
 			// 기본 3개 (가장 중요)
 			{
@@ -708,7 +727,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '트랩',
 				category: 'workout',
 				description: '강렬한 트랩 비트',
-				image: mockup5,
+				image: trapImage,
 			},
 			{
 				id: 'hardstyle',
@@ -716,7 +735,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '하드스타일',
 				category: 'workout',
 				description: '강력한 하드 킥',
-				image: mockup5,
+				image: hardstyleImage,
 			},
 			{
 				id: 'hiphop-beats',
@@ -724,7 +743,7 @@ export const MUSIC_THEMES: MusicTheme[] = [
 				nameKo: '힙합 비트',
 				category: 'workout',
 				description: '에너지 넘치는 힙합 비트',
-				image: mockup5,
+				image: hiphopBeatsImage,
 			},
 		],
 	},
