@@ -34,10 +34,7 @@ export const GenreSection = ({
 	if (!selectedTheme) return null;
 
 	const items = selectedTheme.genres.map((genre: MusicGenre) => ({
-		id: genre.id,
-		nameKo: genre.nameKo,
-		name: genre.name,
-		description: genre.description,
+		...genre,
 		image: genre.image || selectedTheme.image,
 	}));
 
