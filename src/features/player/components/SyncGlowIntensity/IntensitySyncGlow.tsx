@@ -34,9 +34,9 @@ export const IntensitySyncGlow = ({ genre, isPlaying }: IntensitySyncGlowProps) 
 	const midIntensity = Math.min(Math.max(audioAnalysis.midBandEnergy ?? 0, 0), 1);
 	const highIntensity = Math.min(Math.max(audioAnalysis.highBandEnergy ?? 0, 0), 1);
 
-	const lowExtraPixels = isPlaying ? 6 + lowIntensity * 10 : 6;
+	const lowExtraPixels = isPlaying ? 9 + lowIntensity * 12 : 9;
 	const midExtraPixels = isPlaying ? 6 + midIntensity * 10 : 6;
-	const highExtraPixels = isPlaying ? 6 + highIntensity * 10 : 6;
+	const highExtraPixels = isPlaying ? 3 + highIntensity * 8 : 3;
 
 	// 이전 값 업데이트
 	prevLowExtraPixelsRef.current = lowExtraPixels;
