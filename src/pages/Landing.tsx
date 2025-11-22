@@ -10,7 +10,7 @@ import { usePlayerStore } from '@/store/playerStore';
 import { useThemeStore } from '@/store/themeStore';
 import { useWindowWidth, useWindowSize } from '@/shared/hooks';
 import { useVisibleRange, useCarousel } from '@/features/landing/hooks';
-import type { MusicGenre, ThemeCategory } from '@/shared/types';
+import type { MusicGenre, ThemeCategory, Track } from '@/shared/types';
 
 const Landing = () => {
 	const navigate = useNavigate();
@@ -19,6 +19,7 @@ const Landing = () => {
 	const [playingCategory, setPlayingCategory] = useState<ThemeCategory | null>(null);
 	const [playingGenre, setPlayingGenre] = useState<string | null>(null);
 	const setSelectedGenre = usePlayerStore((state) => state.setSelectedGenre);
+	const setCurrentTrack = usePlayerStore((state) => state.setCurrentTrack);
 
 	const windowWidth = useWindowWidth();
 	const { height } = useWindowSize();
@@ -115,11 +116,53 @@ const Landing = () => {
 			setIsTransitioning(true);
 			setSelectedGenre(genre);
 
-			// 부드러운 전환을 위한 짧은 딜레이
-			await new Promise((resolve) => setTimeout(resolve, 600));
-			navigate('/player');
+			try {
+				// AI API 호출 시뮬레이션 (5초)
+				const musicResponse = await new Promise<{ trackId: string; audioUrl: string; duration: number }>((resolve) => {
+					// TODO: 실제 API 호출로 교체
+					// const response = await fetch('/api/music/generate', {
+					//   method: 'POST',
+					//   headers: { 'Content-Type': 'application/json' },
+					//   body: JSON.stringify({ genre: genre.id, params: audioParams })
+					// });
+					// const data = await response.json();
+
+					setTimeout(() => {
+						resolve({
+							trackId: `track-${genre.id}-${Date.now()}`,
+							audioUrl: '', // 실제 API 응답에서 받아올 URL
+							duration: 180, // 3분
+						});
+					}, 5000);
+				});
+
+				// API 응답을 Track 형태로 변환하여 playerStore에 저장
+				const track: Track = {
+					id: musicResponse.trackId,
+					title: genre.name,
+					genre: genre.name,
+					genreKo: genre.nameKo,
+					audioUrl: musicResponse.audioUrl,
+					duration: musicResponse.duration,
+					status: 'ready',
+					params: {
+						energy: 50,
+						bass: 50,
+						tempo: 80,
+					},
+					createdAt: new Date(),
+				};
+				setCurrentTrack(track);
+
+				// 부드러운 전환을 위한 짧은 딜레이
+				await new Promise((resolve) => setTimeout(resolve, 300));
+				navigate('/player');
+			} catch (error) {
+				console.error('음악 생성 실패:', error);
+				setIsTransitioning(false);
+			}
 		},
-		[navigate, setSelectedGenre]
+		[navigate, setSelectedGenre, setCurrentTrack]
 	);
 
 	const handleCategorySelect = useCallback(() => {
