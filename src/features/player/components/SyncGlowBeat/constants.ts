@@ -4,11 +4,11 @@
 
 export const BOX_CONSTANTS = {
 	// 박스 기본 크기
-	INTENSITY_BOX_BASE_SIZE: 6, // vh
+	INTENSITY_BOX_BASE_SIZE: 5, // vh
 	BEAT_BOX_BASE_SIZE: 3, // vh
 
 	// 박스 idle 상태 크기
-	INTENSITY_IDLE_SIZE: 6, // vh
+	INTENSITY_IDLE_SIZE: 5, // vh
 	BEAT_IDLE_SIZE: 2, // vh
 
 	// 박스 최대 확장 크기

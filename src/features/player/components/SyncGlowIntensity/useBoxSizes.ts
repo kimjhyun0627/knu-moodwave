@@ -12,22 +12,23 @@ interface UseIntensityBoxSizesProps {
  * Intensity 박스 크기 계산 커스텀 훅 (Low/Mid/High)
  */
 export const useIntensityBoxSizes = ({ lowIntensity, midIntensity, highIntensity, isPlaying }: UseIntensityBoxSizesProps) => {
-	const prevLowExtraPixelsRef = useRef<number>(INTENSITY_BOX_CONSTANTS.LOW_IDLE_SIZE);
-	const prevMidExtraPixelsRef = useRef<number>(INTENSITY_BOX_CONSTANTS.MID_IDLE_SIZE);
-	const prevHighExtraPixelsRef = useRef<number>(INTENSITY_BOX_CONSTANTS.HIGH_IDLE_SIZE);
+	// 모든 박스 동일한 크기 사용
+	const prevLowExtraPixelsRef = useRef<number>(INTENSITY_BOX_CONSTANTS.BOX_IDLE_SIZE);
+	const prevMidExtraPixelsRef = useRef<number>(INTENSITY_BOX_CONSTANTS.BOX_IDLE_SIZE);
+	const prevHighExtraPixelsRef = useRef<number>(INTENSITY_BOX_CONSTANTS.BOX_IDLE_SIZE);
 
 	// Low Intensity 계산
-	const lowExtraPixels = isPlaying ? INTENSITY_BOX_CONSTANTS.LOW_IDLE_SIZE + lowIntensity * INTENSITY_BOX_CONSTANTS.LOW_MAX_EXTRA : INTENSITY_BOX_CONSTANTS.LOW_IDLE_SIZE;
+	const lowExtraPixels = isPlaying ? INTENSITY_BOX_CONSTANTS.BOX_IDLE_SIZE + lowIntensity * INTENSITY_BOX_CONSTANTS.BOX_MAX_EXTRA : INTENSITY_BOX_CONSTANTS.BOX_IDLE_SIZE;
 	const lowIsGrowing = lowExtraPixels > prevLowExtraPixelsRef.current;
 	prevLowExtraPixelsRef.current = lowExtraPixels;
 
 	// Mid Intensity 계산
-	const midExtraPixels = isPlaying ? INTENSITY_BOX_CONSTANTS.MID_IDLE_SIZE + midIntensity * INTENSITY_BOX_CONSTANTS.MID_MAX_EXTRA : INTENSITY_BOX_CONSTANTS.MID_IDLE_SIZE;
+	const midExtraPixels = isPlaying ? INTENSITY_BOX_CONSTANTS.BOX_IDLE_SIZE + midIntensity * INTENSITY_BOX_CONSTANTS.BOX_MAX_EXTRA : INTENSITY_BOX_CONSTANTS.BOX_IDLE_SIZE;
 	const midIsGrowing = midExtraPixels > prevMidExtraPixelsRef.current;
 	prevMidExtraPixelsRef.current = midExtraPixels;
 
 	// High Intensity 계산
-	const highExtraPixels = isPlaying ? INTENSITY_BOX_CONSTANTS.HIGH_IDLE_SIZE + highIntensity * INTENSITY_BOX_CONSTANTS.HIGH_MAX_EXTRA : INTENSITY_BOX_CONSTANTS.HIGH_IDLE_SIZE;
+	const highExtraPixels = isPlaying ? INTENSITY_BOX_CONSTANTS.BOX_IDLE_SIZE + highIntensity * INTENSITY_BOX_CONSTANTS.BOX_MAX_EXTRA : INTENSITY_BOX_CONSTANTS.BOX_IDLE_SIZE;
 	const highIsGrowing = highExtraPixels > prevHighExtraPixelsRef.current;
 	prevHighExtraPixelsRef.current = highExtraPixels;
 

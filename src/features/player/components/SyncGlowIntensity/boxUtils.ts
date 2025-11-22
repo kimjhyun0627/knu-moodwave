@@ -20,11 +20,11 @@ const STYLE_CONSTANTS = {
 			END_BASE: 0.3,
 			END_MULTIPLIER: 0.3,
 		},
-		BORDER_OPACITY_BASE: 0.8,
+		BORDER_OPACITY_BASE: 0.6,
 		BORDER_OPACITY_MULTIPLIER: 0.2,
-		BACKDROP_FILTER_BLUR: 15,
-		FILTER_BLUR_BASE: 2,
-		FILTER_BLUR_MULTIPLIER: 3,
+		BACKDROP_FILTER_BLUR: 0, // blur 제거
+		FILTER_BLUR_BASE: 0, // blur 제거
+		FILTER_BLUR_MULTIPLIER: 0, // blur 제거
 		FILTER_BRIGHTNESS_MULTIPLIER: 0.3,
 		OPACITY_BASE: 0.5,
 		OPACITY_MULTIPLIER: 0.4,
@@ -58,9 +58,9 @@ const STYLE_CONSTANTS = {
 		},
 		BORDER_OPACITY_BASE: 0.5,
 		BORDER_OPACITY_MULTIPLIER: 0.3,
-		BACKDROP_FILTER_BLUR: 10,
-		FILTER_BLUR_BASE: 2,
-		FILTER_BLUR_MULTIPLIER: 3,
+		BACKDROP_FILTER_BLUR: 0, // blur 제거
+		FILTER_BLUR_BASE: 0, // blur 제거
+		FILTER_BLUR_MULTIPLIER: 0, // blur 제거
 		OPACITY_BASE: 0.4,
 		OPACITY_MULTIPLIER: 0.4,
 		BOX_SHADOW: {
@@ -89,9 +89,9 @@ const STYLE_CONSTANTS = {
 		},
 		BORDER_OPACITY_BASE: 0.4,
 		BORDER_OPACITY_MULTIPLIER: 0.4,
-		BACKDROP_FILTER_BLUR: 10,
-		FILTER_BLUR_BASE: 2,
-		FILTER_BLUR_MULTIPLIER: 2,
+		BACKDROP_FILTER_BLUR: 0, // blur 제거
+		FILTER_BLUR_BASE: 0, // blur 제거
+		FILTER_BLUR_MULTIPLIER: 0, // blur 제거
 		OPACITY_BASE: 0.3,
 		OPACITY_MULTIPLIER: 0.3,
 		BOX_SHADOW: {
@@ -110,7 +110,19 @@ const STYLE_CONSTANTS = {
 		},
 	},
 	TRANSITION: {
-		DURATION: 0.05,
+		// Low: 느린 파도형 (duration 긴 편, easeInOut)
+		LOW_DURATION: 0.6,
+		LOW_EASE: 'easeOut' as const,
+
+		// Mid: 중간 속도 맥동 (duration 중간, easeOut)
+		MID_DURATION: 0.4,
+		MID_EASE: 'easeOut' as const,
+
+		// High: 빠른 깜빡임 (duration 짧은 편, linear)
+		HIGH_DURATION: 0.2,
+		HIGH_EASE: 'easeOut' as const,
+
+		// Opacity 전환 (모든 박스 동일)
 		OPACITY_DURATION: 0.1,
 	},
 } as const;
@@ -122,24 +134,23 @@ export const getIntensityBoxStyle = (config: IntensityBoxStyleConfig) => {
 	const { colorRgb, intensity, extraPixels, type } = config;
 	const styleConfig = STYLE_CONSTANTS[type.toUpperCase() as 'LOW' | 'MID' | 'HIGH'];
 
-	const backgroundStartOpacity = styleConfig.BACKGROUND_OPACITY.START_BASE + intensity * styleConfig.BACKGROUND_OPACITY.START_MULTIPLIER;
-	const backgroundMidOpacity = styleConfig.BACKGROUND_OPACITY.MID_BASE + intensity * styleConfig.BACKGROUND_OPACITY.MID_MULTIPLIER;
-	const backgroundEndOpacity = styleConfig.BACKGROUND_OPACITY.END_BASE + intensity * styleConfig.BACKGROUND_OPACITY.END_MULTIPLIER;
+	// 가변 투명도 제거 - 고정값 사용
+	const backgroundStartOpacity = 0.1; //styleConfig.BACKGROUND_OPACITY.START_BASE;
+	const backgroundMidOpacity = 0.1; //styleConfig.BACKGROUND_OPACITY.MID_BASE;
+	const backgroundEndOpacity = 0.1; //styleConfig.BACKGROUND_OPACITY.END_BASE;
 
-	const borderOpacity = styleConfig.BORDER_OPACITY_BASE + intensity * styleConfig.BORDER_OPACITY_MULTIPLIER;
-	const filterBlur = styleConfig.FILTER_BLUR_BASE + intensity * styleConfig.FILTER_BLUR_MULTIPLIER;
-	const opacity = styleConfig.OPACITY_BASE + intensity * styleConfig.OPACITY_MULTIPLIER;
+	// border 색상을 background의 중간 opacity와 맞추기
+	const avgBackgroundOpacity = (backgroundStartOpacity + backgroundMidOpacity + backgroundEndOpacity) / 3;
+	const borderOpacity = Math.min(avgBackgroundOpacity + 0.2, 1); // background보다 약간 더 진하게
 
-	// Low 박스는 radial-gradient, brightness 추가
-	const background =
-		type === 'low'
-			? `radial-gradient(circle, rgba(${colorRgb}, ${backgroundStartOpacity}) 0%, rgba(${colorRgb}, ${backgroundMidOpacity}) 50%, rgba(${colorRgb}, ${backgroundEndOpacity}) 100%)`
-			: type === 'mid'
-				? `linear-gradient(135deg, rgba(${colorRgb}, ${backgroundStartOpacity}) 0%, rgba(${colorRgb}, ${backgroundMidOpacity}) 50%, rgba(${colorRgb}, ${backgroundEndOpacity}) 100%)`
-				: `radial-gradient(circle, rgba(${colorRgb}, ${backgroundStartOpacity}) 0%, rgba(${colorRgb}, ${backgroundMidOpacity}) 50%, rgba(${colorRgb}, ${backgroundEndOpacity}) 100%)`;
+	// 모든 박스 동일한 투명도 0.95
+	const opacity = 0.95;
 
-	const filter =
-		type === 'low' && 'FILTER_BRIGHTNESS_MULTIPLIER' in styleConfig ? `blur(${filterBlur}px) brightness(${1 + intensity * styleConfig.FILTER_BRIGHTNESS_MULTIPLIER})` : `blur(${filterBlur}px)`;
+	// 배경색 제거 - 투명하게
+	const background = 'transparent';
+
+	// 모든 박스 blur 제거, Low 박스만 brightness 적용
+	const filter = type === 'low' && 'FILTER_BRIGHTNESS_MULTIPLIER' in styleConfig ? `brightness(${1 + intensity * styleConfig.FILTER_BRIGHTNESS_MULTIPLIER})` : 'none';
 
 	const borderWidth = type === 'low' ? 2 : 1;
 
@@ -173,7 +184,7 @@ export const getIntensityBoxStyle = (config: IntensityBoxStyleConfig) => {
 		background,
 		border: `${borderWidth}px solid rgba(${colorRgb}, ${borderOpacity})`,
 		boxShadow: boxShadow.trim(),
-		backdropFilter: `blur(${styleConfig.BACKDROP_FILTER_BLUR}px)`,
+		backdropFilter: styleConfig.BACKDROP_FILTER_BLUR > 0 ? `blur(${styleConfig.BACKDROP_FILTER_BLUR}px)` : 'none', // blur 제거
 		filter,
 		opacity,
 		extraPixels,
@@ -181,18 +192,22 @@ export const getIntensityBoxStyle = (config: IntensityBoxStyleConfig) => {
 };
 
 /**
- * Transition 계산 유틸리티
+ * Transition 계산 유틸리티 (주파수 대역별 차별화)
  */
-export const getTransition = () => {
+export const getTransition = (type: 'low' | 'mid' | 'high') => {
 	const { TRANSITION } = STYLE_CONSTANTS;
 
+	// 주파수 대역별 다른 애니메이션 패턴
+	const duration = type === 'low' ? TRANSITION.LOW_DURATION : type === 'mid' ? TRANSITION.MID_DURATION : TRANSITION.HIGH_DURATION;
+	const ease = type === 'low' ? TRANSITION.LOW_EASE : type === 'mid' ? TRANSITION.MID_EASE : TRANSITION.HIGH_EASE;
+
 	return {
-		width: { duration: TRANSITION.DURATION, ease: 'easeOut' as const },
-		height: { duration: TRANSITION.DURATION, ease: 'easeOut' as const },
-		left: { duration: TRANSITION.DURATION, ease: 'easeOut' as const },
-		top: { duration: TRANSITION.DURATION, ease: 'easeOut' as const },
+		width: { duration, ease },
+		height: { duration, ease },
+		left: { duration, ease },
+		top: { duration, ease },
 		opacity: { duration: TRANSITION.OPACITY_DURATION },
-		boxShadow: { duration: TRANSITION.DURATION, ease: 'easeOut' as const },
-		filter: { duration: TRANSITION.DURATION, ease: 'easeOut' as const },
+		boxShadow: { duration, ease },
+		filter: { duration, ease },
 	};
 };

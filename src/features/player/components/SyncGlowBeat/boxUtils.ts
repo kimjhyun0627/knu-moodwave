@@ -1,7 +1,6 @@
 /**
  * 박스 스타일 계산 유틸리티 함수
  */
-import { BOX_CONSTANTS } from './constants';
 
 export interface BoxStyleConfig {
 	baseSize: number; // 기본 크기 (vh)
@@ -81,7 +80,7 @@ const STYLE_CONSTANTS = {
 		FILTER_BLUR_MULTIPLIER: 2,
 		FILTER_BRIGHTNESS_MULTIPLIER: 0.4,
 		OPACITY_BASE: 0.5,
-		OPACITY_MULTIPLIER: 0.4,
+		OPACITY_MULTIPLIER: 0.2,
 	},
 	// Transition 상수
 	TRANSITION: {
@@ -170,7 +169,7 @@ export const getBeatBoxStyle = (config: BeatBoxConfig) => {
 /**
  * Transition 계산 유틸리티
  */
-export const getTransition = (isGrowing: boolean, type: 'intensity' | 'beat') => {
+export const getTransition = (isGrowing: boolean, _type: 'intensity' | 'beat') => {
 	const { TRANSITION } = STYLE_CONSTANTS;
 	const duration = isGrowing ? TRANSITION.FAST_DURATION : TRANSITION.SLOW_DURATION;
 

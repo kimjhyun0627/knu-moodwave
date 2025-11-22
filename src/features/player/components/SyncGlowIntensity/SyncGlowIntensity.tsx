@@ -24,7 +24,11 @@ export const SyncGlowIntensity = ({ genre, isPlaying }: SyncGlowIntensityProps) 
 
 	// 테마별 설정
 	const imageOpacity = colors.isDark ? INTENSITY_BOX_CONSTANTS.IMAGE_OPACITY_DARK : INTENSITY_BOX_CONSTANTS.IMAGE_OPACITY_LIGHT;
-	const boxColorRgb = colors.isDark ? INTENSITY_BOX_CONSTANTS.COLOR_RGB_DARK : INTENSITY_BOX_CONSTANTS.COLOR_RGB_LIGHT;
+
+	// 주파수 대역별 색상 (명도 차이)
+	const lowColorRgb = colors.isDark ? INTENSITY_BOX_CONSTANTS.LOW_COLOR_RGB_DARK : INTENSITY_BOX_CONSTANTS.LOW_COLOR_RGB_LIGHT;
+	const midColorRgb = colors.isDark ? INTENSITY_BOX_CONSTANTS.MID_COLOR_RGB_DARK : INTENSITY_BOX_CONSTANTS.MID_COLOR_RGB_LIGHT;
+	const highColorRgb = colors.isDark ? INTENSITY_BOX_CONSTANTS.HIGH_COLOR_RGB_DARK : INTENSITY_BOX_CONSTANTS.HIGH_COLOR_RGB_LIGHT;
 
 	// Intensity 정규화
 	const lowIntensity = Math.min(Math.max(audioAnalysis.lowBandEnergy ?? 0, 0), 1);
@@ -39,41 +43,43 @@ export const SyncGlowIntensity = ({ genre, isPlaying }: SyncGlowIntensityProps) 
 		isPlaying,
 	});
 
-	// Transition 계산 (모든 박스 동일)
-	const transition = useMemo(() => getTransition(), []);
+	// Transition 계산 (주파수 대역별 차별화)
+	const lowTransition = useMemo(() => getTransition('low'), []);
+	const midTransition = useMemo(() => getTransition('mid'), []);
+	const highTransition = useMemo(() => getTransition('high'), []);
 
-	// 박스 스타일 계산
+	// 박스 스타일 계산 (주파수 대역별 색상 적용)
 	const lowBoxStyle = useMemo(
 		() =>
 			getIntensityBoxStyle({
-				colorRgb: boxColorRgb,
+				colorRgb: lowColorRgb,
 				intensity: lowIntensity,
 				extraPixels: lowExtraPixels,
 				type: 'low',
 			}),
-		[boxColorRgb, lowIntensity, lowExtraPixels]
+		[lowColorRgb, lowIntensity, lowExtraPixels]
 	);
 
 	const midBoxStyle = useMemo(
 		() =>
 			getIntensityBoxStyle({
-				colorRgb: boxColorRgb,
+				colorRgb: midColorRgb,
 				intensity: midIntensity,
 				extraPixels: midExtraPixels,
 				type: 'mid',
 			}),
-		[boxColorRgb, midIntensity, midExtraPixels]
+		[midColorRgb, midIntensity, midExtraPixels]
 	);
 
 	const highBoxStyle = useMemo(
 		() =>
 			getIntensityBoxStyle({
-				colorRgb: boxColorRgb,
+				colorRgb: highColorRgb,
 				intensity: highIntensity,
 				extraPixels: highExtraPixels,
 				type: 'high',
 			}),
-		[boxColorRgb, highIntensity, highExtraPixels]
+		[highColorRgb, highIntensity, highExtraPixels]
 	);
 
 	return (
@@ -83,7 +89,7 @@ export const SyncGlowIntensity = ({ genre, isPlaying }: SyncGlowIntensityProps) 
 				<AnimatedIntensityBox
 					keyValue="low"
 					trackId={currentTrack?.id || null}
-					baseSize={INTENSITY_BOX_CONSTANTS.LOW_BOX_BASE_SIZE}
+					baseSize={INTENSITY_BOX_CONSTANTS.BOX_BASE_SIZE}
 					extraPixels={lowExtraPixels}
 					opacity={lowBoxStyle.opacity}
 					background={lowBoxStyle.background}
@@ -91,8 +97,8 @@ export const SyncGlowIntensity = ({ genre, isPlaying }: SyncGlowIntensityProps) 
 					boxShadow={lowBoxStyle.boxShadow}
 					backdropFilter={lowBoxStyle.backdropFilter}
 					filter={lowBoxStyle.filter}
-					initialOpacity={INTENSITY_BOX_CONSTANTS.LOW_INITIAL_OPACITY}
-					transition={transition}
+					initialOpacity={INTENSITY_BOX_CONSTANTS.BOX_INITIAL_OPACITY}
+					transition={lowTransition}
 					zIndex={INTENSITY_BOX_CONSTANTS.Z_INDEX.LOW}
 				/>
 
@@ -100,7 +106,7 @@ export const SyncGlowIntensity = ({ genre, isPlaying }: SyncGlowIntensityProps) 
 				<AnimatedIntensityBox
 					keyValue="mid"
 					trackId={currentTrack?.id || null}
-					baseSize={INTENSITY_BOX_CONSTANTS.MID_BOX_BASE_SIZE}
+					baseSize={INTENSITY_BOX_CONSTANTS.BOX_BASE_SIZE}
 					extraPixels={midExtraPixels}
 					opacity={midBoxStyle.opacity}
 					background={midBoxStyle.background}
@@ -108,8 +114,8 @@ export const SyncGlowIntensity = ({ genre, isPlaying }: SyncGlowIntensityProps) 
 					boxShadow={midBoxStyle.boxShadow}
 					backdropFilter={midBoxStyle.backdropFilter}
 					filter={midBoxStyle.filter}
-					initialOpacity={INTENSITY_BOX_CONSTANTS.MID_INITIAL_OPACITY}
-					transition={transition}
+					initialOpacity={INTENSITY_BOX_CONSTANTS.BOX_INITIAL_OPACITY}
+					transition={midTransition}
 					zIndex={INTENSITY_BOX_CONSTANTS.Z_INDEX.MID}
 				/>
 
@@ -117,7 +123,7 @@ export const SyncGlowIntensity = ({ genre, isPlaying }: SyncGlowIntensityProps) 
 				<AnimatedIntensityBox
 					keyValue="high"
 					trackId={currentTrack?.id || null}
-					baseSize={INTENSITY_BOX_CONSTANTS.HIGH_BOX_BASE_SIZE}
+					baseSize={INTENSITY_BOX_CONSTANTS.BOX_BASE_SIZE}
 					extraPixels={highExtraPixels}
 					opacity={highBoxStyle.opacity}
 					background={highBoxStyle.background}
@@ -125,8 +131,8 @@ export const SyncGlowIntensity = ({ genre, isPlaying }: SyncGlowIntensityProps) 
 					boxShadow={highBoxStyle.boxShadow}
 					backdropFilter={highBoxStyle.backdropFilter}
 					filter={highBoxStyle.filter}
-					initialOpacity={INTENSITY_BOX_CONSTANTS.HIGH_INITIAL_OPACITY}
-					transition={transition}
+					initialOpacity={INTENSITY_BOX_CONSTANTS.BOX_INITIAL_OPACITY}
+					transition={highTransition}
 					zIndex={INTENSITY_BOX_CONSTANTS.Z_INDEX.HIGH}
 				/>
 

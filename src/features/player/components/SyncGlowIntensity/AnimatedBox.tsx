@@ -50,6 +50,7 @@ export const AnimatedIntensityBox = ({
 					border,
 					backdropFilter,
 					zIndex,
+					mixBlendMode: 'multiply', // 색상 블렌딩으로 각 주파수 대역의 색상이 잘 보이도록
 				}}
 				initial={{
 					width: `calc(100% + ${baseSize}vh)`,
