@@ -97,9 +97,8 @@ export const ParameterIndicator = ({ allParams, currentStartIndex, visibleCount,
 								style={{
 									width: '8px',
 									height: '8px',
-									backgroundColor: isActive ? '#fb7185' : colors.isDark ? 'rgba(30, 41, 59, 1)' : 'rgba(241, 245, 249, 1)',
-									border: `1.5px solid ${!isActive ? colors.glassBorder : 'transparent'}`,
-									opacity: isActive ? 0.7 : 0.35, // 활성: 불투명, 비활성: 더 투명
+									backgroundColor: isActive ? 'rgba(251, 113, 133, 0.7)' : colors.isDark ? 'rgba(30, 41, 59, 0.25)' : 'rgba(241, 245, 249, 0.6)',
+									border: `1px solid ${!isActive ? (colors.isDark ? 'rgba(241, 245, 249, 0.6)' : 'transparent') : 'transparent'}`,
 									backdropFilter: 'blur(4px)',
 									WebkitBackdropFilter: 'blur(4px)',
 									boxShadow: isActive ? '0 2px 8px rgba(251, 113, 133, 0.4)' : '0 1px 4px rgba(0, 0, 0, 0.1)',
