@@ -1,6 +1,6 @@
-export const config = {
-	runtime: 'edge',
-};
+// export const config = {
+// 	runtime: 'edge',
+// };
 
 const FREESOUND_BASE_URL = 'https://freesound.org/apiv2';
 
