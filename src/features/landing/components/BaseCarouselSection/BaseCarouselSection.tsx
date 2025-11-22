@@ -33,6 +33,7 @@ interface CarouselSectionProps<T extends CarouselItem> {
 	titleSize?: string;
 	nameSize?: string;
 	getPlayingId?: (item: T) => string | ThemeCategory;
+	onIndicatorRef?: (ref: HTMLDivElement | null) => void;
 }
 
 export const BaseCarouselSection = <T extends CarouselItem>({
@@ -52,6 +53,7 @@ export const BaseCarouselSection = <T extends CarouselItem>({
 	titleSize = 'text-2xl md:text-3xl',
 	nameSize = 'text-lg md:text-xl',
 	getPlayingId,
+	onIndicatorRef,
 }: CarouselSectionProps<T>) => {
 	const windowWidth = useWindowWidth();
 	const effectiveRange = Math.max(0, visibleRange);
@@ -161,12 +163,14 @@ export const BaseCarouselSection = <T extends CarouselItem>({
 			</div>
 
 			{/* Indicator Dots - Centered */}
-			<CarouselIndicators
-				count={items.length}
-				currentIndex={currentIndex}
-				onSelect={onGoTo}
-				labels={items.map((item) => item.nameKo)}
-			/>
+			<div ref={onIndicatorRef}>
+				<CarouselIndicators
+					count={items.length}
+					currentIndex={currentIndex}
+					onSelect={onGoTo}
+					labels={items.map((item) => item.nameKo)}
+				/>
+			</div>
 
 			{/* Back Button */}
 			{onBack && (

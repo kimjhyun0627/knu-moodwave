@@ -42,7 +42,7 @@ const Toast = ({ message, type = 'info', duration = 3000, onClose }: ToastProps)
 		success: colors.isDark ? '#4ade80' : '#22c55e', // green-400 : green-500
 		error: colors.isDark ? '#f87171' : '#ef4444', // red-400 : red-500
 		warning: colors.isDark ? '#fbbf24' : '#f59e0b', // amber-400 : amber-500
-		info: colors.isDark ? '#c084fc' : '#a855f7', // primary-400 : primary-500
+		info: colors.isDark ? '#fb7185' : '#fb7185', // primary-500 (로즈)
 	};
 
 	const Icon = icons[type];

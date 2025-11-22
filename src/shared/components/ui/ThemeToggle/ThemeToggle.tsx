@@ -195,18 +195,18 @@ const ThemeToggleButton = ({ theme = 'light', showLabel = false, variant = 'circ
 		background: className?.includes('bg-white/20')
 			? isHovered
 				? isDark
-					? 'rgba(30, 41, 59, 0.4)'
-					: 'rgba(255, 255, 255, 0.3)'
+					? 'rgba(28, 25, 23, 0.55)'
+					: 'rgba(254, 248, 242, 0.4)'
 				: isDark
-					? 'rgba(30, 41, 59, 0.3)'
-					: 'rgba(255, 255, 255, 0.2)'
+					? 'rgba(28, 25, 23, 0.4)'
+					: 'rgba(254, 248, 242, 0.3)'
 			: isHovered
 				? isDark
-					? 'rgba(30, 41, 59, 0.85)'
-					: 'rgba(255, 255, 255, 0.9)'
+					? 'rgba(28, 25, 23, 0.9)'
+					: 'rgba(254, 248, 242, 0.95)'
 				: isDark
-					? 'rgba(15, 23, 42, 0.8)'
-					: 'rgba(255, 255, 255, 0.8)',
+					? 'rgba(28, 25, 23, 0.85)'
+					: 'rgba(254, 248, 242, 0.85)',
 		backdropFilter: 'blur(12px)',
 		WebkitBackdropFilter: 'blur(12px)',
 		boxShadow: isHovered
@@ -235,8 +235,8 @@ const ThemeToggleButton = ({ theme = 'light', showLabel = false, variant = 'circ
 			onFocus={(e) => {
 				setIsHovered(true);
 				e.currentTarget.style.boxShadow = isDark
-					? '0 0 0 2px rgba(168, 85, 247, 0.5), 0 20px 25px -5px rgba(0, 0, 0, 0.3)'
-					: '0 0 0 2px rgba(168, 85, 247, 0.5), 0 20px 25px -5px rgba(0, 0, 0, 0.1)';
+					? '0 0 0 2px rgba(251, 113, 133, 0.5), 0 20px 25px -5px rgba(0, 0, 0, 0.3)'
+					: '0 0 0 2px rgba(251, 113, 133, 0.5), 0 20px 25px -5px rgba(0, 0, 0, 0.1)';
 			}}
 			onBlur={() => setIsHovered(false)}
 			style={buttonStyle}

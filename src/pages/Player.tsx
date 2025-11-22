@@ -169,9 +169,11 @@ const Player = () => {
 							}}
 							onMouseEnter={(e) => {
 								e.currentTarget.style.background = colors.glassButtonBgHover;
+								e.currentTarget.querySelector('svg')?.setAttribute('style', `color: #fb7185`);
 							}}
 							onMouseLeave={(e) => {
 								e.currentTarget.style.background = colors.glassButtonBg;
+								e.currentTarget.querySelector('svg')?.setAttribute('style', `color: ${colors.iconColor}`);
 							}}
 							aria-label="컨트롤러 보이기"
 						>

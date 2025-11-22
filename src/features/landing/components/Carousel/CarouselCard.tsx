@@ -258,10 +258,10 @@ const CarouselCard = ({
 				style={
 					!isActive
 						? {
-								background: theme === 'dark' ? 'rgba(30, 41, 59, 0.3)' : 'rgba(255, 255, 255, 0.15)',
+								background: theme === 'dark' ? 'rgba(28, 25, 23, 0.4)' : 'rgba(254, 248, 242, 0.2)',
 								backdropFilter: 'blur(8px) saturate(150%)',
 								WebkitBackdropFilter: 'blur(8px) saturate(150%)',
-								border: theme === 'dark' ? '0.5px solid rgba(255, 255, 255, 0.1)' : '0.5px solid rgba(255, 255, 255, 0.3)',
+								border: theme === 'dark' ? '0.5px solid rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.12)',
 								boxShadow: theme === 'dark' ? '0 4px 16px rgba(0, 0, 0, 0.25)' : '0 4px 16px rgba(0, 0, 0, 0.7)',
 								padding: 0,
 							}

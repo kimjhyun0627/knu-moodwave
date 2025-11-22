@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, Volume2, VolumeX, SkipBack, SkipForward, ChevronDown, SlidersHorizontal } from 'lucide-react';
 import { usePlayerStore } from '@/store/playerStore';
@@ -18,9 +19,10 @@ interface PlayerControlsProps {
 }
 
 export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, onToggleVisibility, onPrev, onNext }: PlayerControlsProps) => {
-	const { isPlaying, volume, currentTime, duration, setIsPlaying, setVolume, setCurrentTime, toggleMute } = usePlayerStore();
+	const { isPlaying, volume, currentTime, duration, isMuted, setIsPlaying, setVolume, setCurrentTime, toggleMute } = usePlayerStore();
 	const colors = useThemeColors();
 	const { buttonStyle, handleMouseEnter, handleMouseLeave } = useGlassButton();
+	const [hoveredButton, setHoveredButton] = useState<string | null>(null);
 
 	const handlePlayPause = () => {
 		setIsPlaying(!isPlaying);
@@ -84,7 +86,7 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 								top: 0,
 								left: 0,
 								height: '0.375rem',
-								background: 'linear-gradient(to right, #a855f7, #9333ea)',
+								background: 'linear-gradient(to right, #fb7185, #f43f5e)',
 								borderRadius: '0.375rem',
 								pointerEvents: 'none',
 								width: `${progressPercentage}%`,
@@ -110,21 +112,39 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 							onClick={toggleMute}
 							className={PLAYER_CONSTANTS.STYLES.glassButton.controlButton}
 							style={buttonStyle}
-							onMouseEnter={handleMouseEnter}
-							onMouseLeave={handleMouseLeave}
+							onMouseEnter={(e) => {
+								handleMouseEnter(e);
+								setHoveredButton('mute');
+							}}
+							onMouseLeave={(e) => {
+								handleMouseLeave(e);
+								setHoveredButton(null);
+							}}
 							aria-label="음소거"
 						>
-							{volume === 0 ? (
-								<VolumeX
-									className="w-4 h-4 md:w-5 md:h-5"
-									style={{ color: colors.iconColor }}
-								/>
-							) : (
-								<Volume2
-									className="w-4 h-4 md:w-5 md:h-5"
-									style={{ color: colors.iconColor }}
-								/>
-							)}
+							<AnimatePresence mode="wait">
+								{isMuted ? (
+									<motion.div
+										key="muted"
+										{...PLAYER_CONSTANTS.ANIMATIONS.muteButtonIcon}
+									>
+										<VolumeX
+											className="w-4 h-4 md:w-5 md:h-5"
+											style={{ color: hoveredButton === 'mute' ? '#fb7185' : colors.iconColor }}
+										/>
+									</motion.div>
+								) : (
+									<motion.div
+										key="unmuted"
+										{...PLAYER_CONSTANTS.ANIMATIONS.muteButtonIcon}
+									>
+										<Volume2
+											className="w-4 h-4 md:w-5 md:h-5"
+											style={{ color: hoveredButton === 'mute' ? '#fb7185' : colors.iconColor }}
+										/>
+									</motion.div>
+								)}
+							</AnimatePresence>
 						</button>
 						<div className="hidden md:flex items-center gap-1.5">
 							<div className="w-16">
@@ -154,13 +174,19 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 							onClick={onPrev}
 							className={PLAYER_CONSTANTS.STYLES.glassButton.controlButton}
 							style={buttonStyle}
-							onMouseEnter={handleMouseEnter}
-							onMouseLeave={handleMouseLeave}
+							onMouseEnter={(e) => {
+								handleMouseEnter(e);
+								setHoveredButton('prev');
+							}}
+							onMouseLeave={(e) => {
+								handleMouseLeave(e);
+								setHoveredButton(null);
+							}}
 							aria-label="이전 트랙"
 						>
 							<SkipBack
 								className="w-5 h-5 md:w-6 md:h-6"
-								style={{ color: colors.iconColor }}
+								style={{ color: hoveredButton === 'prev' ? '#fb7185' : colors.iconColor }}
 							/>
 						</button>
 
@@ -213,13 +239,19 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 							onClick={onNext}
 							className={PLAYER_CONSTANTS.STYLES.glassButton.controlButton}
 							style={buttonStyle}
-							onMouseEnter={handleMouseEnter}
-							onMouseLeave={handleMouseLeave}
+							onMouseEnter={(e) => {
+								handleMouseEnter(e);
+								setHoveredButton('next');
+							}}
+							onMouseLeave={(e) => {
+								handleMouseLeave(e);
+								setHoveredButton(null);
+							}}
 							aria-label="다음 트랙"
 						>
 							<SkipForward
 								className="w-5 h-5 md:w-6 md:h-6"
-								style={{ color: colors.iconColor }}
+								style={{ color: hoveredButton === 'next' ? '#fb7185' : colors.iconColor }}
 							/>
 						</button>
 					</div>
@@ -230,8 +262,14 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 							onClick={onToggleExpand}
 							className={PLAYER_CONSTANTS.STYLES.glassButton.controlButton}
 							style={buttonStyle}
-							onMouseEnter={handleMouseEnter}
-							onMouseLeave={handleMouseLeave}
+							onMouseEnter={(e) => {
+								handleMouseEnter(e);
+								setHoveredButton('expand');
+							}}
+							onMouseLeave={(e) => {
+								handleMouseLeave(e);
+								setHoveredButton(null);
+							}}
 							aria-label={isExpanded ? '세부조정 닫기' : '세부조정 열기'}
 						>
 							<motion.div
@@ -240,7 +278,7 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 							>
 								<SlidersHorizontal
 									className="w-5 h-5 md:w-6 md:h-6"
-									style={{ color: colors.iconColor }}
+									style={{ color: hoveredButton === 'expand' ? '#fb7185' : colors.iconColor }}
 								/>
 							</motion.div>
 						</button>
@@ -248,8 +286,14 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 							onClick={onToggleVisibility}
 							className={PLAYER_CONSTANTS.STYLES.glassButton.controlButton}
 							style={buttonStyle}
-							onMouseEnter={handleMouseEnter}
-							onMouseLeave={handleMouseLeave}
+							onMouseEnter={(e) => {
+								handleMouseEnter(e);
+								setHoveredButton('visibility');
+							}}
+							onMouseLeave={(e) => {
+								handleMouseLeave(e);
+								setHoveredButton(null);
+							}}
 							aria-label={isVisible ? '컨트롤러 숨기기' : '컨트롤러 보이기'}
 						>
 							<motion.div
@@ -258,7 +302,7 @@ export const PlayerControls = ({ genre, isExpanded, isVisible, onToggleExpand, o
 							>
 								<ChevronDown
 									className="w-5 h-5 md:w-6 md:h-6"
-									style={{ color: colors.iconColor }}
+									style={{ color: hoveredButton === 'visibility' ? '#fb7185' : colors.iconColor }}
 								/>
 							</motion.div>
 						</button>

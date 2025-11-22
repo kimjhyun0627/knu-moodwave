@@ -17,7 +17,7 @@ const Slider = forwardRef<HTMLInputElement, SliderProps>(
 		const theme = useThemeStore((state) => state.theme);
 		const isDark = theme === 'dark';
 		const labelColor = isDark ? '#cbd5e1' : '#0f172a'; // slate-300 : slate-900
-		const valueColor = isDark ? '#c084fc' : '#7e22ce'; // primary-400 : primary-700
+		const valueColor = isDark ? '#fb7185' : '#f43f5e'; // primary-500 : primary-600
 		const descColor = isDark ? '#94a3b8' : '#64748b'; // slate-400 : slate-500
 
 		// 프로그래스 퍼센티지 계산 (썸의 중앙 위치에 맞춤)

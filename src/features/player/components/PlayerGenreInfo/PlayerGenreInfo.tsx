@@ -14,7 +14,7 @@ export const PlayerGenreInfo = ({ genre, theme, isVisible = true }: PlayerGenreI
 			<AnimatePresence mode="wait">
 				{isVisible && (
 					<motion.div
-						key={genre.id}
+						key={`genre-info-${genre.id}-${isVisible}`}
 						initial="hidden"
 						animate="visible"
 						exit="hidden"

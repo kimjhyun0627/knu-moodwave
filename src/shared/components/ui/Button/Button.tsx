@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef, useState, Children } from 'react';
 import { motion, type HTMLMotionProps } from 'framer-motion';
 import type { ButtonHTMLAttributes } from 'react';
 import { cn } from '@/shared/utils/className';
@@ -36,11 +36,15 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ children, variant =
 	// variant와 테마에 따른 텍스트 색상을 인라인 스타일로 적용
 	const getTextColor = () => {
 		if (variant === 'ghost') {
-			// 라이트 모드에서 hover 시 흰색, 다크 모드는 항상 밝은 색
+			// 호버 시 프라이머리 컬러로 변경
+			if (isHovered) {
+				return '#fb7185'; // primary-500 (로즈)
+			}
+			// 기본 색상
 			if (theme === 'dark') {
 				return '#f1f5f9'; // slate-100
 			}
-			return isHovered ? '#ffffff' : '#0f172a'; // hover 시 흰색, 기본은 slate-900
+			return '#0f172a'; // slate-900
 		}
 		if (variant === 'primary') {
 			// primary 버튼은 항상 흰색 텍스트 (그라디언트 배경이 어두움)
@@ -50,10 +54,24 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ children, variant =
 	};
 
 	const textColor = getTextColor();
-	const textColorStyle = textColor ? { color: textColor } : undefined;
 
-	// props에서 전달된 style과 병합 (textColorStyle이 나중에 와서 덮어쓰도록)
-	const mergedStyle = textColorStyle ? { ...(props.style || {}), ...textColorStyle } : props.style;
+	// props에서 전달된 style과 병합
+	const mergedStyle = props.style;
+
+	// ghost variant일 때 텍스트 색상을 적용하기 위해 텍스트 노드만 span으로 감싸기
+	const renderChildren = () => {
+		if (variant === 'ghost' && textColor) {
+			return Children.map(children, (child) => {
+				// React 요소가 아니고 텍스트 노드인 경우
+				if (typeof child === 'string' || typeof child === 'number') {
+					return <span style={{ color: textColor }}>{child}</span>;
+				}
+				// React 요소인 경우 그대로 반환
+				return child;
+			});
+		}
+		return children;
+	};
 
 	return (
 		<motion.button
@@ -72,7 +90,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ children, variant =
 			}}
 			{...(props as MotionButtonProps)}
 		>
-			{children}
+			{renderChildren()}
 		</motion.button>
 	);
 });

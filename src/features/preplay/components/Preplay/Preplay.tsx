@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Pause } from 'lucide-react';
 import { PREPLAY_CONSTANTS, generatePreplayGradients } from '../../constants';
@@ -10,6 +11,7 @@ interface PreplayProps {
 
 export const Preplay = ({ imageUrl, onPause }: PreplayProps) => {
 	const gradients = generatePreplayGradients();
+	const [isHovered, setIsHovered] = useState(false);
 
 	return (
 		<motion.div
@@ -29,6 +31,8 @@ export const Preplay = ({ imageUrl, onPause }: PreplayProps) => {
 					e.stopPropagation();
 					onPause(e);
 				}}
+				onMouseEnter={() => setIsHovered(true)}
+				onMouseLeave={() => setIsHovered(false)}
 				className="relative rounded-full overflow-visible cursor-pointer"
 				style={{
 					width: PREPLAY_CONSTANTS.SIZE.WIDTH,
@@ -139,7 +143,10 @@ export const Preplay = ({ imageUrl, onPause }: PreplayProps) => {
 						style={{ zIndex: CAROUSEL_CONSTANTS.Z_INDEX.RECORD_PAUSE_ICON, position: 'absolute' }}
 					>
 						<Pause
-							className="w-6 h-6 md:w-7 md:h-7 text-white drop-shadow-2xl"
+							className="w-6 h-6 md:w-7 md:h-7 drop-shadow-2xl transition-colors duration-300"
+							style={{
+								color: isHovered ? '#fb7185' : '#ffffff',
+							}}
 							fill="currentColor"
 						/>
 					</div>

@@ -14,9 +14,23 @@ interface GenreSectionProps {
 	onBack: () => void;
 	onPlayGenre: (genreId: string) => void;
 	onPauseGenre: () => void;
+	onIndicatorRef?: (ref: HTMLDivElement | null) => void;
 }
 
-export const GenreSection = ({ selectedTheme, visibleRange, currentIndex, playingGenre, onGenreClick, onPrev, onNext, onGoTo, onBack, onPlayGenre, onPauseGenre }: GenreSectionProps) => {
+export const GenreSection = ({
+	selectedTheme,
+	visibleRange,
+	currentIndex,
+	playingGenre,
+	onGenreClick,
+	onPrev,
+	onNext,
+	onGoTo,
+	onBack,
+	onPlayGenre,
+	onPauseGenre,
+	onIndicatorRef,
+}: GenreSectionProps) => {
 	if (!selectedTheme) return null;
 
 	const items = selectedTheme.genres.map((genre: MusicGenre) => ({
@@ -51,6 +65,7 @@ export const GenreSection = ({ selectedTheme, visibleRange, currentIndex, playin
 				titleTag="h3"
 				titleSize="text-3xl md:text-4xl"
 				nameSize="text-base md:text-lg"
+				onIndicatorRef={onIndicatorRef}
 			/>
 		</motion.div>
 	);

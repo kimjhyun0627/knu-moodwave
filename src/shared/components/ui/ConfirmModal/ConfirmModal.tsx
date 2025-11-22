@@ -25,9 +25,9 @@ const ConfirmModal = ({ isOpen, title = '확인', message, confirmText = '확인
 	// 호버 시 더 짙은 색상
 	const getButtonBackground = () => {
 		if (isHovered) {
-			return isDark ? 'linear-gradient(to bottom right, #7e22ce, #6b21a8)' : 'linear-gradient(to bottom right, #581c87, #4c1d95)';
+			return isDark ? 'linear-gradient(to bottom right, #f43f5e, #e11d48)' : 'linear-gradient(to bottom right, #f43f5e, #e11d48)';
 		}
-		return isDark ? 'linear-gradient(to bottom right, #9333ea, #7e22ce)' : 'linear-gradient(to bottom right, #7e22ce, #581c87)';
+		return isDark ? 'linear-gradient(to bottom right, #fb7185, #f43f5e)' : 'linear-gradient(to bottom right, #fb7185, #f43f5e)';
 	};
 
 	// 취소 버튼 호버 및 클릭 시 배경색

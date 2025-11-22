@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getTimeGreeting, getResponsiveTextSize, getResponsiveNavTextSize } from '@/shared/utils';
@@ -8,7 +8,7 @@ import { TransitionOverlay } from '@/shared/components/common';
 import { CategorySection, GenreSection } from '@/features/landing/components';
 import { usePlayerStore } from '@/store/playerStore';
 import { useThemeStore } from '@/store/themeStore';
-import { useWindowWidth } from '@/shared/hooks';
+import { useWindowWidth, useWindowSize } from '@/shared/hooks';
 import { useVisibleRange, useCarousel } from '@/features/landing/hooks';
 import type { MusicGenre, ThemeCategory } from '@/shared/types';
 
@@ -21,12 +21,82 @@ const Landing = () => {
 	const setSelectedGenre = usePlayerStore((state) => state.setSelectedGenre);
 
 	const windowWidth = useWindowWidth();
+	const { height } = useWindowSize();
 	const visibleRange = useVisibleRange(windowWidth, 2);
 	const genreVisibleRange = useVisibleRange(windowWidth, 1);
+	const indicatorRef = useRef<HTMLDivElement | null>(null);
+	const [indicatorBottom, setIndicatorBottom] = useState<number | null>(null);
+
+	// 상단 텍스트 블록 paddingTop 계산 (선형 보간)
+	// 화면 높이 400px → 48px (12vh), 화면 높이 1200px → 300px (25vh)
+	const minHeight = 400;
+	const maxHeight = 1600;
+	const minPaddingTop = 18; // 12vh at 400px
+	const maxPaddingTop = 200; // 25vh at 1200px
+
+	const textBlockPaddingTop = useMemo(() => {
+		if (!height) return minPaddingTop;
+		if (height <= minHeight) return minPaddingTop;
+		if (height >= maxHeight) return maxPaddingTop;
+		// 선형 보간
+		const ratio = (height - minHeight) / (maxHeight - minHeight);
+		return Math.round(minPaddingTop + (maxPaddingTop - minPaddingTop) * ratio);
+	}, [height]);
 
 	const categoryCarousel = useCarousel(MUSIC_THEMES);
 	const selectedTheme = MUSIC_THEMES.find((musicTheme) => musicTheme.category === selectedCategory);
 	const genreCarousel = useCarousel(selectedTheme?.genres || []);
+
+	// 인디케이터 위치 업데이트 함수
+	const updateIndicatorPosition = useCallback(() => {
+		if (!indicatorRef.current) {
+			setIndicatorBottom(null);
+			return;
+		}
+
+		const rect = indicatorRef.current.getBoundingClientRect();
+		// 인디케이터의 하단이 뷰포트 하단에서 얼마나 떨어져 있는지 계산
+		// rect.bottom은 뷰포트 기준 하단 위치이므로, window.innerHeight - rect.bottom이 뷰포트 하단에서의 거리
+		// 음수면 인디케이터가 뷰포트 밖에 있음
+		const distanceFromViewportBottom = window.innerHeight - rect.bottom;
+		setIndicatorBottom(distanceFromViewportBottom);
+	}, []);
+
+	// 인디케이터 ref 콜백
+	const handleIndicatorRef = useCallback(
+		(ref: HTMLDivElement | null) => {
+			indicatorRef.current = ref;
+			updateIndicatorPosition();
+		},
+		[updateIndicatorPosition]
+	);
+
+	// 인디케이터 위치 업데이트 (리사이즈 및 스크롤 시)
+	useEffect(() => {
+		updateIndicatorPosition();
+		window.addEventListener('resize', updateIndicatorPosition);
+		window.addEventListener('scroll', updateIndicatorPosition);
+
+		return () => {
+			window.removeEventListener('resize', updateIndicatorPosition);
+			window.removeEventListener('scroll', updateIndicatorPosition);
+		};
+	}, [updateIndicatorPosition, selectedCategory, categoryCarousel.currentIndex, genreCarousel.currentIndex]);
+
+	// Footer 위치 계산: 인디케이터가 화면 하단에 보일 때는 인디케이터 아래, 그 외에는 화면 하단 고정
+	const shouldFollowIndicator = useMemo(() => {
+		if (indicatorBottom === null) {
+			return false;
+		}
+
+		// 인디케이터가 화면 하단 근처에 있거나 그 아래로 내려갔을 때
+		// footer는 인디케이터 아래 12px에 배치되어 스크롤과 함께 움직임
+		// 인디케이터가 화면 위쪽에 있으면 (indicatorBottom이 큰 양수) footer는 화면 하단에 고정
+		// 인디케이터가 화면 하단에 보이기 시작하는 순간부터 footer를 따라가게 함
+		// footer 높이 + 간격(12px)을 고려하여 약 50px 이내면 인디케이터를 따라감
+		const threshold = 50; // 50px 이내면 인디케이터를 따라감
+		return indicatorBottom <= threshold;
+	}, [indicatorBottom]);
 
 	const theme = useThemeStore((state) => state.theme);
 	const greeting = getTimeGreeting();
@@ -134,7 +204,7 @@ const Landing = () => {
 					{/* Greeting Section */}
 					<motion.div
 						className="text-center space-y-2 md:space-y-3"
-						style={{ paddingTop: 'clamp(12vh, 18vh, 25vh)' }}
+						style={{ paddingTop: `${textBlockPaddingTop}px` }}
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.6 }}
@@ -200,6 +270,7 @@ const Landing = () => {
 								onGoTo={categoryCarousel.goTo}
 								onPlayCategory={setPlayingCategory}
 								onPauseCategory={() => setPlayingCategory(null)}
+								onIndicatorRef={handleIndicatorRef}
 							/>
 						) : (
 							<GenreSection
@@ -215,25 +286,47 @@ const Landing = () => {
 								onBack={handleBack}
 								onPlayGenre={setPlayingGenre}
 								onPauseGenre={() => setPlayingGenre(null)}
+								onIndicatorRef={handleIndicatorRef}
 							/>
 						)}
 					</AnimatePresence>
+
+					{/* Footer - 인디케이터 아래에 배치 (스크롤과 함께 움직임) */}
+					{shouldFollowIndicator && (
+						<motion.div
+							className="text-center w-full pointer-events-none"
+							style={{ marginTop: '12px' }}
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							transition={{ delay: 0.8 }}
+						>
+							<p
+								className="text-slate-500 dark:text-slate-400 pointer-events-auto"
+								style={{ fontSize: navTextSize }}
+							>
+								AI가 생성하는 나만의 음악 경험, MOODWAVE
+							</p>
+						</motion.div>
+					)}
 				</div>
 
-				{/* Footer */}
-				<motion.div
-					className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-center w-full z-10 pointer-events-none"
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ delay: 0.8 }}
-				>
-					<p
-						className="text-slate-500 dark:text-slate-400 pointer-events-auto"
-						style={{ fontSize: navTextSize }}
+				{/* Footer - 화면 하단에 고정 (화면이 클 때) */}
+				{!shouldFollowIndicator && (
+					<motion.div
+						className="fixed left-1/2 transform -translate-x-1/2 text-center w-full z-10 pointer-events-none"
+						style={{ bottom: '12px' }}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ delay: 0.8 }}
 					>
-						AI가 생성하는 나만의 음악 경험, MOODWAVE
-					</p>
-				</motion.div>
+						<p
+							className="text-slate-500 dark:text-slate-400 pointer-events-auto"
+							style={{ fontSize: navTextSize }}
+						>
+							AI가 생성하는 나만의 음악 경험, MOODWAVE
+						</p>
+					</motion.div>
+				)}
 			</div>
 		</>
 	);

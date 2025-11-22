@@ -13,9 +13,10 @@ interface CategorySectionProps {
 	onGoTo: (index: number) => void;
 	onPlayCategory: (category: ThemeCategory) => void;
 	onPauseCategory: () => void;
+	onIndicatorRef?: (ref: HTMLDivElement | null) => void;
 }
 
-export const CategorySection = ({ visibleRange, currentIndex, playingCategory, onCategoryClick, onPrev, onNext, onGoTo, onPlayCategory, onPauseCategory }: CategorySectionProps) => {
+export const CategorySection = ({ visibleRange, currentIndex, playingCategory, onCategoryClick, onPrev, onNext, onGoTo, onPlayCategory, onPauseCategory, onIndicatorRef }: CategorySectionProps) => {
 	const items = MUSIC_THEMES.map((theme) => ({
 		id: theme.category,
 		nameKo: theme.categoryNameKo,
@@ -48,6 +49,7 @@ export const CategorySection = ({ visibleRange, currentIndex, playingCategory, o
 				titleTag="h2"
 				titleSize="text-2xl md:text-3xl"
 				nameSize="text-lg md:text-xl"
+				onIndicatorRef={onIndicatorRef}
 			/>
 		</motion.div>
 	);

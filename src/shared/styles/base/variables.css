@@ -1,23 +1,23 @@
 @layer base {
 	:root {
 		/* Colors */
-		--color-primary: #a855f7;
+		--color-primary: #fb7185;
 		--color-secondary: #06b6d4;
 		--color-tertiary: #d946ef;
 
 		/* Glass Effects */
-		--glass-bg-light: rgba(255, 255, 255, 0.7);
-		--glass-bg-dark: rgba(30, 41, 59, 0.6);
-		--glass-bg-card-light: rgba(255, 255, 255, 0.8);
-		--glass-bg-card-dark: rgba(30, 41, 59, 0.7);
+		--glass-bg-light: rgba(254, 248, 242, 0.75);
+		--glass-bg-dark: rgba(28, 25, 23, 0.65);
+		--glass-bg-card-light: rgba(254, 248, 242, 0.85);
+		--glass-bg-card-dark: rgba(28, 25, 23, 0.75);
 		--glass-blur: blur(20px) saturate(180%);
 		--glass-blur-card: blur(24px) saturate(200%);
-		--glass-border-light: rgba(255, 255, 255, 0.3);
-		--glass-border-dark: rgba(255, 255, 255, 0.15);
+		--glass-border-light: rgba(0, 0, 0, 0.12);
+		--glass-border-dark: rgba(255, 255, 255, 0.25);
 
 		/* Background Colors */
-		--bg-light: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-		--bg-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+		--bg-light: linear-gradient(135deg, #fef8f2 0%, #f9f0e6 100%);
+		--bg-dark: linear-gradient(135deg, #1c1917 0%, #2a2521 100%);
 		--text-light: #1e293b;
 		--text-dark: #f1f5f9;
 

@@ -22,6 +22,10 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 	const colors = useThemeColors();
 	const [isGenreDropdownOpen, setIsGenreDropdownOpen] = useState(false);
 	const [showToast, setShowToast] = useState(false);
+	const [hoveredGenreId, setHoveredGenreId] = useState<string | null>(null);
+	const [isFullscreenHovered, setIsFullscreenHovered] = useState(false);
+	const [isGenreButtonHovered, setIsGenreButtonHovered] = useState(false);
+	const [isHomeButtonHovered, setIsHomeButtonHovered] = useState(false);
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const genreSelectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -109,21 +113,57 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 								initial="hidden"
 								animate="visible"
 								exit="hidden"
-								// @ts-expect-error - as const로 인한 타입 추론 제한
-								variants={PLAYER_CONSTANTS.ANIMATIONS.topBarButton}
+								variants={{
+									hidden: {
+										opacity: 0,
+										y: -20,
+										transition: {
+											opacity: {
+												duration: 0.3,
+												ease: [0.4, 0, 0.2, 1],
+											},
+											y: {
+												duration: 0.3,
+												ease: [0.4, 0, 0.2, 1],
+											},
+										},
+									},
+									visible: {
+										opacity: 1,
+										y: 0,
+										transition: {
+											...PLAYER_CONSTANTS.ANIMATIONS.topBarDelayed.transition,
+										},
+									},
+								}}
 								className="relative"
 								ref={dropdownRef}
 							>
-								<Button
-									variant="ghost"
-									size="sm"
-									onClick={() => setIsGenreDropdownOpen(!isGenreDropdownOpen)}
-									className={PLAYER_CONSTANTS.STYLES.glassButton.homeButton}
+								<div
+									onMouseEnter={() => setIsGenreButtonHovered(true)}
+									onMouseLeave={() => setIsGenreButtonHovered(false)}
 								>
-									<Grid3x3 className="w-5 h-5 mr-2" />
-									장르 선택
-									<ChevronDown className={`w-4 h-4 ml-2 transition-transform duration-200 ${isGenreDropdownOpen ? 'rotate-180' : ''}`} />
-								</Button>
+									<Button
+										variant="ghost"
+										size="sm"
+										onClick={() => setIsGenreDropdownOpen(!isGenreDropdownOpen)}
+										className={PLAYER_CONSTANTS.STYLES.glassButton.homeButton}
+									>
+										<Grid3x3
+											className="w-5 h-5 mr-2"
+											style={{
+												color: isGenreButtonHovered || isGenreDropdownOpen ? '#fb7185' : undefined,
+											}}
+										/>
+										장르 선택
+										<ChevronDown
+											className={`w-4 h-4 ml-2 transition-transform duration-200 ${isGenreDropdownOpen ? 'rotate-180' : ''}`}
+											style={{
+												color: isGenreButtonHovered || isGenreDropdownOpen ? '#fb7185' : undefined,
+											}}
+										/>
+									</Button>
+								</div>
 
 								{/* 드롭다운 메뉴 */}
 								<AnimatePresence>
@@ -145,11 +185,14 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 													<motion.button
 														key={genre.id}
 														onClick={() => handleGenreSelect(genre)}
-														className={`w-full flex items-center gap-3 p-3 rounded-xl mb-2 last:mb-0 transition-all ${
+														onMouseEnter={() => setHoveredGenreId(genre.id)}
+														onMouseLeave={() => setHoveredGenreId(null)}
+														className={`w-full flex items-center gap-3 p-3 rounded-xl mb-2 last:mb-0 transition-all ${selectedGenre?.id === genre.id ? 'bg-primary-500/20 border-2' : 'hover:bg-white/10 dark:hover:bg-white/5 border-2 border-transparent'}`}
+														style={
 															selectedGenre?.id === genre.id
-																? 'bg-primary-500/20 border-2 border-primary-500/50'
-																: 'hover:bg-white/10 dark:hover:bg-white/5 border-2 border-transparent'
-														}`}
+																? { borderColor: 'rgba(251, 113, 133, 0.5)' } // primary-500/50
+																: undefined
+														}
 														whileHover={{ scale: 1.02 }}
 														whileTap={{ scale: 0.98 }}
 													>
@@ -165,14 +208,26 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 														<div className="flex-1 text-left min-w-0">
 															<div
 																className="font-semibold text-base mb-1 truncate"
-																style={{ color: theme === 'dark' ? '#f1f5f9' : '#0f172a' }}
+																style={{
+																	color:
+																		hoveredGenreId === genre.id
+																			? '#fb7185' // primary-500 (호버 시 프라이머리 컬러)
+																			: theme === 'dark'
+																				? '#f1f5f9'
+																				: '#0f172a',
+																}}
 															>
 																{genre.nameKo}
 															</div>
 															{genre.description && (
 																<div
 																	className="text-sm line-clamp-2"
-																	style={{ color: colors.textSecondaryColor }}
+																	style={{
+																		color:
+																			hoveredGenreId === genre.id
+																				? 'rgba(251, 113, 133, 0.8)' // primary-500 with opacity
+																				: colors.textSecondaryColor,
+																	}}
 																>
 																	{genre.description}
 																</div>
@@ -189,18 +244,47 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 								initial="hidden"
 								animate="visible"
 								exit="hidden"
-								// @ts-expect-error - as const로 인한 타입 추론 제한
-								variants={PLAYER_CONSTANTS.ANIMATIONS.topBarButton}
+								variants={{
+									hidden: {
+										opacity: 0,
+										y: -20,
+										transition: {
+											opacity: {
+												duration: 0.3,
+												ease: [0.4, 0, 0.2, 1],
+											},
+											y: {
+												duration: 0.3,
+												ease: [0.4, 0, 0.2, 1],
+											},
+										},
+									},
+									visible: {
+										opacity: 1,
+										y: 0,
+										transition: {
+											...PLAYER_CONSTANTS.ANIMATIONS.topBarDelayed.transition,
+										},
+									},
+								}}
 							>
-								<Button
-									variant="ghost"
-									size="sm"
-									onClick={onHomeClick}
-									className={PLAYER_CONSTANTS.STYLES.glassButton.homeButton}
+								<div
+									onMouseEnter={() => setIsHomeButtonHovered(true)}
+									onMouseLeave={() => setIsHomeButtonHovered(false)}
 								>
-									<Home className="w-5 h-5 mr-2" />
-									홈으로
-								</Button>
+									<Button
+										variant="ghost"
+										size="sm"
+										onClick={onHomeClick}
+										className={PLAYER_CONSTANTS.STYLES.glassButton.homeButton}
+									>
+										<Home
+											className="w-5 h-5 mr-2"
+											style={{ color: isHomeButtonHovered ? '#fb7185' : undefined }}
+										/>
+										홈으로
+									</Button>
+								</div>
 							</motion.div>
 
 							<motion.div
@@ -241,18 +325,20 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 				<motion.div {...PLAYER_CONSTANTS.ANIMATIONS.topBar}>
 					<button
 						onClick={toggleFullscreen}
+						onMouseEnter={() => setIsFullscreenHovered(true)}
+						onMouseLeave={() => setIsFullscreenHovered(false)}
 						className={PLAYER_CONSTANTS.STYLES.glassButton.base}
 						aria-label={isFullscreen ? '전체화면 해제' : '전체화면'}
 					>
 						{isFullscreen ? (
 							<Minimize
 								className="w-5 h-5 dark:text-slate-300"
-								style={{ color: theme === 'dark' ? undefined : '#0f172a' }}
+								style={{ color: isFullscreenHovered ? '#fb7185' : theme === 'dark' ? undefined : '#0f172a' }}
 							/>
 						) : (
 							<Maximize
 								className="w-5 h-5 dark:text-slate-300"
-								style={{ color: theme === 'dark' ? undefined : '#0f172a' }}
+								style={{ color: isFullscreenHovered ? '#fb7185' : theme === 'dark' ? undefined : '#0f172a' }}
 							/>
 						)}
 					</button>

@@ -104,6 +104,12 @@ export const PLAYER_CONSTANTS = {
 			exit: { opacity: 0, rotate: 90 },
 			transition: { duration: 0.2 },
 		},
+		muteButtonIcon: {
+			initial: { opacity: 0, rotate: -180 },
+			animate: { opacity: 1, rotate: 0 },
+			exit: { opacity: 0, rotate: 180 },
+			transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+		},
 		imageScale: {
 			initial: { scale: 1.1 },
 			animate: { scale: 1 },
@@ -123,10 +129,10 @@ export const PLAYER_CONSTANTS = {
 		gradientOverlay: {
 			animate: {
 				background: [
-					'radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.3), transparent 50%)',
+					'radial-gradient(circle at 20% 50%, rgba(251, 113, 133, 0.3), transparent 50%)',
 					'radial-gradient(circle at 80% 50%, rgba(6, 182, 212, 0.3), transparent 50%)',
 					'radial-gradient(circle at 50% 20%, rgba(236, 72, 153, 0.3), transparent 50%)',
-					'radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.3), transparent 50%)',
+					'radial-gradient(circle at 20% 50%, rgba(251, 113, 133, 0.3), transparent 50%)',
 				],
 			},
 			transition: {

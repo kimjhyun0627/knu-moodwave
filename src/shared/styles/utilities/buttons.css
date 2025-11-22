@@ -132,16 +132,34 @@
 	/* 호버 시 아이콘 글로우 효과 */
 	.play-button:hover .play-icon,
 	.play-button.is-hovered .play-icon {
+		color: #fb7185 !important; /* primary-500 (rose) */
 		animation: play-icon-glow 1.5s ease-in-out infinite !important;
 		transform: scale(1.1) !important;
-		transition: transform 0.3s ease !important;
+		transition:
+			transform 0.3s ease,
+			color 0.3s ease !important;
+	}
+
+	.play-button:hover .play-icon svg,
+	.play-button.is-hovered .play-icon svg {
+		color: #fb7185 !important; /* primary-500 (rose) */
+		fill: #fb7185 !important;
 	}
 
 	.dark .play-button:hover .play-icon,
 	.dark .play-button.is-hovered .play-icon {
+		color: #fb7185 !important; /* primary-500 (rose) */
 		animation: play-icon-glow-dark 1.5s ease-in-out infinite !important;
 		transform: scale(1.1) !important;
-		transition: transform 0.3s ease !important;
+		transition:
+			transform 0.3s ease,
+			color 0.3s ease !important;
+	}
+
+	.dark .play-button:hover .play-icon svg,
+	.dark .play-button.is-hovered .play-icon svg {
+		color: #fb7185 !important; /* primary-500 (rose) */
+		fill: #fb7185 !important;
 	}
 
 	/* 글라스모피즘 배경 오버레이 - 미묘한 그라데이션 */

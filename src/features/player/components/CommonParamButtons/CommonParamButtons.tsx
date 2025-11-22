@@ -16,6 +16,7 @@ export const CommonParamButtons = ({ availableCommonParams, onAddCommonParam, or
 	const colors = useThemeColors();
 	const [removingButtonIds, setRemovingButtonIds] = useState<Set<string>>(new Set());
 	const [shouldHidePanel, setShouldHidePanel] = useState(false);
+	const [hoveredButtonId, setHoveredButtonId] = useState<string | null>(null);
 
 	const handleButtonClick = (param: CategoryParameter) => {
 		const isLastButton = availableCommonParams.length === 1;
@@ -80,6 +81,8 @@ export const CommonParamButtons = ({ availableCommonParams, onAddCommonParam, or
 										key={param.id}
 										layout
 										onClick={() => handleButtonClick(param)}
+										onMouseEnter={() => setHoveredButtonId(param.id)}
+										onMouseLeave={() => setHoveredButtonId(null)}
 										initial={{ opacity: 0, scale: 0.9 }}
 										animate={isRemoving ? PLAYER_CONSTANTS.PARAMETER.COMMON_PARAM_BUTTON_ANIMATION.removing : { opacity: 1, scale: 1 }}
 										exit={PLAYER_CONSTANTS.PARAMETER.COMMON_PARAM_BUTTON_ANIMATION.removing}
@@ -91,11 +94,15 @@ export const CommonParamButtons = ({ availableCommonParams, onAddCommonParam, or
 									>
 										<Plus
 											className="w-4 h-4 shrink-0"
-											style={{ color: colors.iconColor }}
+											style={{
+												color: hoveredButtonId === param.id ? '#fb7185' : colors.iconColor,
+											}}
 										/>
 										<span
 											className="text-xs sm:text-sm md:text-base font-medium whitespace-nowrap"
-											style={{ color: colors.textMutedColor }}
+											style={{
+												color: hoveredButtonId === param.id ? '#fb7185' : colors.textMutedColor,
+											}}
 										>
 											{param.nameKo}
 										</span>

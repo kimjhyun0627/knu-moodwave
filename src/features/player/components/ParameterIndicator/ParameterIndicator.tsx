@@ -97,15 +97,16 @@ export const ParameterIndicator = ({ allParams, currentStartIndex, visibleCount,
 								style={{
 									width: '8px',
 									height: '8px',
-									backgroundColor: colors.isDark ? 'rgba(241, 245, 249, 1)' : 'rgba(30, 41, 59, 1)',
-									opacity: isActive ? 0.9 : 0.3, // 활성: 덜 투명, 비활성: 더 투명
+									backgroundColor: isActive ? '#fb7185' : colors.isDark ? 'rgba(241, 245, 249, 1)' : 'rgba(30, 41, 59, 1)',
+									opacity: isActive ? 1 : 0.3, // 활성: 불투명, 비활성: 더 투명
 									backdropFilter: 'blur(4px)',
 									WebkitBackdropFilter: 'blur(4px)',
-									boxShadow: isActive ? '0 2px 8px rgba(0, 0, 0, 0.2)' : '0 1px 4px rgba(0, 0, 0, 0.1)',
+									boxShadow: isActive ? '0 2px 8px rgba(251, 113, 133, 0.4)' : '0 1px 4px rgba(0, 0, 0, 0.1)',
 								}}
 								whileHover={{
 									scale: 1.3,
 									opacity: isActive ? 1 : 0.5,
+									backgroundColor: isActive ? '#f43f5e' : undefined, // 호버 시 더 진한 로즈
 								}}
 								transition={{
 									type: 'spring',

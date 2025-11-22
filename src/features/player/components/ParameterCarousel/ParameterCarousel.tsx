@@ -1,4 +1,4 @@
-import type { RefObject } from 'react';
+import { useState, type RefObject } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import type { CategoryParameter } from '@/shared/types';
@@ -38,6 +38,8 @@ export const ParameterCarousel = ({
 	onNext,
 }: ParameterCarouselProps) => {
 	const colors = useThemeColors();
+	const [isPrevHovered, setIsPrevHovered] = useState(false);
+	const [isNextHovered, setIsNextHovered] = useState(false);
 
 	return (
 		<div
@@ -68,6 +70,8 @@ export const ParameterCarousel = ({
 						{/* 상단 네비게이션 버튼 (절반 겹침) */}
 						<motion.button
 							onClick={onPrev}
+							onMouseEnter={() => setIsPrevHovered(true)}
+							onMouseLeave={() => setIsPrevHovered(false)}
 							className="btn-glass p-2 md:p-3 rounded-full hover:glow-primary transition-all shadow-lg z-10"
 							aria-label="이전 파라미터"
 							whileHover={{ scale: 1.1, rotate: -5 }}
@@ -85,12 +89,14 @@ export const ParameterCarousel = ({
 						>
 							<ChevronUp
 								className="w-4 h-4 md:w-5 md:h-5"
-								style={{ color: 'inherit' }}
+								style={{ color: isPrevHovered ? '#fb7185' : 'inherit' }}
 							/>
 						</motion.button>
 						{/* 하단 네비게이션 버튼 (절반 겹침) */}
 						<motion.button
 							onClick={onNext}
+							onMouseEnter={() => setIsNextHovered(true)}
+							onMouseLeave={() => setIsNextHovered(false)}
 							className="btn-glass p-2 md:p-3 rounded-full hover:glow-primary transition-all shadow-lg z-10"
 							aria-label="다음 파라미터"
 							whileHover={{ scale: 1.1, rotate: 5 }}
@@ -108,7 +114,7 @@ export const ParameterCarousel = ({
 						>
 							<ChevronDown
 								className="w-4 h-4 md:w-5 md:h-5"
-								style={{ color: 'inherit' }}
+								style={{ color: isNextHovered ? '#fb7185' : 'inherit' }}
 							/>
 						</motion.button>
 						<div className="relative w-full overflow-visible">
