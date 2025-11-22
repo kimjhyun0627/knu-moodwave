@@ -18,18 +18,8 @@ export const PlayerGenreInfo = ({ genre, theme, isVisible = true }: PlayerGenreI
 						initial="hidden"
 						animate="visible"
 						exit="hidden"
-						variants={{
-							hidden: {
-								opacity: 0,
-								y: -20,
-								transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
-							},
-							visible: {
-								opacity: 1,
-								y: 0,
-								transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
-							},
-						}}
+						// @ts-expect-error - as const로 인한 타입 추론 제한
+						variants={PLAYER_CONSTANTS.ANIMATIONS.genreInfoTransition}
 					>
 						<div className={`${PLAYER_CONSTANTS.STYLES.glassCard} w-full`}>
 							{theme && (

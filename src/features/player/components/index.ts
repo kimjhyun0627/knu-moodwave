@@ -8,3 +8,4 @@ export { ParameterSection } from './ParameterSection';
 export { ParameterCarousel } from './ParameterCarousel';
 export { ParameterIndicator } from './ParameterIndicator';
 export { CommonParamButtons } from './CommonParamButtons';
+export { GradientOverlay } from './GradientOverlay';

@@ -357,6 +357,115 @@ export const PLAYER_CONSTANTS = {
 				},
 			},
 		},
+		// TopBar 버튼 애니메이션 variants (중복 제거용)
+		topBarButton: {
+			hidden: {
+				opacity: 0,
+				y: -20,
+				transition: {
+					opacity: {
+						duration: 0.3,
+						ease: [0.4, 0, 0.2, 1],
+					},
+					y: {
+						duration: 0.3,
+						ease: [0.4, 0, 0.2, 1],
+					},
+				},
+			},
+			visible: {
+				opacity: 1,
+				y: 0,
+				transition: {
+					duration: 0.5,
+				},
+			},
+		},
+		// 장르 변경 애니메이션
+		genreChange: {
+			overlay: {
+				initial: { opacity: 0 },
+				animate: { opacity: 1 },
+				exit: { opacity: 0 },
+				transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] },
+			},
+			circle: {
+				initial: { scale: 0.95, opacity: 0.4 },
+				animate: { scale: 1.05, opacity: 0.7 },
+				exit: { scale: 1.15, opacity: 0 },
+				transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] },
+			},
+		},
+		// 나가기 애니메이션
+		exit: {
+			overlay: {
+				initial: { opacity: 0 },
+				animate: { opacity: 1 },
+				exit: { opacity: 0 },
+				transition: { duration: 0.65, ease: [0.4, 0, 0.2, 1] },
+			},
+			circle: {
+				initial: { scale: 0.8, opacity: 0.2 },
+				animate: { scale: 1.2, opacity: 0.9 },
+				transition: { duration: 0.65, ease: [0.4, 0, 0.2, 1] },
+			},
+		},
+		// 장르 정보 애니메이션
+		genreInfoTransition: {
+			hidden: {
+				opacity: 0,
+				y: -20,
+				transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+			},
+			visible: {
+				opacity: 1,
+				y: 0,
+				transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
+			},
+		},
+		// 중앙 이미지 전환 애니메이션
+		centerImageTransition: {
+			opacity: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+			scale: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
+		},
+	},
+	TIMING: {
+		// 타이밍 상수 (ms)
+		GENRE_CHANGE_DELAY: 500, // 장르 변경 애니메이션 지속 시간
+		GENRE_SELECT_DELAY: 3000, // 장르 선택 후 딜레이
+		EXIT_ANIMATION_DELAY: 700, // 나가기 애니메이션 후 네비게이션 딜레이
+		TOAST_DURATION: 3000, // 토스트 표시 시간
+	},
+	GRADIENTS: {
+		// 그라데이션 오버레이 색상
+		genreChange: {
+			dark: 'linear-gradient(140deg, rgba(15,23,42,0.8), rgba(67,56,202,0.7))',
+			light: 'linear-gradient(140deg, rgba(255,255,255,0.8), rgba(191,219,254,0.7))',
+		},
+		exit: {
+			dark: 'linear-gradient(140deg, rgba(15,23,42,0.95), rgba(67,56,202,0.85))',
+			light: 'linear-gradient(140deg, rgba(255,255,255,0.95), rgba(191,219,254,0.85))',
+		},
+		circle: {
+			dark: {
+				background: 'rgba(255,255,255,0.1)',
+				boxShadow: '0 0 80px rgba(167, 139, 250, 0.4)',
+			},
+			light: {
+				background: 'rgba(148,163,184,0.25)',
+				boxShadow: '0 0 80px rgba(99, 102, 241, 0.35)',
+			},
+		},
+		exitCircle: {
+			dark: {
+				background: 'rgba(255,255,255,0.08)',
+				boxShadow: '0 0 80px rgba(167, 139, 250, 0.35)',
+			},
+			light: {
+				background: 'rgba(148,163,184,0.2)',
+				boxShadow: '0 0 80px rgba(99, 102, 241, 0.3)',
+			},
+		},
 	},
 } as const;
 

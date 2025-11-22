@@ -23,6 +23,7 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 	const [isGenreDropdownOpen, setIsGenreDropdownOpen] = useState(false);
 	const [showToast, setShowToast] = useState(false);
 	const dropdownRef = useRef<HTMLDivElement>(null);
+	const genreSelectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	// 현재 카테고리의 장르 목록 가져오기
 	const currentGenres = selectedTheme?.genres || [];
@@ -44,6 +45,15 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 		};
 	}, [isGenreDropdownOpen]);
 
+	// 컴포넌트 언마운트 시 타이머 정리
+	useEffect(() => {
+		return () => {
+			if (genreSelectTimerRef.current) {
+				clearTimeout(genreSelectTimerRef.current);
+			}
+		};
+	}, []);
+
 	const handleGenreSelect = (genre: MusicGenre) => {
 		// 같은 장르를 재선택한 경우 아무 액션도 하지 않음
 		if (selectedGenre?.id === genre.id) {
@@ -51,19 +61,25 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 			return;
 		}
 
-		// 다른 장르 선택 시 토스트 표시 후 3초 딜레이
+		// 이전 타이머가 있으면 정리
+		if (genreSelectTimerRef.current) {
+			clearTimeout(genreSelectTimerRef.current);
+		}
+
+		// 다른 장르 선택 시 토스트 표시 후 딜레이
 		setShowToast(true);
 		setIsGenreDropdownOpen(false);
-		// 3초 딜레이 후 장르 변경
-		setTimeout(() => {
+		// 딜레이 후 장르 변경
+		genreSelectTimerRef.current = setTimeout(() => {
 			usePlayerStore.getState().setSelectedGenre(genre);
 			setShowToast(false);
-		}, 3000);
+			genreSelectTimerRef.current = null;
+		}, PLAYER_CONSTANTS.TIMING.GENRE_SELECT_DELAY);
 	};
 
 	return (
 		<>
-			<div className="absolute top-6 right-6 z-10 flex items-center gap-3">
+			<div className="absolute top-6 right-6 z-10000 flex items-center gap-3">
 				<AnimatePresence>
 					{isVisible && (
 						<>
@@ -72,29 +88,8 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 								initial="hidden"
 								animate="visible"
 								exit="hidden"
-								variants={{
-									hidden: {
-										opacity: 0,
-										y: -20,
-										transition: {
-											opacity: {
-												duration: 0.3,
-												ease: [0.4, 0, 0.2, 1],
-											},
-											y: {
-												duration: 0.3,
-												ease: [0.4, 0, 0.2, 1],
-											},
-										},
-									},
-									visible: {
-										opacity: 1,
-										y: 0,
-										transition: {
-											...PLAYER_CONSTANTS.ANIMATIONS.topBar.transition,
-										},
-									},
-								}}
+								// @ts-expect-error - as const로 인한 타입 추론 제한
+								variants={PLAYER_CONSTANTS.ANIMATIONS.topBarButton}
 								className="relative"
 								ref={dropdownRef}
 							>
@@ -121,6 +116,7 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 											style={{
 												background: colors.glassBackground,
 												borderColor: colors.glassBorder,
+												zIndex: 110000, // 파라미터 패널(z-100)보다 위에 표시
 											}}
 										>
 											<div className="p-2">
@@ -172,29 +168,8 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 								initial="hidden"
 								animate="visible"
 								exit="hidden"
-								variants={{
-									hidden: {
-										opacity: 0,
-										y: -20,
-										transition: {
-											opacity: {
-												duration: 0.3,
-												ease: [0.4, 0, 0.2, 1],
-											},
-											y: {
-												duration: 0.3,
-												ease: [0.4, 0, 0.2, 1],
-											},
-										},
-									},
-									visible: {
-										opacity: 1,
-										y: 0,
-										transition: {
-											...PLAYER_CONSTANTS.ANIMATIONS.topBar.transition,
-										},
-									},
-								}}
+								// @ts-expect-error - as const로 인한 타입 추론 제한
+								variants={PLAYER_CONSTANTS.ANIMATIONS.topBarButton}
 							>
 								<Button
 									variant="ghost"
@@ -268,7 +243,7 @@ export const PlayerTopBar = ({ onHomeClick, isVisible = true }: PlayerTopBarProp
 				<Toast
 					message="음악이 생성되면 세부 장르로 넘어가요!"
 					type="info"
-					duration={3000}
+					duration={PLAYER_CONSTANTS.TIMING.TOAST_DURATION}
 					onClose={() => setShowToast(false)}
 				/>
 			)}
