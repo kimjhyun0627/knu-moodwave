@@ -26,7 +26,6 @@ interface ParameterPanelProps {
 	onRemoveThemeParam: (paramId: string) => void;
 	onRemoveCommonParam: (paramId: string) => void;
 	onAddCommonParam: (paramId: string) => void;
-	onApply?: () => void;
 }
 
 export const ParameterPanel = ({
@@ -40,7 +39,6 @@ export const ParameterPanel = ({
 	onRemoveThemeParam,
 	onRemoveCommonParam,
 	onAddCommonParam,
-	onApply,
 }: ParameterPanelProps) => {
 	const colors = useThemeColors();
 	const orientation = usePlayerStore((state) => state.parameterPanelOrientation);
@@ -250,11 +248,10 @@ export const ParameterPanel = ({
 									orientation={orientation}
 								/>
 
-								{/* 모드 토글 버튼 및 적용하기 버튼 */}
+								{/* 모드 토글 버튼 */}
 								<ParameterModeToggle
 									orientation={orientation}
 									onToggle={() => setParameterPanelOrientation(orientation === 'horizontal' ? 'vertical' : 'horizontal')}
-									onApply={onApply}
 								/>
 							</motion.div>
 						</motion.div>

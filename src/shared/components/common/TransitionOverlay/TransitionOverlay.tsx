@@ -96,7 +96,7 @@ export const TransitionOverlay = ({ isVisible, onCancel }: TransitionOverlayProp
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ delay: 0.3, duration: 0.4 }}
 							>
-								첫 트랙 생성에는 30초 정도 걸려요.
+								30초 정도 시간이 필요할 수 있어요
 							</motion.p>
 							<motion.p
 								className="text-base md:text-lg font-medium"

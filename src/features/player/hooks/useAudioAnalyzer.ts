@@ -73,8 +73,8 @@ export const useAudioAnalyzer = (enabled: boolean = true): AudioAnalysisResult =
 		// 재생 시작을 빠르게 감지하는 함수 (이벤트 + 짧은 폴링)
 		const waitForPlayback = (): Promise<void> => {
 			return new Promise((resolve) => {
-				// 이미 재생 중이면 즉시 resolve
-				if (!audio.paused && audio.currentTime > 0 && audio.readyState >= 2) {
+				// 이미 재생 중이면 즉시 resolve (currentTime > 0 조건 제거 - 0초부터 재생 가능)
+				if (!audio.paused && audio.readyState >= 2) {
 					resolve();
 					return;
 				}
@@ -91,7 +91,7 @@ export const useAudioAnalyzer = (enabled: boolean = true): AudioAnalysisResult =
 
 				// 빠른 폴링으로 재생 상태 확인 (50ms마다)
 				const pollInterval = setInterval(() => {
-					if (!resolved && !audio.paused && audio.currentTime > 0 && audio.readyState >= 2) {
+					if (!resolved && !audio.paused && audio.readyState >= 2) {
 						resolved = true;
 						cleanup();
 						resolve();
@@ -109,9 +109,9 @@ export const useAudioAnalyzer = (enabled: boolean = true): AudioAnalysisResult =
 
 				// canplay 이벤트 핸들러 (오디오 준비 완료 시)
 				const onCanPlay = () => {
-					// canplay 후 짧은 폴링으로 재생 시작 확인
+					// canplay 후 짧은 폴링으로 재생 시작 확인 (currentTime > 0 조건 제거)
 					setTimeout(() => {
-						if (!resolved && !audio.paused && audio.currentTime > 0) {
+						if (!resolved && !audio.paused) {
 							resolved = true;
 							cleanup();
 							resolve();
@@ -123,7 +123,7 @@ export const useAudioAnalyzer = (enabled: boolean = true): AudioAnalysisResult =
 				audio.addEventListener('playing', onPlaying, { once: true });
 				audio.addEventListener('canplay', onCanPlay, { once: true });
 
-				// 타임아웃: 최대 1초 대기
+				// 타임아웃: 최대 10초 대기
 				const timeout = setTimeout(() => {
 					if (!resolved) {
 						resolved = true;

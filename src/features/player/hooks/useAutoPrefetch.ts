@@ -10,7 +10,7 @@ const PREFETCH_THRESHOLD_SECONDS = 30;
  * - 현재 트랙이 30초 이하 남았을 때 다음 트랙을 자동으로 가져옵니다.
  */
 export const useAutoPrefetch = (currentTrack: { id: string; duration?: number } | null, currentTime: number, audioRef: React.RefObject<HTMLAudioElement | null>) => {
-	const { selectedGenre, queue, isGenreChangeInProgress, setNextTrack, setIsAutoPrefetching } = usePlayerStore();
+	const { selectedGenre, queue, isGenreChangeInProgress, isAutoPrefetching, isManualFetching, setNextTrack, setIsAutoPrefetching } = usePlayerStore();
 	const { showInfo, showSuccess, removeToast } = useToast();
 	const { fetchTrack } = useTrackFetcher();
 
@@ -38,6 +38,12 @@ export const useAutoPrefetch = (currentTrack: { id: string; duration?: number } 
 		cleanupPrefetch();
 		// readyToastIdRef는 자동 프리페치 완료 토스트이므로 트랙 변경 시에도 유지
 	}, [currentTrack?.id, cleanupPrefetch]);
+
+	// 장르 변경 시 프리페치 정리 (세부장르 변경 fetch가 정상적으로 작동하도록)
+	useEffect(() => {
+		prefetchedTrackIdRef.current = null;
+		cleanupPrefetch();
+	}, [selectedGenre?.id, cleanupPrefetch]);
 
 	// 자동 프리페치 로직
 	useEffect(() => {
@@ -77,18 +83,25 @@ export const useAutoPrefetch = (currentTrack: { id: string; duration?: number } 
 			return;
 		}
 
+		// 이미 fetch가 진행 중이면 새로운 요청 시작하지 않음
+		// prefetchAbortRef와 isAutoPrefetching 상태 모두 확인
+		// 토스트가 이미 표시되어 있으면 중복 표시 방지
+		// 수동 fetch(다음 버튼)가 진행 중이면 자동 프리페치 시작하지 않음
+		if (prefetchAbortRef.current || isAutoPrefetching || prefetchToastIdRef.current || isManualFetching) {
+			return;
+		}
+
 		// 프리페치 시작
 		const abortController = new AbortController();
 		prefetchAbortRef.current = abortController;
 		prefetchedTrackIdRef.current = currentTrack.id;
 
 		// 토스트 표시 및 자동 프리페치 상태 설정
-		if (!prefetchToastIdRef.current) {
-			prefetchToastIdRef.current = showInfo('다음 트랙을 준비 중이에요!', null);
-		}
+		prefetchToastIdRef.current = showInfo('다음 트랙을 준비 중이에요!', null);
 		setIsAutoPrefetching(true);
 
-		fetchTrack(selectedGenre, abortController.signal)
+		// 자동 프리페치는 낮은 우선순위 (0)
+		fetchTrack(selectedGenre, abortController.signal, 0)
 			.then((track) => {
 				if (!abortController.signal.aborted) {
 					setNextTrack(track);
@@ -123,6 +136,8 @@ export const useAutoPrefetch = (currentTrack: { id: string; duration?: number } 
 		queue.tracks.length,
 		selectedGenre,
 		isGenreChangeInProgress,
+		isAutoPrefetching,
+		isManualFetching,
 		setNextTrack,
 		setIsAutoPrefetching,
 		fetchTrack,

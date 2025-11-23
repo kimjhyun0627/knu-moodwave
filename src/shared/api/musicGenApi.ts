@@ -55,31 +55,35 @@ const buildMusicPrompt = (genre: MusicGenre, activeParams?: Record<string, numbe
 	return parts.join(', ');
 };
 
-export const generateSoundByGenre = async (genre: MusicGenre, signal?: AbortSignal, activeParams?: Record<string, number>): Promise<MusicGenTrack> => {
-	return requestQueue.enqueue(async () => {
-		const prompt = buildMusicPrompt(genre, activeParams);
+export const generateSoundByGenre = async (genre: MusicGenre, signal?: AbortSignal, activeParams?: Record<string, number>, priority: number = 0): Promise<MusicGenTrack> => {
+	return requestQueue.enqueue(
+		async () => {
+			const prompt = buildMusicPrompt(genre, activeParams);
 
-		const queryParams = new URLSearchParams({
-			prompt: prompt,
-			temperature: DEFAULT_TEMPERATURE.toString(),
-			seed: DEFAULT_SEED.toString(),
-		});
+			const queryParams = new URLSearchParams({
+				prompt: prompt,
+				temperature: DEFAULT_TEMPERATURE.toString(),
+				seed: DEFAULT_SEED.toString(),
+			});
 
-		const response = await fetch(`${MUSICGEN_API_URL}?${queryParams.toString()}`, {
-			method: 'GET',
-			signal,
-		});
+			const response = await fetch(`${MUSICGEN_API_URL}?${queryParams.toString()}`, {
+				method: 'GET',
+				signal,
+			});
 
-		if (!response.ok) throw new Error(`API failed: ${response.status}`);
+			if (!response.ok) throw new Error(`API failed: ${response.status}`);
 
-		const audioBlob = await response.blob();
-		const audioUrl = URL.createObjectURL(audioBlob);
+			const audioBlob = await response.blob();
+			const audioUrl = URL.createObjectURL(audioBlob);
 
-		return {
-			id: `musicgen-${Date.now()}`,
-			title: `AI Generated ${genre.nameKo}`,
-			audioUrl: audioUrl,
-			duration: DEFAULT_MUSIC_LENGTH_SEC,
-		};
-	}, signal);
+			return {
+				id: `musicgen-${Date.now()}`,
+				title: `AI Generated ${genre.nameKo}`,
+				audioUrl: audioUrl,
+				duration: DEFAULT_MUSIC_LENGTH_SEC,
+			};
+		},
+		signal,
+		priority
+	);
 };

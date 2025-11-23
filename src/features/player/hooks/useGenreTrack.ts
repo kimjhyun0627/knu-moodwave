@@ -45,7 +45,8 @@ export const useGenreTrack = () => {
 			toastIdRef.current = showInfo('새로운 장르를 불러오는 중이에요...', null);
 
 			try {
-				const track = await fetchTrack(genre);
+				// 장르 변경은 높은 우선순위 (10)
+				const track = await fetchTrack(genre, undefined, 10);
 
 				const queue = usePlayerStore.getState().queue;
 				const hasCurrentTrack = queue.currentIndex >= 0 && queue.currentIndex < queue.tracks.length;

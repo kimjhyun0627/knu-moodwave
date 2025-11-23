@@ -23,7 +23,7 @@ export const useTrackFetcher = () => {
 	}, [getActiveParamsWithValues]);
 
 	const fetchTrack = useCallback(
-		async (genre: MusicGenre, signal?: AbortSignal): Promise<Track> => {
+		async (genre: MusicGenre, signal?: AbortSignal, priority: number = 0): Promise<Track> => {
 			// 기존 요청이 있다면 취소
 			if (abortControllerRef.current) {
 				abortControllerRef.current.abort();
@@ -58,7 +58,7 @@ export const useTrackFetcher = () => {
 			}
 
 			try {
-				const track = await fetchTrackForGenre(genre, effectiveSignal, paramValues);
+				const track = await fetchTrackForGenre(genre, effectiveSignal, paramValues, priority);
 				return track;
 			} catch (error) {
 				// 취소된 요청은 정상적인 취소이므로 재던지기 (상위에서 처리)
