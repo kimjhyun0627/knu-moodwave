@@ -88,7 +88,8 @@ export const usePlayerTrack = () => {
 		setIsManualFetching(true);
 
 		try {
-			const track = await fetchTrack(selectedGenre);
+			// 수동 fetch는 높은 우선순위 (10)
+			const track = await fetchTrack(selectedGenre, undefined, 10);
 
 			// 준비 완료 토스트 표시
 			if (loadingToastIdRef.current) {

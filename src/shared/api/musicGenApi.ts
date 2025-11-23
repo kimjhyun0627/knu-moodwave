@@ -55,7 +55,7 @@ const buildMusicPrompt = (genre: MusicGenre, activeParams?: Record<string, numbe
 	return parts.join(', ');
 };
 
-export const generateSoundByGenre = async (genre: MusicGenre, signal?: AbortSignal, activeParams?: Record<string, number>): Promise<MusicGenTrack> => {
+export const generateSoundByGenre = async (genre: MusicGenre, signal?: AbortSignal, activeParams?: Record<string, number>, priority: number = 0): Promise<MusicGenTrack> => {
 	return requestQueue.enqueue(async () => {
 		const prompt = buildMusicPrompt(genre, activeParams);
 
@@ -81,5 +81,5 @@ export const generateSoundByGenre = async (genre: MusicGenre, signal?: AbortSign
 			audioUrl: audioUrl,
 			duration: DEFAULT_MUSIC_LENGTH_SEC,
 		};
-	}, signal);
+	}, signal, priority);
 };

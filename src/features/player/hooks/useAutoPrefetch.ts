@@ -100,7 +100,8 @@ export const useAutoPrefetch = (currentTrack: { id: string; duration?: number } 
 		prefetchToastIdRef.current = showInfo('다음 트랙을 준비 중이에요!', null);
 		setIsAutoPrefetching(true);
 
-		fetchTrack(selectedGenre, abortController.signal)
+		// 자동 프리페치는 낮은 우선순위 (0)
+		fetchTrack(selectedGenre, abortController.signal, 0)
 			.then((track) => {
 				if (!abortController.signal.aborted) {
 					setNextTrack(track);

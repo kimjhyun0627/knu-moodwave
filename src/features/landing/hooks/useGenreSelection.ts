@@ -37,7 +37,8 @@ export const useGenreSelection = () => {
 			};
 
 			try {
-				const track = await fetchTrack(genre);
+				// 장르 선택은 높은 우선순위 (10)
+				const track = await fetchTrack(genre, undefined, 10);
 				if (isCancelledRef.current) {
 					return;
 				}
