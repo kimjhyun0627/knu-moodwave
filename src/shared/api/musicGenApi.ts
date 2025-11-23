@@ -56,57 +56,34 @@ const buildMusicPrompt = (genre: MusicGenre, activeParams?: Record<string, numbe
 };
 
 export const generateSoundByGenre = async (genre: MusicGenre, signal?: AbortSignal, activeParams?: Record<string, number>, priority: number = 0): Promise<MusicGenTrack> => {
-	return requestQueue.enqueue(async () => {
-		const prompt = buildMusicPrompt(genre, activeParams);
+	return requestQueue.enqueue(
+		async () => {
+			const prompt = buildMusicPrompt(genre, activeParams);
 
-		const queryParams = new URLSearchParams({
-			prompt: prompt,
-			temperature: DEFAULT_TEMPERATURE.toString(),
-			seed: DEFAULT_SEED.toString(),
-		});
+			const queryParams = new URLSearchParams({
+				prompt: prompt,
+				temperature: DEFAULT_TEMPERATURE.toString(),
+				seed: DEFAULT_SEED.toString(),
+			});
 
-		const fetchStartTime = performance.now();
-		const response = await fetch(`${MUSICGEN_API_URL}?${queryParams.toString()}`, {
-			method: 'GET',
-			signal,
-		});
+			const response = await fetch(`${MUSICGEN_API_URL}?${queryParams.toString()}`, {
+				method: 'GET',
+				signal,
+			});
 
-		const fetchEndTime = performance.now();
-		const fetchDuration = fetchEndTime - fetchStartTime;
+			if (!response.ok) throw new Error(`API failed: ${response.status}`);
 
-		if (!response.ok) throw new Error(`API failed: ${response.status}`);
+			const audioBlob = await response.blob();
+			const audioUrl = URL.createObjectURL(audioBlob);
 
-		// Response 헤더 정보 확인 (진단용)
-		const contentLength = response.headers.get('content-length');
-		const contentType = response.headers.get('content-type');
-		const transferEncoding = response.headers.get('transfer-encoding');
-		
-		console.log('[MusicGen API] Response 정보:', {
-			status: response.status,
-			contentLength: contentLength ? `${(parseInt(contentLength) / 1024 / 1024).toFixed(2)} MB` : 'unknown',
-			contentType,
-			transferEncoding,
-			fetchDuration: `${(fetchDuration / 1000).toFixed(2)}초`,
-		});
-
-		const blobStartTime = performance.now();
-		const audioBlob = await response.blob();
-		const blobEndTime = performance.now();
-		const blobDuration = blobEndTime - blobStartTime;
-
-		console.log('[MusicGen API] Blob 다운로드:', {
-			blobSize: `${(audioBlob.size / 1024 / 1024).toFixed(2)} MB`,
-			blobDuration: `${(blobDuration / 1000).toFixed(2)}초`,
-			downloadSpeed: audioBlob.size > 0 ? `${((audioBlob.size / 1024 / 1024) / (blobDuration / 1000)).toFixed(2)} MB/s` : 'N/A',
-		});
-
-		const audioUrl = URL.createObjectURL(audioBlob);
-
-		return {
-			id: `musicgen-${Date.now()}`,
-			title: `AI Generated ${genre.nameKo}`,
-			audioUrl: audioUrl,
-			duration: DEFAULT_MUSIC_LENGTH_SEC,
-		};
-	}, signal, priority);
+			return {
+				id: `musicgen-${Date.now()}`,
+				title: `AI Generated ${genre.nameKo}`,
+				audioUrl: audioUrl,
+				duration: DEFAULT_MUSIC_LENGTH_SEC,
+			};
+		},
+		signal,
+		priority
+	);
 };
