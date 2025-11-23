@@ -1,8 +1,18 @@
 <div align="center">
   <img src="public/logo512.svg" alt="MOODWAVE Logo" width="120" />
   <h1>MOODWAVE</h1>
-  <h3>AI 기반 개인 맞춤형 음악 생성 및 스트리밍 서비스로, 사용자의 감정과 상황에 맞는 음악을 실시간으로 생성하고 제공합니다.</h3>
+  <h3>AI 기반 개인 맞춤형 음악 생성 및 스트리밍 서비스입니다.</h3>
+  <h3>사용자의 감정과 상황에 맞는 음악을 실시간으로 생성하고 제공합니다.</h3>
   <p><strong>2025 AI_conic 해커톤 S타입</strong>: 현대인의 스트레스 해소를 위한 서비스 출품작</p>
+  
+  <p>
+    <a href="https://github.com/kimjhyun0627/knu-moodwave">
+      <img src="https://img.shields.io/badge/Frontend-Repository-blue?style=for-the-badge&logo=github&logoColor=white" alt="Frontend Repository" />
+    </a>
+    <a href="https://github.com/scv1702/moodwave-backend">
+      <img src="https://img.shields.io/badge/Backend-Repository-black?style=for-the-badge&logo=github&logoColor=white" alt="Backend Repository" />
+    </a>
+  </p>
 </div>
 
 ### 팀원 소개
@@ -13,7 +23,13 @@
 
 ### 시연 영상
 
-[link]
+<div align="center">
+  
+[![시연 영상](https://img.youtube.com/vi/4nkp7TyQ6i0/0.jpg)](https://www.youtube.com/watch?v=4nkp7TyQ6i0)
+
+**👉 [시연 영상 보러가기](https://www.youtube.com/watch?v=4nkp7TyQ6i0)**
+
+</div>
 
 ### 서비스 개요
 
