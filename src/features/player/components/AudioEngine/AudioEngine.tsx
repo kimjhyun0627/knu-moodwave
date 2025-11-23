@@ -22,6 +22,7 @@ export const AudioEngine = () => {
 	const previousIsPlayingRef = useRef(isPlaying);
 	const fadeAnimationRef = useRef<number | null>(null);
 	const previousTrackIdRef = useRef<string | null>(null);
+	const isFadingOutRef = useRef(false); // fade-out 진행 중 플래그
 
 	// 자동 프리페치 훅 사용
 	useAutoPrefetch(currentTrack, currentTime, audioRef);
@@ -91,9 +92,13 @@ export const AudioEngine = () => {
 
 				// 이전 트랙이 있으면 fade-out
 				if (previousTrackIdRef.current && previousTrackIdRef.current !== currentTrack.id && !audio.paused) {
-					const fadeOutDuration = 1000; // 1초
+					isFadingOutRef.current = true;
+					const fadeOutDuration = 3000; // 3초
 					const startTime = performance.now();
 					const startVolume = audio.volume;
+					// fade-out 시작 시점의 현재 재생 위치 저장 및 store 동기화
+					const fadeOutStartTime = audio.currentTime;
+					setCurrentTime(fadeOutStartTime); // store의 currentTime을 실제 재생 위치로 동기화
 
 					const fadeOut = (currentTime: number) => {
 						const elapsed = currentTime - startTime;
@@ -103,6 +108,9 @@ export const AudioEngine = () => {
 						if (audio) {
 							const newVolume = startVolume * (1 - progress);
 							audio.volume = Math.max(0, Math.min(1, newVolume));
+							// fade-out 중에는 currentTime이 계속 업데이트되어야 함
+							const currentAudioTime = fadeOutStartTime + elapsed / 1000;
+							setCurrentTime(currentAudioTime);
 						}
 
 						if (progress < 1) {
@@ -113,6 +121,7 @@ export const AudioEngine = () => {
 								audio.pause();
 							}
 							fadeAnimationRef.current = null;
+							isFadingOutRef.current = false;
 
 							// fade-out 완료 후 새 트랙 로드
 							loadAndPlayNewTrack();
@@ -128,10 +137,12 @@ export const AudioEngine = () => {
 				function loadAndPlayNewTrack() {
 					if (!audio || !currentTrack?.audioUrl) return;
 
+					// 새 트랙 설정 및 0초부터 시작
 					audio.src = currentTrack.audioUrl;
 					audio.dataset.trackId = currentTrack.id;
 					audio.currentTime = 0;
 					lastTimeFromAudioRef.current = 0;
+					setCurrentTime(0); // store의 currentTime도 0으로 리셋
 
 					// 명시적으로 로드 시작 (최적화)
 					audio.load();
@@ -139,13 +150,13 @@ export const AudioEngine = () => {
 					// 트랙이 변경되면 항상 자동 재생
 					previousIsPlayingRef.current = true;
 
-					// fade-in 시작
+					// fade-in 시작 (0초부터)
 					audio.volume = 0;
 					playAudioSafely(audio, () => setIsPlaying(false));
 
 					// fade-in 애니메이션
 					const targetVolume = volume / 100;
-					const fadeInDuration = 1000; // 1초
+					const fadeInDuration = 3000; // 3초
 					const startTime = performance.now();
 
 					const fadeIn = (currentTime: number) => {
@@ -156,6 +167,9 @@ export const AudioEngine = () => {
 						if (audio) {
 							const newVolume = targetVolume * progress;
 							audio.volume = Math.max(0, Math.min(1, newVolume));
+							// fade-in 중에는 currentTime도 업데이트 (0초부터 시작)
+							const currentAudioTime = elapsed / 1000;
+							setCurrentTime(currentAudioTime);
 						}
 
 						if (progress < 1) {
@@ -248,11 +262,12 @@ export const AudioEngine = () => {
 		};
 	}, [isPlaying, setCurrentTime]);
 
-	// Sync external seeks
+	// Sync external seeks (fade-out 중에는 무시)
 	useEffect(() => {
 		const audio = audioRef.current;
 		if (!audio) return;
 		if (!Number.isFinite(currentTime)) return;
+		if (isFadingOutRef.current) return; // fade-out 중에는 currentTime 변경 무시
 
 		const diff = Math.abs(audio.currentTime - currentTime);
 		if (diff > 0.25) {
