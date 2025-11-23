@@ -4,7 +4,7 @@ import { generateSoundByGenre } from './musicGenApi';
 
 export const fetchTrackForGenre = async (genre: MusicGenre, signal?: AbortSignal, activeParams?: Record<string, number>): Promise<Track> => {
 	// 활성화된 파라미터들을 API body로 전송할 데이터로 구성
-	if (activeParams) {
+	/* if (activeParams) {
 		const params = {
 			genre: genre.name,
 			genreId: genre.id,
@@ -12,7 +12,7 @@ export const fetchTrackForGenre = async (genre: MusicGenre, signal?: AbortSignal
 		};
 		console.log(JSON.stringify(params, null, 2));
 		console.log(`📊 Active parameters count: ${Object.keys(activeParams).length}`);
-	}
+	} */
 
 	const preview = await generateSoundByGenre(genre, signal, activeParams);
 
