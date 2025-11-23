@@ -6,12 +6,14 @@
   <p><strong>2025 AI_conic 해커톤 S타입</strong>: 현대인의 스트레스 해소를 위한 서비스 출품작</p>
   
   <p>
+  <a href="https://moodwave.get-it.cloud/">
+      <img src="https://img.shields.io/badge/🌐_moodwave-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  </p>
+  <p>
     <a href="https://github.com/kimjhyun0627/knu-moodwave">
-      <img src="https://img.shields.io/badge/Frontend-Repository-blue?style=for-the-badge&logo=github&logoColor=white" alt="Frontend Repository" />
-    </a>
+      <img src="https://img.shields.io/badge/Frontend-181717?style=for-the-badge&logo=github&logoColor=white" alt="Frontend Repository" />    
     <a href="https://github.com/scv1702/moodwave-backend">
-      <img src="https://img.shields.io/badge/Backend-Repository-black?style=for-the-badge&logo=github&logoColor=white" alt="Backend Repository" />
-    </a>
+      <img src="https://img.shields.io/badge/Backend-181717?style=for-the-badge&logo=github&logoColor=white" alt="AI/Backend Repository" /> 
   </p>
 </div>
 
@@ -179,9 +181,8 @@ MOODWAVE는 사용자의 감정 상태와 활동 목적에 따라 AI가 음악�
 
 **API 및 서비스**
 
-- MusicGen API: AI 음악 생성
-- ElevenLabs API: 음성 합성 (추가 기능)
-- FreeSound API: 샘플 사운드 제공
+- 음악 생성 API 서버 구현
+- 자세한 사항은 [백엔드 레포지토리 README](https://github.com/scv1702/moodwave-backend)를 참고해 주세요
 
 **배포**
 
