@@ -26,7 +26,6 @@ interface ParameterPanelProps {
 	onRemoveThemeParam: (paramId: string) => void;
 	onRemoveCommonParam: (paramId: string) => void;
 	onAddCommonParam: (paramId: string) => void;
-	onApply?: () => void;
 }
 
 export const ParameterPanel = ({
@@ -40,7 +39,6 @@ export const ParameterPanel = ({
 	onRemoveThemeParam,
 	onRemoveCommonParam,
 	onAddCommonParam,
-	onApply,
 }: ParameterPanelProps) => {
 	const colors = useThemeColors();
 	const orientation = usePlayerStore((state) => state.parameterPanelOrientation);

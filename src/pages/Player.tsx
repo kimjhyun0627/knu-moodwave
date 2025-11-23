@@ -5,8 +5,7 @@ import { ChevronUp } from 'lucide-react';
 import { usePlayerStore } from '@/store/playerStore';
 import { ConfirmModal, useToast } from '@/shared/components/ui';
 import { TopBar, GenreInfo, SyncGlowIntensity, SyncGlowWave, SyncGlowParticle, SyncGlowOscilloscope, ControlerPanel, ParameterPanel, GradientOverlay, AudioEngine } from '@/features/player/components';
-import { usePlayerParams, useGenreChangeAnimation, usePlayerExit, usePlayerTrack, useTrackFetcher } from '@/features/player/hooks';
-import { isCancelError } from '@/shared/utils';
+import { usePlayerParams, useGenreChangeAnimation, usePlayerExit, usePlayerTrack } from '@/features/player/hooks';
 import { useThemeColors } from '@/shared/hooks';
 import { PLAYER_CONSTANTS } from '@/features/player/constants';
 
@@ -17,13 +16,12 @@ const Player = () => {
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [visualizationMode, setVisualizationMode] = useState<'box' | 'wave' | 'particle' | 'oscilloscope'>('box');
 
-	const { selectedGenre, isPlaying, moveToPrevTrack, setNextTrack, resetQueue, queue } = usePlayerStore();
+	const { selectedGenre, isPlaying, moveToPrevTrack, resetQueue, queue } = usePlayerStore();
 	const { selectedTheme, themeBaseParams, themeAdditionalParams, activeCommonParamsList, availableCommonParams, getParamValue, setParamValue, addCommonParam, removeCommonParam, removeThemeParam } =
 		usePlayerParams();
 	const colors = useThemeColors();
-	const { showWarning, showInfo, showSuccess, removeToast } = useToast();
+	const { showWarning } = useToast();
 	const { handleNextTrack } = usePlayerTrack();
-	const { fetchTrack } = useTrackFetcher();
 
 	// 장르 변경 감지 및 애니메이션
 	const isGenreChanging = useGenreChangeAnimation(selectedGenre);
@@ -73,35 +71,6 @@ const Player = () => {
 
 	const handleNext = () => {
 		handleNextTrack();
-	};
-
-	// 적용하기 버튼: API 호출하여 큐에만 추가 (재생하지 않음)
-	const handleApply = async () => {
-		if (!selectedGenre) {
-			return;
-		}
-
-		// 로딩 토스트 표시
-		const loadingToastId = showInfo('새로운 트랙을 준비 중이에요!', null);
-
-		try {
-			const track = await fetchTrack(selectedGenre);
-
-			// 준비 완료 토스트 표시
-			removeToast(loadingToastId);
-			showSuccess('다음 트랙이 준비되었어요!', 3000);
-
-			// 큐에만 추가하고 재생하지 않음
-			setNextTrack(track);
-		} catch (error) {
-			// 취소된 요청은 정상적인 취소이므로 무시
-			if (isCancelError(error)) {
-				return;
-			}
-
-			console.error('[Player] 트랙 가져오기 실패:', error);
-			removeToast(loadingToastId);
-		}
 	};
 
 	return (

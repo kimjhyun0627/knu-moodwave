@@ -204,7 +204,7 @@ export const AudioEngine = () => {
 			setIsPlaying(false);
 			previousTrackIdRef.current = null;
 		}
-	}, [currentTrack, isPlaying, setIsPlaying, volume]);
+	}, [currentTrack, isPlaying, setIsPlaying, volume, setCurrentTime]);
 
 	// Play/Pause control (isPlaying 상태 변경 시에만 처리)
 	useEffect(() => {
