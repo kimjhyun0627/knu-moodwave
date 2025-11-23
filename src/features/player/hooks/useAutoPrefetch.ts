@@ -3,7 +3,7 @@ import { usePlayerStore } from '@/store/playerStore';
 import { useToast } from '@/shared/components/ui';
 import { useTrackFetcher } from './useTrackFetcher';
 
-const PREFETCH_THRESHOLD_SECONDS = 10;
+const PREFETCH_THRESHOLD_SECONDS = 20;
 
 /**
  * 자동 프리페치 훅
