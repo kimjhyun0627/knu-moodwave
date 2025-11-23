@@ -198,7 +198,6 @@ const Player = () => {
 								onRemoveThemeParam={removeThemeParam}
 								onRemoveCommonParam={removeCommonParam}
 								onAddCommonParam={addCommonParam}
-								onApply={handleApply}
 							/>
 						)}
 					</div>

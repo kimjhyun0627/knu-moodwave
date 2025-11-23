@@ -22,6 +22,7 @@ interface PlayerState {
 	selectedGenre: MusicGenre | null;
 	isGenreChangeInProgress: boolean; // 장르 변경 API 요청 진행 중 플래그
 	isAutoPrefetching: boolean; // 자동 다음 노래 준비 중 플래그 (30초 전)
+	isManualFetching: boolean; // 수동 다음 노래 가져오기 진행 중 플래그 (다음 버튼 클릭)
 
 	// Visible Additional Parameters (사용자가 추가한 파라미터 ID 목록)
 	visibleAdditionalParams: string[]; // 장르별로 사용자가 추가한 파라미터 ID 목록
@@ -53,6 +54,7 @@ interface PlayerState {
 	setSelectedGenre: (genre: MusicGenre | null) => void;
 	setIsGenreChangeInProgress: (inProgress: boolean) => void;
 	setIsAutoPrefetching: (isPrefetching: boolean) => void;
+	setIsManualFetching: (isFetching: boolean) => void;
 
 	// Visible Additional Parameters Actions
 	addVisibleAdditionalParam: (paramId: string) => void;
@@ -87,6 +89,7 @@ const initialState = {
 	selectedGenre: null,
 	isGenreChangeInProgress: false,
 	isAutoPrefetching: false,
+	isManualFetching: false,
 	visibleAdditionalParams: [],
 	additionalParams: {},
 	parameterPanelOrientation: 'horizontal' as 'horizontal' | 'vertical',
@@ -237,6 +240,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 	},
 	setIsGenreChangeInProgress: (inProgress: boolean) => set({ isGenreChangeInProgress: inProgress }),
 	setIsAutoPrefetching: (isPrefetching: boolean) => set({ isAutoPrefetching: isPrefetching }),
+	setIsManualFetching: (isFetching: boolean) => set({ isManualFetching: isFetching }),
 
 	// Visible Additional Parameters Actions
 	addVisibleAdditionalParam: (paramId: string) =>

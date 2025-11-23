@@ -250,11 +250,10 @@ export const ParameterPanel = ({
 									orientation={orientation}
 								/>
 
-								{/* 모드 토글 버튼 및 적용하기 버튼 */}
+								{/* 모드 토글 버튼 */}
 								<ParameterModeToggle
 									orientation={orientation}
 									onToggle={() => setParameterPanelOrientation(orientation === 'horizontal' ? 'vertical' : 'horizontal')}
-									onApply={onApply}
 								/>
 							</motion.div>
 						</motion.div>

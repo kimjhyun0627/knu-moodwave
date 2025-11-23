@@ -12,7 +12,7 @@ import { isCancelError } from '@/shared/utils';
  */
 export const usePlayerTrack = () => {
 	const { fetchTrack } = useTrackFetcher();
-	const { selectedGenre, queue, isGenreChangeInProgress, isAutoPrefetching, setNextTrack, moveToNextTrack } = usePlayerStore();
+	const { selectedGenre, queue, isGenreChangeInProgress, isAutoPrefetching, setNextTrack, moveToNextTrack, setIsManualFetching } = usePlayerStore();
 	const { showInfo, showSuccess, showWarning, removeToast } = useToast();
 
 	const loadingToastIdRef = useRef<string | null>(null);
@@ -85,6 +85,7 @@ export const usePlayerTrack = () => {
 			removeToast(loadingToastIdRef.current);
 		}
 		loadingToastIdRef.current = showInfo('다음 트랙을 준비 중이에요!', null);
+		setIsManualFetching(true);
 
 		try {
 			const track = await fetchTrack(selectedGenre);
@@ -110,8 +111,10 @@ export const usePlayerTrack = () => {
 				removeToast(loadingToastIdRef.current);
 				loadingToastIdRef.current = null;
 			}
+		} finally {
+			setIsManualFetching(false);
 		}
-	}, [isAutoPrefetching, isGenreChangeInProgress, queue, selectedGenre, fetchTrack, setNextTrack, moveToNextTrack, showInfo, showSuccess, showWarning, removeToast]);
+	}, [isAutoPrefetching, isGenreChangeInProgress, queue, selectedGenre, fetchTrack, setNextTrack, moveToNextTrack, setIsManualFetching, showInfo, showSuccess, showWarning, removeToast]);
 
 	return {
 		handleNextTrack,
