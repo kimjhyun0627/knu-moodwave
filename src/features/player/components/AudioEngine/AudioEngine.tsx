@@ -82,6 +82,9 @@ export const AudioEngine = () => {
 				audio.currentTime = 0;
 				lastTimeFromAudioRef.current = 0;
 
+				// 명시적으로 로드 시작 (최적화)
+				audio.load();
+
 				// 트랙이 변경되면 항상 자동 재생
 				previousIsPlayingRef.current = true;
 				playAudioSafely(audio, () => setIsPlaying(false));

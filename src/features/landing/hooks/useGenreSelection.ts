@@ -53,6 +53,41 @@ export const useGenreSelection = () => {
 				const volume = getVolume().volume;
 				audio.volume = Math.min(1, Math.max(0, volume / 100));
 
+				// 명시적으로 로드 시작
+				audio.load();
+
+				// 메타데이터 로드 완료 대기 후 재생 (최적화)
+				await new Promise<void>((resolve, reject) => {
+					const handleLoadedMetadata = () => {
+						audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+						audio.removeEventListener('error', handleError);
+						resolve();
+					};
+
+					const handleError = () => {
+						audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+						audio.removeEventListener('error', handleError);
+						reject(new Error('Audio load failed'));
+					};
+
+					// 이미 메타데이터가 로드된 경우 즉시 resolve
+					if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) {
+						resolve();
+						return;
+					}
+
+					audio.addEventListener('loadedmetadata', handleLoadedMetadata, { once: true });
+					audio.addEventListener('error', handleError, { once: true });
+
+					// 타임아웃 설정 (10초)
+					setTimeout(() => {
+						audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+						audio.removeEventListener('error', handleError);
+						reject(new Error('Audio metadata load timeout'));
+					}, 10000);
+				});
+
+				// 메타데이터 로드 완료 후 재생 시도
 				try {
 					await audio.play();
 					setIsPlaying(true);
